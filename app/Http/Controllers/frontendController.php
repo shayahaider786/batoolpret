@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Category;
+use App\Models\Blog;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Coupon;
+use App\Models\Product;
 use App\Models\Slider;
 use App\Models\Testimonial;
-use App\Models\Blog;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 
 class frontendController extends Controller
 {
@@ -30,6 +30,7 @@ class frontendController extends Controller
         if ($isAuthenticated) {
             // Bypass cache for authenticated users
             $pageHTML = $this->getHomePageData();
+
             return response($pageHTML)
                 ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                 ->header('Pragma', 'no-cache')
@@ -75,7 +76,7 @@ class frontendController extends Controller
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
-                    }
+                    },
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'new_arrival')
@@ -98,7 +99,7 @@ class frontendController extends Controller
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
-                    }
+                    },
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'trending')
@@ -121,7 +122,7 @@ class frontendController extends Controller
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
-                    }
+                    },
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'best_selling')
@@ -144,7 +145,7 @@ class frontendController extends Controller
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
-                    }
+                    },
                 ])
                 ->where('status', 'active')
                 ->latest()
@@ -174,7 +175,7 @@ class frontendController extends Controller
                         },
                         'images' => function ($query) {
                             $query->select('id', 'product_id', 'image')->limit(1);
-                        }
+                        },
                     ])
                     ->where('status', 'active')
                     ->whereIn('category_id', $categoryIds)
@@ -255,7 +256,7 @@ class frontendController extends Controller
                 },
                 'images' => function ($query) {
                     $query->select('id', 'product_id', 'image')->limit(1);
-                }
+                },
             ])
             ->where('status', 'active');
 
@@ -276,7 +277,7 @@ class frontendController extends Controller
             if (in_array($tag, ['trending', 'new_arrival', 'best_selling'])) {
                 $query->where('tag', $tag);
                 // Exclude Bags from tag filters
-                if (!empty($bagsCategoryIds)) {
+                if (! empty($bagsCategoryIds)) {
                     $query->whereNotIn('category_id', $bagsCategoryIds);
                 }
             }
@@ -287,7 +288,7 @@ class frontendController extends Controller
             $query->whereNotNull('discount_price')
                 ->where('discount_price', '>', 0);
             // Exclude Bags from sale section
-            if (!empty($bagsCategoryIds)) {
+            if (! empty($bagsCategoryIds)) {
                 $query->whereNotIn('category_id', $bagsCategoryIds);
             }
         }
@@ -330,7 +331,7 @@ class frontendController extends Controller
             $query->whereIn('category_id', $allCategoryIds->unique()->toArray());
         } else {
             // When no category, tag, or sale filter is selected (All Products view), exclude Bags products
-            if (!$request->filled('tag') && !$request->filled('sale') && !empty($bagsCategoryIds)) {
+            if (! $request->filled('tag') && ! $request->filled('sale') && ! empty($bagsCategoryIds)) {
                 $query->whereNotIn('category_id', $bagsCategoryIds);
             }
         }
@@ -338,33 +339,8 @@ class frontendController extends Controller
         // Default sorting: newest first
         $query->latest();
 
-        // Check if this is an AJAX request for loading more products
-        if ($request->ajax() && $request->has('load_more')) {
-            $page = $request->input('page', 1);
-            $perPage = 8; // Load 8 products per batch for view more
-
-            $products = $query->paginate($perPage, ['*'], 'page', $page);
-
-            $renderedProducts = '';
-            foreach ($products as $product) {
-                $renderedProducts .= view('frontend.partials.product-card', [
-                    'product' => $product,
-                    'isFirst' => false,
-                    'columnClasses' => 'col-6 col-lg-3'
-                ])->render();
-            }
-
-            return response()->json([
-                'products' => $renderedProducts,
-                'next_page' => $products->hasMorePages() ? $products->currentPage() + 1 : null,
-                'has_more' => $products->hasMorePages(),
-                'current_count' => $products->count(),
-                'total' => $products->total()
-            ]);
-        }
-
-        // Regular page load - show first 8 products
-        $products = $query->paginate(8);
+        // Paginate with 12 products per page for traditional pagination
+        $products = $query->paginate(12);
 
         // Cache parent categories for 1 hour
         $parentCategories = Cache::remember('categories.parents.active', 3600, function () {
@@ -375,6 +351,32 @@ class frontendController extends Controller
         $isTagPage = $request->filled('tag');
 
         return view('frontend.shop', compact('products', 'parentCategories', 'isTagPage'));
+    }
+
+    public function casual()
+    {
+        $category = Category::where(function ($q) {
+            $q->where('name', 'LIKE', '%casual%')->orWhere('slug', 'LIKE', '%casual%');
+        })->active()->first();
+
+        if ($category) {
+            return redirect()->route('shop', ['categories' => [$category->id]]);
+        }
+
+        return redirect()->route('shop');
+    }
+
+    public function formal()
+    {
+        $category = Category::where(function ($q) {
+            $q->where('name', 'LIKE', '%formal%')->orWhere('slug', 'LIKE', '%formal%');
+        })->active()->first();
+
+        if ($category) {
+            return redirect()->route('shop', ['categories' => [$category->id]]);
+        }
+
+        return redirect()->route('shop');
     }
 
     public function productDetail($slug)
@@ -417,7 +419,7 @@ class frontendController extends Controller
                 },
                 'approvedReviews.user' => function ($query) {
                     $query->select('id', 'name');
-                }
+                },
             ])
             ->where('slug', $slug)
             ->where('status', 'active')
@@ -462,43 +464,11 @@ class frontendController extends Controller
         return view('frontend.productDetail', compact('product', 'relatedProducts'));
     }
 
-
     public function cart()
     {
         return view('frontend.cart');
     }
 
-    /**
-     * Shortcut to show Casual category via the Shop route.
-     */
-    public function casual()
-    {
-        $category = Category::where(function ($q) {
-            $q->where('name', 'LIKE', '%casual%')->orWhere('slug', 'LIKE', '%casual%');
-        })->active()->first();
-
-        if ($category) {
-            return redirect()->route('shop', ['categories' => [$category->id]]);
-        }
-
-        return redirect()->route('shop');
-    }
-
-    /**
-     * Shortcut to show Formal category via the Shop route.
-     */
-    public function formal()
-    {
-        $category = Category::where(function ($q) {
-            $q->where('name', 'LIKE', '%formal%')->orWhere('slug', 'LIKE', '%formal%');
-        })->active()->first();
-
-        if ($category) {
-            return redirect()->route('shop', ['categories' => [$category->id]]);
-        }
-
-        return redirect()->route('shop');
-    }
     public function checkout(Request $request)
     {
         if (Auth::check()) {
@@ -544,7 +514,7 @@ class frontendController extends Controller
         }
 
         // Validate coupon if provided and no discounted products
-        if ($couponCode && !$hasDiscountedProducts) {
+        if ($couponCode && ! $hasDiscountedProducts) {
             $coupon = Coupon::where('code', $couponCode)->first();
 
             if ($coupon && $coupon->isValid()) {
@@ -570,12 +540,12 @@ class frontendController extends Controller
         $couponCode = strtoupper(trim($validated['coupon_code']));
         $coupon = Coupon::where('code', $couponCode)->first();
 
-        if (!$coupon) {
+        if (! $coupon) {
             return redirect()->route('checkout')
                 ->with('coupon_error', 'Invalid coupon code.');
         }
 
-        if (!$coupon->isValid()) {
+        if (! $coupon->isValid()) {
             return redirect()->route('checkout')
                 ->with('coupon_error', 'This coupon is not valid or has expired.');
         }
@@ -611,19 +581,21 @@ class frontendController extends Controller
         session(['applied_coupon_code' => $coupon->code]);
 
         return redirect()->route('checkout')
-            ->with('coupon_success', 'Coupon "' . $coupon->code . '" applied successfully! (' . $coupon->discount_percent . '% off)');
+            ->with('coupon_success', 'Coupon "'.$coupon->code.'" applied successfully! ('.$coupon->discount_percent.'% off)');
     }
+
     public function contact()
     {
         return view('frontend.contactus');
     }
+
     public function thankyou(Request $request)
     {
         // Get order number from URL parameter or session
         $orderNumber = $request->get('order') ?? session('order_number');
 
         return view('frontend.thankyou', [
-            'order_number' => $orderNumber
+            'order_number' => $orderNumber,
         ]);
     }
 
@@ -648,9 +620,9 @@ class frontendController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'LIKE', '%' . $search . '%')
-                    ->orWhere('excerpt', 'LIKE', '%' . $search . '%')
-                    ->orWhere('content', 'LIKE', '%' . $search . '%');
+                $q->where('title', 'LIKE', '%'.$search.'%')
+                    ->orWhere('excerpt', 'LIKE', '%'.$search.'%')
+                    ->orWhere('content', 'LIKE', '%'.$search.'%');
             });
         }
 
@@ -700,16 +672,16 @@ class frontendController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Please enter at least 2 characters',
-                'products' => []
+                'products' => [],
             ]);
         }
 
         $products = Product::with(['category', 'images'])
             ->where('status', 'active')
             ->where(function ($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', $searchTerm . '%')
-                    ->orWhere('short_description', 'LIKE', $searchTerm . '%')
-                    ->orWhere('long_description', 'LIKE', $searchTerm . '%');
+                $query->where('name', 'LIKE', $searchTerm.'%')
+                    ->orWhere('short_description', 'LIKE', $searchTerm.'%')
+                    ->orWhere('long_description', 'LIKE', $searchTerm.'%');
             })
             ->orderBy('name', 'asc')
             ->limit(10)
@@ -726,14 +698,14 @@ class frontendController extends Controller
                     'price' => $product->price,
                     'discount_price' => $product->discount_price,
                     'image' => $primaryImage,
-                    'url' => route('productDetail', $product->slug)
+                    'url' => route('productDetail', $product->slug),
                 ];
             });
 
         return response()->json([
             'success' => true,
             'products' => $products,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -758,7 +730,7 @@ class frontendController extends Controller
                             },
                             'images' => function ($query) {
                                 $query->select('id', 'product_id', 'image')->limit(1);
-                            }
+                            },
                         ])
                         ->where('status', 'active')
                         ->where('tag', 'new_arrival')
@@ -776,7 +748,7 @@ class frontendController extends Controller
                             },
                             'images' => function ($query) {
                                 $query->select('id', 'product_id', 'image')->limit(1);
-                            }
+                            },
                         ])
                         ->where('status', 'active')
                         ->where('tag', 'trending')
@@ -794,7 +766,7 @@ class frontendController extends Controller
                             },
                             'images' => function ($query) {
                                 $query->select('id', 'product_id', 'image')->limit(1);
-                            }
+                            },
                         ])
                         ->where('status', 'active')
                         ->where('tag', 'best_selling')
@@ -823,7 +795,7 @@ class frontendController extends Controller
                                 },
                                 'images' => function ($query) {
                                     $query->select('id', 'product_id', 'image')->limit(1);
-                                }
+                                },
                             ])
                             ->where('status', 'active')
                             ->whereIn('category_id', $categoryIds)
@@ -839,23 +811,23 @@ class frontendController extends Controller
                 return view('frontend.partials.product-card', [
                     'product' => $product,
                     'isFirst' => false,
-                    'columnClasses' => 'col-6 col-lg-3'
+                    'columnClasses' => 'col-6 col-lg-3',
                 ])->render();
             });
 
             return response()->json([
                 'products' => $renderedProducts,
-                'hasMore' => $products->count() == $limit
+                'hasMore' => $products->count() == $limit,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Load More Products Error: ' . $e->getMessage(), [
+            \Log::error('Load More Products Error: '.$e->getMessage(), [
                 'section' => $request->input('section'),
                 'offset' => $request->input('offset'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
-                'error' => 'Error loading more products. Please try again.'
+                'error' => 'Error loading more products. Please try again.',
             ], 500);
         }
     }
