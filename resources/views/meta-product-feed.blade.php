@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
     <channel>
-        <title>Zaylish - Product Feed</title>
-        <link>https://zaylish.pk</link>
-        <description>Zaylish Product Catalog for Meta Commerce Manager</description>
+        <title>Batool Pret - Product Feed</title>
+        <link>https://batoolpret.pk</link>
+        <description>Batool Pret Product Catalog for Meta Commerce Manager</description>
         @foreach($products as $product)
         <item>
             <g:id>{{ $product->id }}</g:id>

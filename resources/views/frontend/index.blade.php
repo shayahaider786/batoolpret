@@ -156,7 +156,7 @@
     </div>
 
     <!-- Summer Collection Products Section -->
-    @if(isset($summerCollectionProducts) && $summerCollectionProducts->count() > 0)
+    {{-- @if(isset($summerCollectionProducts) && $summerCollectionProducts->count() > 0)
     <section class="bg0 p-t-10 p-b-10">
         <div class="container trending-section">
             <div class="title-divider">
@@ -186,7 +186,7 @@
             </div>
         </div>
     </section>
-    @endif
+    @endif --}}
 
     <!-- new arrivals Products Section -->
     <section class="bg0 p-t-10 p-b-10">
@@ -233,12 +233,12 @@
                 <!-- Casual Banner -->
                 <a href="{{ url('/shop?categories[0]=4') }}" class="banner-link">
                     <div class="banner-item">
-                        <img src="{{ asset('frontend/images/banner.jpg') }}" alt="Zaylish Casual Collection"
+                        <img src="{{ asset('frontend/images/banner.jpg') }}" alt="Batool Pret Casual Collection"
                             class="banner-image">
                         <div class="banner-content">
                             <h2 class="banner-title">Casuals</h2>
                             <p class="banner-description">
-                                Zaylish brings modern casual wear for women—comfortable, stylish, and perfect for everyday
+                                Batool Pret brings modern casual wear for women—comfortable, stylish, and perfect for everyday
                                 fashion.
                             </p>
                         </div>
@@ -248,12 +248,12 @@
                 <!-- Formal Banner -->
                 <a href="{{ url('/shop?categories[0]=3') }}" class="banner-link">
                     <div class="banner-item marginLeft">
-                        <img src="{{ asset('frontend/images/banner2.jpg') }}" alt="Zaylish Formal Collection"
+                        <img src="{{ asset('frontend/images/banner2.jpg') }}" alt="Batool Pret Formal Collection"
                             class="banner-image">
                         <div class="banner-content">
                             <h2 class="banner-title">Formals</h2>
                             <p class="banner-description">
-                                Zaylish formal wear blends timeless elegance with modern design, perfect for festive events
+                                Batool Pret formal wear blends timeless elegance with modern design, perfect for festive events
                                 and special occasions.
                             </p>
                         </div>

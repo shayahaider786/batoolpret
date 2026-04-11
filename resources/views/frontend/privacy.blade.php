@@ -30,7 +30,7 @@
 
                     <h2 class="mb-4">Introduction</h2>
                     <p class="mb-4">
-                        Welcome to <strong>Zaylish Studio</strong>. We respect your privacy and are committed
+                        Welcome to <strong>Batool Pret</strong>. We respect your privacy and are committed
                         to protecting your personal information. This Privacy Policy explains how we collect,
                         use, and safeguard your data when you visit or shop from our website.
                     </p>
@@ -71,7 +71,7 @@
 
                     <h2 class="mb-4">Information Sharing</h2>
                     <p class="mb-4">
-                        Zaylish Studio does not sell, trade, or rent your personal information.
+                        Batool Pret does not sell, trade, or rent your personal information.
                         We may share your data only with trusted service providers such as
                         payment gateways and delivery partners.
                     </p>
@@ -90,7 +90,7 @@
 
                     <h2 class="mb-4 text-danger">No Return & No Exchange Policy</h2>
                     <p class="mb-4">
-                        Please note that <strong>Zaylish Studio does not offer returns or exchanges</strong>.
+                        Please note that <strong>Batool Pret does not offer returns or exchanges</strong>.
                         All sales are final. Once a product is purchased, it cannot be returned or exchanged.
                         Customers are advised to carefully review product details before placing an order.
                     </p>
@@ -111,7 +111,7 @@
 
                     <h2 class="mb-4">Children’s Privacy</h2>
                     <p class="mb-4">
-                        Zaylish Studio does not knowingly collect personal information
+                        Batool Pret does not knowingly collect personal information
                         from children under the age of 13.
                     </p>
 

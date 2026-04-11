@@ -163,7 +163,7 @@
                         </span>
 
                         <p class="stext-115 cl6 size-213 p-t-18">
-                            Lakshmi Chowk Lahore, Pakistan
+                            1234 Street Name, City, Country
                         </p>
                     </div>
                 </div>
@@ -179,7 +179,7 @@
                         </span>
 
                         <p class="stext-115 cl1 size-213 p-t-18">
-                            03144707099
+                            03224741317
                         </p>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
                         </span>
 
                         <p class="stext-115 cl1 size-213 p-t-18">
-                            zaylishofficial@gmail.com
+                            batoolpret@gmail.com
                         </p>
                     </div>
                 </div>

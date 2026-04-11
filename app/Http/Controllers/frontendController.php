@@ -218,6 +218,26 @@ class frontendController extends Controller
             $summerCategoryId = $summerCategory->id;
         }
 
+        // Cache featured products for floating cards section (30 minutes)
+        $featuredProducts = Cache::remember('products.featured.full', 1800, function () {
+            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag', 'discount_percent')
+                ->with([
+                    'category' => function ($query) {
+                        $query->select('id', 'name', 'slug');
+                    },
+                ])
+                ->where('status', 'active')
+                ->orderByRaw('CASE 
+                    WHEN tag = "best_selling" THEN 1 
+                    WHEN tag = "trending" THEN 2 
+                    WHEN tag = "new_arrival" THEN 3 
+                    ELSE 4 
+                END')
+                ->latest()
+                ->limit(5)
+                ->get();
+        });
+
         // Cache testimonials for 1 hour
         $testimonials = Cache::remember('testimonials.active', 3600, function () {
             return Testimonial::active()->ordered()->get();
@@ -237,7 +257,8 @@ class frontendController extends Controller
             'trendingTotal',
             'bestSellingTotal',
             'summerCollectionTotal',          // Updated variable name
-            'summerCategoryId'                // Updated variable name
+            'summerCategoryId',               // Updated variable name
+            'featuredProducts'                // New featured products
         ))->render();
     }
 

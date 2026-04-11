@@ -6,9 +6,9 @@
 @endphp
 
 @push('meta')
-    <title>{{ $product->meta_title ?? $product->name }} - Zaylish</title>
+    <title>{{ $product->meta_title ?? $product->name }} - Batool Pret</title>
     <meta name="description"
-        content="{{ $product->meta_description ?? ($product->short_description ?? 'Discover ' . $product->name . ' at Zaylish. Premium quality fashion and lifestyle products.') }}">
+        content="{{ $product->meta_description ?? ($product->short_description ?? 'Discover ' . $product->name . ' at Batool Pret. Premium quality fashion and lifestyle products.') }}">
     @if ($product->meta_keywords)
         <meta name="keywords" content="{{ $product->meta_keywords }}">
     @endif
@@ -533,7 +533,7 @@
 
                                 <!-- Social Share Buttons -->
                                 <div class="social-buttons">
-                                    <a href="https://www.instagram.com/zaylishstudio" class="social-btn"
+                                    <a href="https://www.instagram.com/batoolpret" class="social-btn"
                                         title="Instagram">
                                         <i class="fa fa-instagram"></i>
                                     </a>

@@ -263,11 +263,11 @@
 
 @media (min-width: 992px) {
     .menu-mobile {
-        display: none !important;
+        display: block !important;
     }
 
     .menu-mobile-overlay {
-        display: none !important;
+        display: block !important;
     }
 }
 

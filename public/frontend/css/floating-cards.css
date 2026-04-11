@@ -1,0 +1,544 @@
+/* ====================================
+   FLOATING PRODUCT CARDS WITH PARALLAX
+   ==================================== */
+
+:root {
+    --floating-card-gold: #D4AF37;
+    --floating-card-maroon: #3d1429;
+    --floating-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.floating-cards-section {
+    position: relative;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    overflow: hidden;
+}
+
+.floating-cards-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(61, 20, 41, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-cards-container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.floating-cards-header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.floating-cards-header h2 {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.floating-cards-header p {
+    font-size: 16px;
+    color: #666;
+    letter-spacing: 0.3px;
+}
+
+/* Main Grid Container */
+.floating-cards-grid {
+    position: relative;
+    height: 600px;
+    perspective: 1000px;
+    margin-bottom: 50px;
+}
+
+/* Individual Card Positioning */
+.floating-card {
+    position: absolute;
+    width: 280px;
+    height: 380px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    box-shadow: var(--floating-card-shadow);
+    transform-origin: center center;
+    z-index: 1;
+}
+
+/* Card Position Variations */
+.floating-card.card-1 {
+    top: 80px;
+    left: 40px;
+    transform: translateZ(0px) rotateY(-8deg) rotateX(2deg);
+}
+
+.floating-card.card-2 {
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%) translateZ(50px) scale(1.05);
+    z-index: 10;
+}
+
+.floating-card.card-3 {
+    top: 80px;
+    right: 40px;
+    transform: translateZ(0px) rotateY(8deg) rotateX(2deg);
+}
+
+.floating-card.card-4 {
+    top: 320px;
+    left: 120px;
+    transform: translateZ(-20px) rotateX(5deg);
+    opacity: 0.9;
+}
+
+.floating-card.card-5 {
+    top: 320px;
+    right: 120px;
+    transform: translateZ(-20px) rotateX(5deg);
+    opacity: 0.9;
+}
+
+/* Parallax Effect on Hover */
+.floating-cards-grid:hover .floating-card {
+    animation-play-state: paused;
+}
+
+.floating-card:hover {
+    transform: translateZ(80px) scale(1.08) !important;
+    box-shadow: 0 40px 80px rgba(212, 175, 55, 0.2), 
+                0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 20;
+}
+
+.floating-card.card-1:hover {
+    transform: translateZ(80px) scale(1.08) rotateY(-4deg) !important;
+}
+
+.floating-card.card-3:hover {
+    transform: translateZ(80px) scale(1.08) rotateY(4deg) !important;
+}
+
+/* Card Image */
+.floating-card-image {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.floating-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.floating-card:hover .floating-card-image img {
+    transform: scale(1.12);
+}
+
+/* Card Overlay */
+.floating-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(61, 20, 41, 0.4) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 5;
+}
+
+.floating-card:hover .floating-card-overlay {
+    opacity: 1;
+}
+
+/* Card Content */
+.floating-card-content {
+    padding: 16px 14px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.floating-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.floating-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.floating-card-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--floating-card-maroon);
+}
+
+.floating-card-discount {
+    font-size: 12px;
+    background: #ffe0e0;
+    color: #c41e3a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.floating-card-cta {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--floating-card-maroon), #5d1e4a);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    opacity: 0;
+    letter-spacing: 0.5px;
+}
+
+.floating-card:hover .floating-card-cta {
+    opacity: 1;
+    bottom: 14px;
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
+}
+
+.floating-card-cta:hover {
+    background: linear-gradient(135deg, #5d1e4a, var(--floating-card-maroon));
+    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.3);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+/* Bottom Section - View All */
+.floating-cards-footer {
+    text-align: center;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.floating-cards-footer p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.floating-cards-view-all {
+    display: inline-block;
+    padding: 14px 36px;
+    background: white;
+    border: 2px solid var(--floating-card-maroon);
+    color: var(--floating-card-maroon);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.floating-cards-view-all:hover {
+    background: var(--floating-card-maroon);
+    color: white;
+    box-shadow: 0 12px 32px rgba(61, 20, 41, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Apply float animation to cards (subtle) */
+.floating-card.card-1 {
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 0s;
+}
+
+.floating-card.card-2 {
+    animation: float 3.5s ease-in-out infinite;
+    animation-delay: 0.3s;
+}
+
+.floating-card.card-3 {
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 0.6s;
+}
+
+.floating-card.card-4 {
+    animation: float 3.2s ease-in-out infinite;
+    animation-delay: 0.2s;
+}
+
+.floating-card.card-5 {
+    animation: float 3.2s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+/* ====================================
+   RESPONSIVE DESIGN
+   ==================================== */
+
+@media (max-width: 1200px) {
+    .floating-cards-header h2 {
+        font-size: 36px;
+    }
+
+    .floating-card {
+        width: 240px;
+        height: 330px;
+    }
+
+    .floating-cards-grid {
+        height: 520px;
+    }
+
+    .floating-card.card-1 {
+        left: 20px;
+    }
+
+    .floating-card.card-3 {
+        right: 20px;
+    }
+
+    .floating-card.card-4 {
+        left: 60px;
+    }
+
+    .floating-card.card-5 {
+        right: 60px;
+    }
+}
+
+@media (max-width: 991px) {
+    .floating-cards-section {
+        padding: 40px 15px;
+    }
+
+    .floating-cards-header h2 {
+        font-size: 32px;
+    }
+
+    .floating-cards-header p {
+        font-size: 14px;
+    }
+
+    .floating-card {
+        width: 200px;
+        height: 280px;
+    }
+
+    .floating-cards-grid {
+        height: 420px;
+    }
+
+    .floating-card.card-1 {
+        top: 60px;
+        left: 15px;
+    }
+
+    .floating-card.card-2 {
+        top: 120px;
+    }
+
+    .floating-card.card-3 {
+        top: 60px;
+        right: 15px;
+    }
+
+    .floating-card.card-4 {
+        top: 280px;
+        left: 40px;
+    }
+
+    .floating-card.card-5 {
+        top: 280px;
+        right: 40px;
+    }
+
+    .floating-card-content {
+        padding: 12px 10px;
+        height: 100px;
+    }
+
+    .floating-card-title {
+        font-size: 14px;
+    }
+
+    .floating-card-meta {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-cards-section {
+        padding: 30px 15px;
+    }
+
+    .floating-cards-header h2 {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .floating-cards-header p {
+        font-size: 13px;
+    }
+
+    .floating-cards-header {
+        margin-bottom: 40px;
+    }
+
+    /* Switch to grid layout for mobile */
+    .floating-cards-grid {
+        position: relative;
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        perspective: none;
+    }
+
+    .floating-card {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100%;
+        height: 240px;
+        transform: none !important;
+        opacity: 1 !important;
+        animation: none !important;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .floating-card:nth-child(1),
+    .floating-card:nth-child(2),
+    .floating-card:nth-child(3),
+    .floating-card:nth-child(4),
+    .floating-card:nth-child(5) {
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
+    }
+
+    .floating-card:hover {
+        transform: translateY(-6px) !important;
+        box-shadow: 0 16px 40px rgba(212, 175, 55, 0.15);
+    }
+
+    .floating-card-image {
+        height: 160px;
+    }
+
+    .floating-card-content {
+        padding: 12px 10px;
+        height: 80px;
+    }
+
+    .floating-card-title {
+        font-size: 13px;
+        -webkit-line-clamp: 1;
+    }
+
+    .floating-card-cta {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-cards-section {
+        padding: 20px 12px;
+    }
+
+    .floating-cards-header h2 {
+        font-size: 24px;
+    }
+
+    .floating-cards-header p {
+        font-size: 12px;
+    }
+
+    .floating-cards-header {
+        margin-bottom: 30px;
+    }
+
+    .floating-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .floating-card {
+        height: 220px;
+    }
+
+    .floating-card-image {
+        height: 140px;
+    }
+
+    .floating-cards-view-all {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+}

@@ -111,6 +111,17 @@
             $('.menu-mobile .main-menu-m > li > a[href="/"]').addClass('active');
         }
 
+        // Mobile submenu toggle buttons
+        $('.menu-mobile .main-menu-m > li.has-submenu > a > .arrow-main-menu-m').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const $parent = $(this).closest('li');
+            const $submenu = $parent.find('.sub-menu-m').first();
+            $submenu.slideToggle(200);
+            const $icon = $(this).find('i');
+            $icon.toggleClass('fa-plus fa-minus');
+        });
+
         // Add touch-friendly hover effects for mobile
         if ('ontouchstart' in window) {
             $('.menu-mobile .main-menu-m > li > a').on('touchstart', function() {

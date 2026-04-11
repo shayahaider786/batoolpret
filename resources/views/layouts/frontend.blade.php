@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-    <title>Zaylish Studio - Grace in Every Thread</title>
+    <title>Batool Pret - The Pure One</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
-        content="Zaylish - Grace in Every Thread. Discover our premium collection of elegant fashion and lifestyle products.">
-    <meta name="keywords" content="zaylish, fashion, clothing, grace in every thread, premium fashion, lifestyle">
-    <meta name="author" content="Zaylish">
-    <meta property="og:site_name" content="Zaylish">
-    <meta property="og:title" content="Zaylish Studio - Grace in Every Thread">
+        content="Batool Pret - The Pure One. Discover our premium collection of elegant fashion and lifestyle products.">
+    <meta name="keywords" content="Batool Pret, fashion, clothing, grace in every thread, premium fashion, lifestyle">
+    <meta name="author" content="Batool Pret">
+    <meta property="og:site_name" content="Batool Pret">
+    <meta property="og:title" content="Batool Pret - The Pure One">
     <meta property="og:description"
-        content="Zaylish - Grace in Every Thread. Discover our premium collection of elegant fashion and lifestyle products.">
+        content="Batool Pret - The Pure One. Discover our premium collection of elegant fashion and lifestyle products.">
     <!--===============================================================================================-->
     @stack('meta')
     @stack('canonical')
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicon.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicons.png') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!--===============================================================================================-->
@@ -144,12 +144,24 @@
             <!-- Topbar -->
             <div class="top-bar">
                 <div class="content-topbar flex-sb-m h-full container">
-                    <div class="center-top-bar" style="flex: 1; text-align: center;">
-                    </div>
-                    <div class="left-top-bar text-white" style="flex: 3; text-align: center;">
-                        <marquee>Free Delivery Across Pakistan</marquee>
-                    </div>
-                    <div class="right-top-bar" style="flex: 1; text-align: center;">
+                    <div class="left-top-bar text-white d-flex align-items-center">
+                        <div class="social-icons-top d-flex align-items-center">
+                            <a href="#" target="blank"
+                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                                <i class="fa fa-facebook"></i>
+                            </a>
+
+                            <a href="#" target="blank"
+                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                                <i class="fa fa-instagram"></i>
+                            </a>
+
+                            <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
+                                target="blank">
+                                <i class="fa-brands fa-tiktok"></i>
+                            </a>
+                        </div>
+                        <marquee class="top-bar-marquee">FREE SHIPPING ON ORDERS ABOVE RS. 5000 | PAKISTAN'S PREMIUM LADIES BRAND</marquee>
                     </div>
 
                     <div class="right-top-bar flex-w h-full">
@@ -178,6 +190,13 @@
 
             <div class="wrap-menu-desktop">
                 <nav class="limiter-menu-desktop container">
+
+                    <!-- Hamburger desktop -->
+                    <div class="btn-show-menu-mobile hamburger hamburger--squeeze desktop-hamburger">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </div>
 
                     <!-- Logo desktop -->
                     <a href="{{ route('index') }}" class="logo">
@@ -272,40 +291,42 @@
                                         in_array($formalCategoryId, request('categories'));
                                 @endphp
 
-                                @if ($summerCategoryId)
-                                    <li class="{{ $isSummerActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}">Summer
-                                            Collection</a>
-                                    </li>
-                                @endif
-
                                 <li class="label1 {{ $isNewInActive ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop', ['tag' => 'new_arrival']) }}">New In</a>
+                                    <a href="{{ route('shop', ['tag' => 'new_arrival']) }}">New Arrival</a>
                                 </li>
 
                                 @if ($casualCategoryId)
                                     <li class="{{ $isCasualActive ? 'active-menu' : '' }}">
-                                        <a
-                                            href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Casual</a>
+                                        <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Casual</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Summer</a></li>
+                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Winter</a></li>
+                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Spring</a></li>
+                                        </ul>
                                     </li>
                                 @endif
 
                                 @if ($formalCategoryId)
                                     <li class="{{ $isFormalActive ? 'active-menu' : '' }}">
-                                        <a
-                                            href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}">Formal</a>
+                                        <a href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}">Semi Formal</a>
                                     </li>
                                 @endif
-
-                                <li class="label1 {{ $isCollectionsActive ? 'active-menu' : '' }}" data-label1="hot">
-                                    <a href="{{ route('shop') }}">All Products</a>
-                                </li>
 
                                 @if ($bagsCategoryId)
                                     <li class="{{ $isBagsActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Bags</a>
+                                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Kids</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Summer</a></li>
+                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Winter</a></li>
+                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Spring</a></li>
+                                        </ul>
                                     </li>
                                 @endif
+
+                                <li class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['sale' => 'true']) }}">Sale</a>
+                                </li>
+
                             </ul>
                         </div>
 
@@ -368,28 +389,27 @@
                     </a>
                 </li>
 
-                @if ($summerCategoryId)
-                    <li>
-                        <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}"
-                            class="{{ $isSummerActive ? 'active' : '' }}">
-                            Summer Collection
-                        </a>
-                    </li>
-                @endif
-
                 <li>
                     <a href="{{ route('shop', ['tag' => 'new_arrival']) }}"
                         class="{{ request()->routeIs('shop') && request('tag') == 'new_arrival' ? 'active' : '' }}">
-                        New In
+                        New Arrival
                     </a>
                 </li>
 
                 @if ($casualCategoryId)
-                    <li>
+                    <li class="has-submenu">
                         <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}"
                             class="{{ $isCasualActive ? 'active' : '' }}">
                             Casual
+                            <span class="arrow-main-menu-m">
+                                <i class="fa fa-plus"></i>
+                            </span>
                         </a>
+                        <ul class="sub-menu-m">
+                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Summer</a></li>
+                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Winter</a></li>
+                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Spring</a></li>
+                        </ul>
                     </li>
                 @endif
 
@@ -397,33 +417,35 @@
                     <li>
                         <a href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}"
                             class="{{ $isFormalActive ? 'active' : '' }}">
-                            Formal
+                            Semi Formal
                         </a>
                     </li>
                 @endif
 
-                <li>
-                    <a href="{{ route('shop') }}" class="{{ $isCollectionsActive ? 'active' : '' }}">
-                        All Products
-                    </a>
-                </li>
+                @if ($bagsCategoryId)
+                    <li class="has-submenu">
+                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}"
+                            class="{{ $isBagsActive ? 'active' : '' }}">
+                            Kids
+                            <span class="arrow-main-menu-m">
+                                <i class="fa fa-plus"></i>
+                            </span>
+                        </a>
+                        <ul class="sub-menu-m">
+                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Summer</a></li>
+                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Winter</a></li>
+                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Spring</a></li>
+                        </ul>
+                    </li>
+                @endif
 
                 <li>
                     <a href="{{ route('shop', ['sale' => 'true']) }}"
                         class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active' : '' }}">
                         Sale
-                        <span class="label-hot">Hot</span>
+                        {{-- <span class="label-hot">Hot</span> --}}
                     </a>
                 </li>
-
-                @if ($bagsCategoryId)
-                    <li>
-                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}"
-                            class="{{ $isBagsActive ? 'active' : '' }}">
-                            Bags
-                        </a>
-                    </li>
-                @endif
 
                 @guest
                     <li>
@@ -554,25 +576,24 @@
 
                     <p class="stext-107 cl7 size-201">
                         Any questions about our products or orders? Our customer support team is always available to
-                        assist you. Call us at <a href="tel:+923144707099">+923144707099</a>
+                        assist you. Call us at <a href="tel:+923144707099">+923224741317</a>
 
                     </p>
 
                     <div class="p-t-27">
-                        <a href="https://www.facebook.com/zaylishstudio" target="blank"
+                        <a href="#" target="blank"
                             class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa fa-facebook"></i>
                         </a>
 
-                        <a href="https://www.instagram.com/zaylishstudio" target="blank"
+                        <a href="#" target="blank"
                             class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa fa-instagram"></i>
                         </a>
 
-                        <a href="https://www.tiktok.com/@zaylishofficial" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
+                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
                             target="blank">
                             <i class="fa-brands fa-tiktok"></i>
-
                         </a>
                     </div>
                 </div>
@@ -600,7 +621,7 @@
 
 
             <p class="stext-107 cl6 txt-center">
-                Copyright &copy; {{ date('Y') }} Zaylish - Grace in Every Thread. All rights reserved.
+                Copyright &copy; {{ date('Y') }} Batool Pret - The Pure One. All rights reserved.
             </p>
         </div>
         </div>
@@ -620,7 +641,7 @@
     </div>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/923144707099?text={{ urlencode('Hi! I would like to know more about your products.') }}"
+    <a href="https://wa.me/923224741317?text={{ urlencode('Hi! I would like to know more about your products.') }}"
         target="_blank" class="whatsapp-float" title="Contact us on WhatsApp">
         <i class="fa fa-whatsapp"></i>
     </a>
@@ -838,7 +859,7 @@
     <script src="{{ asset('frontend/js/main.js') }}" defer></script>
     <script src="{{ asset('frontend/js/navbar-premium.js') }}" defer></script>
     <script src="{{ asset('frontend/js/mobile-menu.js') }}" defer></script>
-
+    <script src="{{ asset('frontend/js/trending-carousel.js') }}" defer></script>
 
 
     <!-- Search Functionality - Ensure it works with deferred scripts -->
@@ -1161,7 +1182,7 @@
         <script src="{{ asset('frontend/js/checkout.js') }}" defer></script>
     @endif
     <!-- Bottom Navigation Mobile -->
-    <nav class="bottom-nav-mobile">
+    {{-- <nav class="bottom-nav-mobile">
         @php
             $isHomeActive = request()->routeIs('index');
             $isShopActiveMobile = (request()->routeIs('shop') || request()->routeIs('tagShop') || request()->routeIs('productDetail')) && !request('sale') && !request('tag');
@@ -1200,7 +1221,7 @@
                 <span class="bottom-nav-label">Contact</span>
             </a>
         @endif
-    </nav>
+    </nav> --}}
 
     <!-- Page-specific scripts -->
     @stack('scripts')

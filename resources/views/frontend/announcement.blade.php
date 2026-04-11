@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A New Beginning - Zaylish Studio</title>
+    <title>A New Beginning - Batool Pret</title>
     <style>
         * {
             margin: 0;
@@ -314,7 +314,7 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="{{ asset('frontend/images/icons/zaylishlogo-1.png') }}" alt="Zaylish Studio">
+            <img src="{{ asset('frontend/images/icons/zaylishlogo-1.png') }}" alt="Batool Pret Logo">
         </div>
 
         <div class="content">

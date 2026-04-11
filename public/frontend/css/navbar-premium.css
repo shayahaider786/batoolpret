@@ -62,6 +62,7 @@
     display: flex;
     align-items: center;
     padding: 0 30px;
+    position: relative;
 }
 
 /* Logo Styling */
@@ -70,6 +71,9 @@
     flex-shrink: 0;
     display: flex;
     align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .logo img {
@@ -82,12 +86,40 @@
     transform: scale(1.02);
 }
 
-/* Main Menu Styling */
-.menu-desktop {
-    flex: 1;
-    display: flex;
-    justify-content: center;
+/* Desktop Hamburger */
+.btn-show-menu-mobile.desktop-hamburger {
+    display: flex !important;
     align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1101;
+    position: absolute;
+    left: 0;
+}
+
+/* Override menu-mobile z-index for desktop */
+.menu-mobile {
+    z-index: 1200 !important;
+}
+
+/* Show menu-mobile on desktop */
+@media (min-width: 992px) {
+    .menu-mobile {
+        display: block !important;
+        top: 108px !important;
+        height: calc(100vh - 108px) !important;
+        max-height: calc(100vh - 108px) !important;
+        width: 350px !important;
+    }
+    .menu-mobile-overlay {
+        top: 108px !important;
+        height: calc(100vh - 108px) !important;
+    }
+}
+
+/* Main Menu Styling - Hidden on Desktop */
+.menu-desktop {
+    display: none;
 }
 
 .main-menu {
@@ -846,11 +878,16 @@
         min-height: 35px;
     }
     .top-bar .left-top-bar {
-        flex: 20 !important;
-        order: 1;
-        font-size: 10px;
+        flex: 1 !important;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
         padding: 2px 0;
-        text-align: center;
+        text-align: left;
+    }
+    .top-bar .left-top-bar .social-icons-top a {
+        margin-right: 10px;
     }
     .top-bar .right-top-bar.flex-w {
         flex: 0 0 auto;
