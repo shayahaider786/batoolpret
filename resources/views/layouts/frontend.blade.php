@@ -24,8 +24,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/bootstrap/css/bootstrap.min.css') }}">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css"
-        href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-    <!--===============================================================================================-->
+        {{-- href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"> --}}
     <link rel="stylesheet" type="text/css"
         href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
     <!--===============================================================================================-->
@@ -47,7 +46,7 @@
     <link rel="stylesheet" type="text/css"
         href="{{ asset('frontend/vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
     <!--===============================================================================================-->
-    <link rel="stylesheet" href="{{ asset('https://unpkg.com/swiper@8/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/util.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/main.css') }}">
@@ -55,84 +54,6 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/mobile-menu.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/banner-section.css') }}">
     @stack('styles')
-    <!--===============================================================================================-->
-    <!-- Google Analytics tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N7323YQZYG"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'G-N7323YQZYG');
-    </script>
-    <!-- Meta Pixel Code -->
-    <script>
-        ! function(f, b, e, v, n, t, s) {
-            if (f.fbq) return;
-            n = f.fbq = function() {
-                n.callMethod ?
-                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n;
-            n.push = n;
-            n.loaded = !0;
-            n.version = '2.0';
-            n.queue = [];
-            t = b.createElement(e);
-            t.async = !0;
-            t.src = v;
-            s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-        }(window, document, 'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '1596194501725991');
-        fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id=1596194501725991&ev=PageView&noscript=1" /></noscript>
-    <!-- End Meta Pixel Code -->
-
-    <!-- TikTok Pixel Code Start -->
-    <script>
-        ! function(w, d, t) {
-            w.TiktokAnalyticsObject = t;
-            var ttq = w[t] = w[t] || [];
-            ttq.methods = ["page", "track", "identify", "instances", "debug", "on", "off", "once", "ready", "alias",
-                "group", "enableCookie", "disableCookie", "holdConsent", "revokeConsent", "grantConsent"
-            ], ttq.setAndDefer = function(t, e) {
-                t[e] = function() {
-                    t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
-                }
-            };
-            for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
-            ttq.instance = function(t) {
-                for (
-                    var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
-                return e
-            }, ttq.load = function(e, n) {
-                var r = "https://analytics.tiktok.com/i18n/pixel/events.js",
-                    o = n && n.partner;
-                ttq._i = ttq._i || {}, ttq._i[e] = [], ttq._i[e]._u = r, ttq._t = ttq._t || {}, ttq._t[e] = +new Date,
-                    ttq._o = ttq._o || {}, ttq._o[e] = n || {};
-                n = document.createElement("script");
-                n.type = "text/javascript", n.async = !0, n.src = r + "?sdkid=" + e + "&lib=" + t;
-                e = document.getElementsByTagName("script")[0];
-                e.parentNode.insertBefore(n, e)
-            };
-
-
-            ttq.load('D6HHD4BC77U7C65PCLVG');
-            ttq.page();
-        }(window, document, 'ttq');
-    </script>
-    <!-- TikTok Pixel Code End -->
-    <noscript>
-        <img height="1" width="1" style="display:none;" alt=""
-            src="https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D6HHD4BC77U7C65PCLVG&lib=ttq" />
-    </noscript>
 </head>
 
 <body>
@@ -148,12 +69,12 @@
                         <div class="social-icons-top d-flex align-items-center">
                             <a href="#" target="blank"
                                 class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                                <i class="fa fa-facebook"></i>
+                                <i class="fa-brands fa-facebook"></i>
                             </a>
 
                             <a href="#" target="blank"
                                 class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                                <i class="fa fa-instagram"></i>
+                                <i class="fa-brands fa-instagram"></i>
                             </a>
 
                             <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
@@ -583,12 +504,12 @@
                     <div class="p-t-27">
                         <a href="#" target="blank"
                             class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                            <i class="fa fa-facebook"></i>
+                            <i class="fa-brands fa-facebook"></i>
                         </a>
 
                         <a href="#" target="blank"
                             class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                            <i class="fa fa-instagram"></i>
+                            <i class="fa-brands fa-instagram"></i>
                         </a>
 
                         <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
@@ -643,7 +564,7 @@
     <!-- Floating WhatsApp Button -->
     <a href="https://wa.me/923224741317?text={{ urlencode('Hi! I would like to know more about your products.') }}"
         target="_blank" class="whatsapp-float" title="Contact us on WhatsApp">
-        <i class="fa fa-whatsapp"></i>
+        <i class="fa-brands fa-whatsapp"></i>
     </a>
 
     <!--===============================================================================================-->
@@ -1182,7 +1103,7 @@
         <script src="{{ asset('frontend/js/checkout.js') }}" defer></script>
     @endif
     <!-- Bottom Navigation Mobile -->
-    {{-- <nav class="bottom-nav-mobile">
+    <nav class="bottom-nav-mobile">
         @php
             $isHomeActive = request()->routeIs('index');
             $isShopActiveMobile = (request()->routeIs('shop') || request()->routeIs('tagShop') || request()->routeIs('productDetail')) && !request('sale') && !request('tag');
@@ -1196,13 +1117,13 @@
             <span class="bottom-nav-label">Home</span>
         </a>
 
-        @if ($summerCategoryId)
+        {{-- @if ($summerCategoryId) --}}
             <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}"
                 class="bottom-nav-item {{ $isSummerActiveMobile ? 'active' : '' }}">
                 <i class="zmdi zmdi-star"></i>
                 <span class="bottom-nav-label">Summer</span>
             </a>
-        @endif
+        {{-- @endif --}}
 
         <a href="{{ route('shop') }}" class="bottom-nav-item {{ $isCollectionsActive ? 'active' : '' }}">
             <i class="zmdi zmdi-local-offer"></i>
@@ -1221,7 +1142,7 @@
                 <span class="bottom-nav-label">Contact</span>
             </a>
         @endif
-    </nav> --}}
+    </nav>
 
     <!-- Page-specific scripts -->
     @stack('scripts')
