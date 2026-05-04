@@ -17,31 +17,32 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
+
+    const DELIVERY_CHARGES = 199;
     /**
      * Store a new order.
      */
     public function store(Request $request)
     {
-        // Validate the request - phone and street address are required
+        // Validate the request
         try {
-        $validated = $request->validate([
-            'c_fname' => 'nullable|string|max:255',
-            'c_lname' => 'nullable|string|max:255',
-            'c_email_address' => 'nullable|email|max:255',
-            'c_phone' => 'required|string|max:255',
-            'c_companyname' => 'nullable|string|max:255',
-            'c_address' => 'required|string|max:255',
-            'c_city' => 'nullable|string|max:255',
-            'c_state_country' => 'nullable|string|max:255',
-            'c_postal_zip' => 'nullable|string|max:255',
-            'c_country' => 'nullable|string|max:255',
-            'c_order_notes' => 'nullable|string',
-            'coupon_code' => 'nullable|string|max:255',
-            'payment_method' => 'nullable|string|max:255',
-            'payment_screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            $validated = $request->validate([
+                'c_fname' => 'nullable|string|max:255',
+                'c_lname' => 'nullable|string|max:255',
+                'c_email_address' => 'nullable|email|max:255',
+                'c_phone' => 'required|string|max:255',
+                'c_companyname' => 'nullable|string|max:255',
+                'c_address' => 'required|string|max:255',
+                'c_city' => 'nullable|string|max:255',
+                'c_state_country' => 'nullable|string|max:255',
+                'c_postal_zip' => 'nullable|string|max:255',
+                'c_country' => 'nullable|string|max:255',
+                'c_order_notes' => 'nullable|string',
+                'coupon_code' => 'nullable|string|max:255',
+                'payment_method' => 'nullable|string|max:255',
+                'payment_screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Always check for AJAX requests
             if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
                 $errorMessages = [];
                 foreach ($e->errors() as $field => $messages) {
@@ -77,8 +78,13 @@ class OrderController extends Controller
             return redirect()->route('cart')->with('error', 'Your cart is empty.');
         }
 
-        // Check if any product has discount_price - if yes, coupon cannot be applied
-        $hasDiscountedProducts = $cartItems->contains(function($item) {
+        // Calculate subtotal
+        $subtotal = $cartItems->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+
+        // Check if any product has discount_price
+        $hasDiscountedProducts = $cartItems->contains(function ($item) {
             return $item->product && $item->product->discount_price;
         });
 
@@ -104,18 +110,9 @@ class OrderController extends Controller
                     ->with('error', 'This coupon is not valid or has expired.');
             }
 
-            // Calculate discount
-            $subtotal = $cartItems->sum(function($item) {
-                return $item->price * $item->quantity;
-            });
             $discountAmount = ($subtotal * $coupon->discount_percent) / 100;
             $couponDiscountPercent = $coupon->discount_percent;
         } else {
-            // Calculate totals without coupon
-            $subtotal = $cartItems->sum(function($item) {
-                return $item->price * $item->quantity;
-            });
-
             if ($hasDiscountedProducts && $request->filled('coupon_code')) {
                 if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
                     return response()->json([
@@ -129,7 +126,10 @@ class OrderController extends Controller
             }
         }
 
-        $total = $subtotal - $discountAmount;
+        // Calculate totals with delivery charges
+        $totalAfterDiscount = $subtotal - $discountAmount;
+        $deliveryCharges = self::DELIVERY_CHARGES;
+        $grandTotal = $totalAfterDiscount + $deliveryCharges;
 
         // Start database transaction
         DB::beginTransaction();
@@ -141,7 +141,6 @@ class OrderController extends Controller
                 $file = $request->file('payment_screenshot');
                 $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-                // Create directory if it doesn't exist
                 $uploadPath = public_path('uploads/payment_screenshots');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0755, true);
@@ -167,7 +166,9 @@ class OrderController extends Controller
                 'phone' => $validated['c_phone'],
                 'order_notes' => $validated['c_order_notes'] ?? null,
                 'subtotal' => $subtotal,
-                'total' => $total,
+                'delivery_charges' => $deliveryCharges,
+                'total' => $totalAfterDiscount,
+                'grand_total' => $grandTotal,
                 'status' => 'pending',
                 'payment_method' => $validated['payment_method'] ?? 'cash',
                 'payment_screenshot' => $paymentScreenshotPath,
@@ -203,37 +204,30 @@ class OrderController extends Controller
                 Cart::where('session_id', Session::getId())->delete();
             }
 
-            // Commit transaction
             DB::commit();
 
             // Load order relationships for email
             $order->load('items.product');
 
-            // Send email notification to all admin users
+            // Send email notifications
             try {
-                $adminUsers = User::where('type', 1)->get(); // type 1 = admin
-
+                $adminUsers = User::where('type', 1)->get();
                 foreach ($adminUsers as $admin) {
                     Mail::to($admin->email)->send(new NewOrderNotification($order));
                 }
             } catch (\Exception $e) {
-                // Log error but don't fail the order
                 \Log::error('Failed to send admin order notification: ' . $e->getMessage());
             }
 
-            // Send order confirmation to customer
             try {
                 if ($order->email) {
                     Mail::to($order->email)->send(new CustomerOrderConfirmation($order));
                 }
             } catch (\Exception $e) {
-                // Log error but don't fail the order
                 \Log::error('Failed to send customer order confirmation: ' . $e->getMessage());
             }
 
-            // Redirect to thank you page with order number
             if ($request->expectsJson() || $request->ajax()) {
-                // Store order number in session for the redirect
                 session()->flash('order_number', $order->order_number);
                 return response()->json([
                     'success' => true,
@@ -242,12 +236,11 @@ class OrderController extends Controller
                     'order_number' => $order->order_number
                 ]);
             }
-            return redirect()->route('thankyou', ['order' => $order->order_number])->with('order_number', $order->order_number);
 
+            return redirect()->route('thankyou', ['order' => $order->order_number])->with('order_number', $order->order_number);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Log the actual error for debugging
             \Log::error('Order creation failed: ' . $e->getMessage(), [
                 'exception' => $e,
                 'trace' => $e->getTraceAsString()
@@ -265,7 +258,6 @@ class OrderController extends Controller
                 ->with('error', 'An error occurred while processing your order. Please try again.');
         }
     }
-
     /**
      * Show public order lookup form.
      */

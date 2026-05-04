@@ -170,7 +170,15 @@
                                                         }
 
                                                         $message .=
-                                                            "\nTotal: PKR " . number_format($order->total, 0) . "\n\n";
+                                                            "\nSubtotal: PKR " . number_format($order->subtotal, 0) . "\n";
+
+                                                        if($order->discount_amount > 0) {
+                                                            $message .= "Discount: -PKR " . number_format($order->discount_amount, 0) . "\n";
+                                                        }
+
+                                                        $message .= "Delivery Charges: PKR " . number_format($order->delivery_charges ?? 199, 0) . "\n";
+                                                        $message .= "Grand Total: PKR " . number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199)), 0) . "\n\n";
+
                                                         $message .=
                                                             "Kindly reply CONFIRM to proceed with your order.\n\n";
                                                         $message .= 'Thank you for choosing Zaylish Studio.';
@@ -319,8 +327,12 @@
                                                 </tr>
                                             @endif
                                             <tr>
-                                                <th colspan="5" class="text-right">Total:</th>
-                                                <th class="text-primary">PKR {{ number_format($order->total, 2) }}</th>
+                                                <th colspan="5" class="text-right">Delivery Charges:</th>
+                                                <th>PKR {{ number_format($order->delivery_charges ?? 199, 2) }}</th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="5" class="text-right">Grand Total:</th>
+                                                <th class="text-primary">PKR {{ number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199)), 2) }}</th>
                                             </tr>
                                         </tfoot>
                                     </table>

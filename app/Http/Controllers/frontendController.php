@@ -49,15 +49,15 @@ class frontendController extends Controller
      */
     private function getHomePageData()
     {
-        // Cache sliders for 1 hour (they change infrequently)
+        // Cache sliders for 1 hour
         $sliders = Cache::remember('sliders.latest', 3600, function () {
             return Slider::latest()->limit(5)->get();
         });
 
         // Cache categories for 1 hour - only select needed fields
         $categories = Cache::remember('categories.active.with_images', 3600, function () {
-            return Category::select('id', 'name', 'slug', 'description', 'image', 'banner_image')
-                ->active()
+            return Category::select('id', 'name', 'slug', 'description', 'image', 'banner_image', 'category_link')
+                ->active() // This already filters by status = active
                 ->where(function ($query) {
                     $query->whereNotNull('banner_image')
                         ->orWhereNotNull('image');
@@ -67,12 +67,13 @@ class frontendController extends Controller
                 ->get();
         });
 
-        // Cache new arrival products for 30 minutes - with categories and colors
+        // Cache new arrival products for 30 minutes
         $newArrivalProducts = Cache::remember('products.new_arrival.full', 1800, function () {
             return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
                 ->with([
                     'category' => function ($query) {
-                        $query->select('id', 'name', 'slug');
+                        $query->select('id', 'name', 'slug')
+                            ->active(); // Only load active categories
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
@@ -80,6 +81,9 @@ class frontendController extends Controller
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'new_arrival')
+                ->whereHas('category', function ($query) {
+                    $query->active(); // Ensure product's category is active
+                })
                 ->latest()
                 ->limit(4)
                 ->get();
@@ -87,15 +91,21 @@ class frontendController extends Controller
 
         // Cache new arrival total count
         $newArrivalTotal = Cache::remember('products.new_arrival.count', 1800, function () {
-            return Product::where('status', 'active')->where('tag', 'new_arrival')->count();
+            return Product::where('status', 'active')
+                ->where('tag', 'new_arrival')
+                ->whereHas('category', function ($query) {
+                    $query->active();
+                })
+                ->count();
         });
 
-        // Cache trending products for 30 minutes - with categories and colors
+        // Cache trending products for 30 minutes
         $trendingProducts = Cache::remember('products.trending.full', 1800, function () {
             return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
                 ->with([
                     'category' => function ($query) {
-                        $query->select('id', 'name', 'slug');
+                        $query->select('id', 'name', 'slug')
+                            ->active();
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
@@ -103,6 +113,9 @@ class frontendController extends Controller
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'trending')
+                ->whereHas('category', function ($query) {
+                    $query->active();
+                })
                 ->latest()
                 ->limit(4)
                 ->get();
@@ -110,15 +123,21 @@ class frontendController extends Controller
 
         // Cache trending total count
         $trendingTotal = Cache::remember('products.trending.count', 1800, function () {
-            return Product::where('status', 'active')->where('tag', 'trending')->count();
+            return Product::where('status', 'active')
+                ->where('tag', 'trending')
+                ->whereHas('category', function ($query) {
+                    $query->active();
+                })
+                ->count();
         });
 
-        // Cache best selling products for 30 minutes - with categories and colors
+        // Cache best selling products for 30 minutes
         $bestSellingProducts = Cache::remember('products.best_selling.full', 1800, function () {
             return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
                 ->with([
                     'category' => function ($query) {
-                        $query->select('id', 'name', 'slug');
+                        $query->select('id', 'name', 'slug')
+                            ->active();
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
@@ -126,6 +145,9 @@ class frontendController extends Controller
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'best_selling')
+                ->whereHas('category', function ($query) {
+                    $query->active();
+                })
                 ->latest()
                 ->limit(4)
                 ->get();
@@ -133,45 +155,60 @@ class frontendController extends Controller
 
         // Cache best selling total count
         $bestSellingTotal = Cache::remember('products.best_selling.count', 1800, function () {
-            return Product::where('status', 'active')->where('tag', 'best_selling')->count();
+            return Product::where('status', 'active')
+                ->where('tag', 'best_selling')
+                ->whereHas('category', function ($query) {
+                    $query->active();
+                })
+                ->count();
         });
 
-        // Cache latest products for 30 minutes - with categories and colors
+        // Cache latest products for 30 minutes
         $products = Cache::remember('products.latest.full', 1800, function () {
             return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id')
                 ->with([
                     'category' => function ($query) {
-                        $query->select('id', 'name', 'slug');
+                        $query->select('id', 'name', 'slug')
+                            ->active();
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
                     },
                 ])
                 ->where('status', 'active')
+                ->whereHas('category', function ($query) {
+                    $query->active();
+                })
                 ->latest()
                 ->limit(12)
                 ->get();
         });
 
-        // SUMMER COLLECTION products (replaces Eid Collection)
+        // SUMMER COLLECTION products
         $summerCollectionProducts = Cache::remember('products.summer_collection.full', 1800, function () {
-            // Find Summer category (you can modify this logic based on your needs)
+            // Find Summer category (only if active)
             $summerCategory = Category::where(function ($q) {
                 $q->where('name', 'LIKE', '%summer%')
                     ->orWhere('slug', 'LIKE', '%summer%')
                     ->orWhere('name', 'LIKE', '%seasonal%');
-            })->active()->first();
+            })
+                ->active() // Only get active category
+                ->first();
 
             if ($summerCategory) {
-                // Get category IDs (parent + children)
+                // Get category IDs (parent + children) but only active ones
                 $categoryIds = [$summerCategory->id];
-                $childCategoryIds = Category::where('parent_id', $summerCategory->id)->pluck('id')->toArray();
+                $childCategoryIds = Category::where('parent_id', $summerCategory->id)
+                    ->active() // Only active child categories
+                    ->pluck('id')
+                    ->toArray();
                 $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
                 return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
                     ->with([
                         'category' => function ($query) {
-                            $query->select('id', 'name', 'slug');
+                            $query->select('id', 'name', 'slug')
+                                ->active();
                         },
                         'images' => function ($query) {
                             $query->select('id', 'product_id', 'image')->limit(1);
@@ -179,12 +216,15 @@ class frontendController extends Controller
                     ])
                     ->where('status', 'active')
                     ->whereIn('category_id', $categoryIds)
+                    ->whereHas('category', function ($query) {
+                        $query->active(); // Additional safety check
+                    })
                     ->latest()
                     ->limit(8)
                     ->get();
             }
 
-            return collect(); // Return empty collection if no Summer category
+            return collect();
         });
 
         // Cache summer collection total count
@@ -193,50 +233,119 @@ class frontendController extends Controller
                 $q->where('name', 'LIKE', '%summer%')
                     ->orWhere('slug', 'LIKE', '%summer%')
                     ->orWhere('name', 'LIKE', '%seasonal%');
-            })->active()->first();
+            })
+                ->active()
+                ->first();
 
             if ($summerCategory) {
                 $categoryIds = [$summerCategory->id];
-                $childCategoryIds = Category::where('parent_id', $summerCategory->id)->pluck('id')->toArray();
+                $childCategoryIds = Category::where('parent_id', $summerCategory->id)
+                    ->active()
+                    ->pluck('id')
+                    ->toArray();
                 $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
-                return Product::where('status', 'active')->whereIn('category_id', $categoryIds)->count();
+                return Product::where('status', 'active')
+                    ->whereIn('category_id', $categoryIds)
+                    ->whereHas('category', function ($query) {
+                        $query->active();
+                    })
+                    ->count();
             }
 
             return 0;
         });
 
-        // Store Summer category ID for the view more button link
+        // Get Summer category ID (only if active)
         $summerCategoryId = null;
         $summerCategory = Category::where(function ($q) {
             $q->where('name', 'LIKE', '%summer%')
                 ->orWhere('slug', 'LIKE', '%summer%')
                 ->orWhere('name', 'LIKE', '%seasonal%');
-        })->active()->first();
+        })
+            ->active()
+            ->first();
 
         if ($summerCategory) {
             $summerCategoryId = $summerCategory->id;
         }
 
-        // Cache featured products for floating cards section (30 minutes)
-        $featuredProducts = Cache::remember('products.featured.full', 1800, function () {
-            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag', 'discount_percent')
-                ->with([
-                    'category' => function ($query) {
-                        $query->select('id', 'name', 'slug');
-                    },
-                ])
-                ->where('status', 'active')
-                ->orderByRaw('CASE 
-                    WHEN tag = "best_selling" THEN 1 
-                    WHEN tag = "trending" THEN 2 
-                    WHEN tag = "new_arrival" THEN 3 
-                    ELSE 4 
-                END')
-                ->latest()
-                ->limit(5)
-                ->get();
+        // EID COLLECTION products
+        $eidCollectionProducts = Cache::remember('products.eid_collection.full', 1800, function () {
+            // Find Eid Collection category (only if active)
+            $eidCategory = Category::where('slug', 'eid-collection')
+                ->orWhere('name', 'Eid Collection')
+                ->active() // Only get active category
+                ->first();
+
+            if ($eidCategory) {
+                // Get category IDs (parent + children) but only active ones
+                $categoryIds = [$eidCategory->id];
+                $childCategoryIds = Category::where('parent_id', $eidCategory->id)
+                    ->active() // Only active child categories
+                    ->pluck('id')
+                    ->toArray();
+                $categoryIds = array_merge($categoryIds, $childCategoryIds);
+
+                return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                    ->with([
+                        'category' => function ($query) {
+                            $query->select('id', 'name', 'slug')
+                                ->active();
+                        },
+                        'images' => function ($query) {
+                            $query->select('id', 'product_id', 'image')->limit(1);
+                        },
+                    ])
+                    ->where('status', 'active')
+                    ->whereIn('category_id', $categoryIds)
+                    ->whereHas('category', function ($query) {
+                        $query->active(); // Ensure category is active
+                    })
+                    ->latest()
+                    ->limit(8)
+                    ->get();
+            }
+
+            return collect();
         });
+
+        // Cache Eid collection total count
+        $eidCollectionTotal = Cache::remember('products.eid_collection.count', 1800, function () {
+            $eidCategory = Category::where('slug', 'eid-collection')
+                ->orWhere('name', 'Eid Collection')
+                ->active()
+                ->first();
+
+            if ($eidCategory) {
+                $categoryIds = [$eidCategory->id];
+                $childCategoryIds = Category::where('parent_id', $eidCategory->id)
+                    ->active()
+                    ->pluck('id')
+                    ->toArray();
+                $categoryIds = array_merge($categoryIds, $childCategoryIds);
+
+                return Product::where('status', 'active')
+                    ->whereIn('category_id', $categoryIds)
+                    ->whereHas('category', function ($query) {
+                        $query->active();
+                    })
+                    ->count();
+            }
+
+            return 0;
+        });
+
+        // Get Eid Category ID (only if active)
+        $eidCategoryId = null;
+        $eidCategory = Category::where('slug', 'eid-collection')
+            ->orWhere('name', 'Eid Collection')
+            ->active()
+            ->first();
+
+        if ($eidCategory) {
+            $eidCategoryId = $eidCategory->id;
+        }
 
         // Cache testimonials for 1 hour
         $testimonials = Cache::remember('testimonials.active', 3600, function () {
@@ -252,15 +361,18 @@ class frontendController extends Controller
             'newArrivalProducts',
             'testimonials',
             'bestSellingProducts',
-            'summerCollectionProducts',      // Updated variable name
+            'summerCollectionProducts',
             'newArrivalTotal',
             'trendingTotal',
             'bestSellingTotal',
-            'summerCollectionTotal',          // Updated variable name
-            'summerCategoryId',               // Updated variable name
-            'featuredProducts'                // New featured products
+            'summerCollectionTotal',
+            'summerCategoryId',
+            'eidCollectionProducts',
+            'eidCollectionTotal',
+            'eidCategoryId'
         ))->render();
     }
+
 
     public function about()
     {
@@ -602,7 +714,7 @@ class frontendController extends Controller
         session(['applied_coupon_code' => $coupon->code]);
 
         return redirect()->route('checkout')
-            ->with('coupon_success', 'Coupon "'.$coupon->code.'" applied successfully! ('.$coupon->discount_percent.'% off)');
+            ->with('coupon_success', 'Coupon "' . $coupon->code . '" applied successfully! (' . $coupon->discount_percent . '% off)');
     }
 
     public function contact()
@@ -641,9 +753,9 @@ class frontendController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
-                $q->where('title', 'LIKE', '%'.$search.'%')
-                    ->orWhere('excerpt', 'LIKE', '%'.$search.'%')
-                    ->orWhere('content', 'LIKE', '%'.$search.'%');
+                $q->where('title', 'LIKE', '%' . $search . '%')
+                    ->orWhere('excerpt', 'LIKE', '%' . $search . '%')
+                    ->orWhere('content', 'LIKE', '%' . $search . '%');
             });
         }
 
@@ -700,9 +812,9 @@ class frontendController extends Controller
         $products = Product::with(['category', 'images'])
             ->where('status', 'active')
             ->where(function ($query) use ($searchTerm) {
-                $query->where('name', 'LIKE', $searchTerm.'%')
-                    ->orWhere('short_description', 'LIKE', $searchTerm.'%')
-                    ->orWhere('long_description', 'LIKE', $searchTerm.'%');
+                $query->where('name', 'LIKE', $searchTerm . '%')
+                    ->orWhere('short_description', 'LIKE', $searchTerm . '%')
+                    ->orWhere('long_description', 'LIKE', $searchTerm . '%');
             })
             ->orderBy('name', 'asc')
             ->limit(10)
@@ -841,7 +953,7 @@ class frontendController extends Controller
                 'hasMore' => $products->count() == $limit,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Load More Products Error: '.$e->getMessage(), [
+            \Log::error('Load More Products Error: ' . $e->getMessage(), [
                 'section' => $request->input('section'),
                 'offset' => $request->input('offset'),
                 'trace' => $e->getTraceAsString(),

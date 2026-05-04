@@ -9,21 +9,18 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h4 class="card-title mb-0">Orders</h4>
                         </div>
-                        
+
                         <!-- Search Form -->
                         <div class="mb-4">
                             <form action="{{ route('admin.orders.index') }}" method="GET" class="d-flex align-items-center">
                                 <div class="input-group" style="max-width: 400px;">
-                                    <input type="text" 
-                                           name="search" 
-                                           class="form-control" 
-                                           placeholder="Search orders by order number..." 
-                                           value="{{ request('search') }}">
+                                    <input type="search" name="search" class="form-control"
+                                        placeholder="Search orders by order number..." value="{{ request('search') }}">
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-secondary" type="submit">
                                             <i class="mdi mdi-magnify"></i> Search
                                         </button>
-                                        @if(request('search'))
+                                        @if (request('search'))
                                             <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary">
                                                 <i class="mdi mdi-close"></i> Clear
                                             </a>
@@ -31,7 +28,7 @@
                                     </div>
                                 </div>
                             </form>
-                            @if(request('search'))
+                            @if (request('search'))
                                 <div class="mt-2">
                                     <small class="text-muted">
                                         Showing results for: <strong>"{{ request('search') }}"</strong>
@@ -40,8 +37,8 @@
                                 </div>
                             @endif
                         </div>
-                        
-                        @if(session('success'))
+
+                        @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -50,7 +47,7 @@
                             </div>
                         @endif
 
-                        @if(session('error'))
+                        @if (session('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 {{ session('error') }}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -69,7 +66,10 @@
                                         <th>Email</th>
                                         <th>Phone</th>
                                         <th>Items</th>
+                                        <th>Delivery</th>
                                         <th>Total</th>
+                                        <th>Grand Total</th>
+                                        <th>Payment</th>
                                         <th>Status</th>
                                         <th>Date</th>
                                         <th>Actions</th>
@@ -80,34 +80,37 @@
                                         <tr>
                                             <td>
                                                 <strong class="text-primary">{{ $order->order_number }}</strong>
+                                                @if ($order->payment_method == 'bank')
+                                                    <br><span class="badge badge-warning">Bank Transfer</span>
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-2">
-                                                    @foreach($order->items->take(3) as $item)
-                                                        @if($item->product)
-                                                            @if($item->product->image)
-                                                                <img src="{{ asset($item->product->image) }}" 
-                                                                     alt="{{ $item->product->name }}" 
-                                                                     class="img-sm rounded"
-                                                                     style="width: 40px; height: 40px; object-fit: cover;"
-                                                                     title="{{ $item->product->name }}">
+                                                    @foreach ($order->items->take(3) as $item)
+                                                        @if ($item->product)
+                                                            @if ($item->product->image)
+                                                                <img src="{{ asset($item->product->image) }}"
+                                                                    alt="{{ $item->product->name }}" class="img-sm rounded"
+                                                                    style="width: 40px; height: 40px; object-fit: cover;"
+                                                                    title="{{ $item->product->name }}">
                                                             @else
-                                                                <div class="img-sm rounded bg-light d-flex align-items-center justify-content-center" 
-                                                                     style="width: 40px; height: 40px;"
-                                                                     title="{{ $item->product->name }}">
+                                                                <div class="img-sm rounded bg-light d-flex align-items-center justify-content-center"
+                                                                    style="width: 40px; height: 40px;"
+                                                                    title="{{ $item->product->name }}">
                                                                     <i class="mdi mdi-image"></i>
                                                                 </div>
                                                             @endif
                                                         @endif
                                                     @endforeach
-                                                    @if($order->items->count() > 3)
-                                                        <span class="badge badge-secondary">+{{ $order->items->count() - 3 }}</span>
+                                                    @if ($order->items->count() > 3)
+                                                        <span
+                                                            class="badge badge-secondary">+{{ $order->items->count() - 3 }}</span>
                                                     @endif
                                                 </div>
                                             </td>
                                             <td>
                                                 {{ $order->first_name }} {{ $order->last_name }}
-                                                @if($order->user)
+                                                @if ($order->user)
                                                     <br><small class="text-muted">User ID: {{ $order->user_id }}</small>
                                                 @else
                                                     <br><small class="text-muted">Guest</small>
@@ -116,13 +119,41 @@
                                             <td>{{ $order->email }}</td>
                                             <td>{{ $order->phone }}</td>
                                             <td>
-                                                <span class="badge badge-info">{{ $order->items->sum('quantity') }} items</span>
+                                                <span class="badge badge-info">{{ $order->items->sum('quantity') }}
+                                                    items</span>
                                             </td>
                                             <td>
-                                                <strong>PKR {{ number_format($order->total, 2) }}</strong>
+                                                <small class="text-muted">PKR
+                                                    {{ number_format($order->delivery_charges ?? 199, 0) }}</small>
                                             </td>
                                             <td>
-                                                @if($order->status == 'pending')
+                                                <strong>PKR {{ number_format($order->total, 0) }}</strong>
+                                                @if ($order->discount_amount > 0)
+                                                    <br><small
+                                                        class="text-success">-{{ number_format($order->discount_amount, 0) }}</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <strong class="text-primary">
+                                                    PKR
+                                                    {{ number_format($order->grand_total ?? $order->total, 0) }}
+                                                </strong>
+                                            </td>
+                                            <td>
+                                                @if ($order->payment_method == 'cash')
+                                                    <span class="badge badge-success">Cash on Delivery</span>
+                                                @elseif($order->payment_method == 'bank')
+                                                    <span class="badge badge-warning">Bank Transfer</span>
+                                                    @if ($order->payment_screenshot)
+                                                        <br><small class="text-info">Screenshot Uploaded</small>
+                                                    @endif
+                                                @else
+                                                    <span
+                                                        class="badge badge-secondary">{{ ucfirst($order->payment_method) }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($order->status == 'pending')
                                                     <span class="badge badge-warning">Pending</span>
                                                 @elseif($order->status == 'processing')
                                                     <span class="badge badge-info">Processing</span>
@@ -134,24 +165,22 @@
                                             </td>
                                             <td>
                                                 {{ $order->created_at->format('M d, Y') }}
-                                                <br><small class="text-muted">{{ $order->created_at->format('h:i A') }}</small>
+                                                <br><small
+                                                    class="text-muted">{{ $order->created_at->format('h:i A') }}</small>
                                             </td>
                                             <td>
                                                 <div class="d-grid gap-3">
-                                                    <a href="{{ route('admin.orders.show', $order->id) }}" 
-                                                       class="btn btn-sm btn-info" 
-                                                       title="View">
+                                                    <a href="{{ route('admin.orders.show', $order->id) }}"
+                                                        class="btn btn-sm btn-info" title="View">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('admin.orders.edit', $order->id) }}" 
-                                                       class="btn btn-sm btn-primary" 
-                                                       title="Edit">
+                                                    <a href="{{ route('admin.orders.edit', $order->id) }}"
+                                                        class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
-                                                    <form action="{{ route('admin.orders.destroy', $order->id) }}" 
-                                                          method="POST" 
-                                                          class="d-inline"
-                                                          onsubmit="return confirm('Are you sure you want to delete order #{{ $order->order_number }}? This action cannot be undone.');">
+                                                    <form action="{{ route('admin.orders.destroy', $order->id) }}"
+                                                        method="POST" class="d-inline"
+                                                        onsubmit="return confirm('Are you sure you want to delete order #{{ $order->order_number }}? This action cannot be undone.');">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger" title="Delete">
@@ -163,7 +192,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="9" class="text-center py-4">
+                                            <td colspan="14" class="text-center py-4">
                                                 <p class="text-muted mb-0">No orders found.</p>
                                             </td>
                                         </tr>
@@ -172,7 +201,7 @@
                             </table>
                         </div>
 
-                        @if(isset($orders) && $orders->hasPages())
+                        @if (isset($orders) && $orders->hasPages())
                             <div class="mt-4">
                                 {{ $orders->links() }}
                             </div>
@@ -183,4 +212,3 @@
         </div>
     </div>
 @endsection
-

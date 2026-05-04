@@ -1,13 +1,3 @@
-{{-- Product Card Component with Lazy Loading
-
-    Usage:
-    @include('frontend.partials.product-card', [
-        'product' => $product,
-        'isFirst' => $loop->first ?? false,
-        'columnClasses' => 'col-6 col-lg-3'
-    ])
---}}
-
 @php
     // Set default column classes
     $columnClasses = $columnClasses ?? 'col-6 col-lg-3';

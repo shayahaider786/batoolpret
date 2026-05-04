@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->string('image')->nullable();
+            $table->string('category_link')->nullable();
             $table->timestamps();
 
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');

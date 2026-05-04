@@ -28,7 +28,7 @@
             <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                 <!-- <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}"><img
                         src="../../../backend/assets/images/logo.svg" alt="logo" /></a> -->
-                <a class="navbar-brand brand-logo text-white" href="{{ route('admin.dashboard') }}"><h1>Zaylish Studio</h1></a>
+                <a class="navbar-brand brand-logo text-white" href="{{ route('admin.dashboard') }}"><h1>Batool Pret</h1></a>
                 <!-- <a class="navbar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}"><img
                         src="../../../backend/assets/images/logo-mini.svg" alt="logo" /></a> -->
                 <a class="navbar-brand brand-logo-mini text-white" href="{{ route('admin.dashboard') }}"><h1>ZS</h1></a>
@@ -44,9 +44,9 @@
                             <div class="input-group-prepend bg-transparent">
                                 <i class="input-group-text border-0 mdi mdi-magnify"></i>
                             </div>
-                            <input type="text" 
-                                   name="search" 
-                                   class="form-control bg-transparent border-0" 
+                            <input type="text"
+                                   name="search"
+                                   class="form-control bg-transparent border-0"
                                    placeholder="Search products by name..."
                                    value="{{ request('search') }}">
                             @if(request('search'))
@@ -66,9 +66,9 @@
                             <div class="input-group-prepend bg-transparent">
                                 <i class="input-group-text border-0 mdi mdi-magnify"></i>
                             </div>
-                            <input type="text" 
-                                   name="search" 
-                                   class="form-control bg-transparent border-0" 
+                            <input type="text"
+                                   name="search"
+                                   class="form-control bg-transparent border-0"
                                    placeholder="Search orders by order number..."
                                    value="{{ request('search') }}">
                             @if(request('search'))

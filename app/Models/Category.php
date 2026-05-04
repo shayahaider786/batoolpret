@@ -17,6 +17,7 @@ class Category extends Model
         'status',
         'image',
         'banner_image',
+        'category_link', // Add this field
     ];
 
     /**
@@ -60,6 +61,18 @@ class Category extends Model
     }
 
     /**
+     * Get the category URL (either custom link or route)
+     */
+    public function getUrlAttribute()
+    {
+        if ($this->category_link) {
+            return $this->category_link;
+        }
+
+        return route('shop', ['categories' => [$this->id]]);
+    }
+
+    /**
      * Scope to get only parent categories.
      */
     public function scopeParents($query)
@@ -83,4 +96,3 @@ class Category extends Model
         return $query->where('status', 'active');
     }
 }
-

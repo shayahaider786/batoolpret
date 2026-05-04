@@ -236,15 +236,9 @@ class ProductController extends Controller
         $product = Product::create($validated);
 
         // Clear cache for homepage products
-        Cache::forget('products.new_arrival.full');
-        Cache::forget('products.new_arrival.count');
-        Cache::forget('products.trending.full');
-        Cache::forget('products.trending.count');
-        Cache::forget('products.best_selling.full');
-        Cache::forget('products.best_selling.count');
-        Cache::forget('products.latest.full');
-        Cache::forget('products.featured.full');
-        Cache::forget('categories.active.with_images');
+        Cache::forget('products.new_arrival');
+        Cache::forget('products.trending');
+        Cache::forget('products.latest');
 
         // Handle multiple images upload - convert to WebP
         if ($request->hasFile('images')) {
@@ -437,15 +431,9 @@ class ProductController extends Controller
         $product->update($validated);
 
         // Clear cache for homepage products
-        Cache::forget('products.new_arrival.full');
-        Cache::forget('products.new_arrival.count');
-        Cache::forget('products.trending.full');
-        Cache::forget('products.trending.count');
-        Cache::forget('products.best_selling.full');
-        Cache::forget('products.best_selling.count');
-        Cache::forget('products.latest.full');
-        Cache::forget('products.featured.full');
-        Cache::forget('categories.active.with_images');
+        Cache::forget('products.new_arrival');
+        Cache::forget('products.trending');
+        Cache::forget('products.latest');
 
         // Handle multiple images upload - convert to WebP
         if ($request->hasFile('images')) {
@@ -512,15 +500,9 @@ class ProductController extends Controller
         $product->delete();
 
         // Clear cache for homepage products
-        Cache::forget('products.new_arrival.full');
-        Cache::forget('products.new_arrival.count');
-        Cache::forget('products.trending.full');
-        Cache::forget('products.trending.count');
-        Cache::forget('products.best_selling.full');
-        Cache::forget('products.best_selling.count');
-        Cache::forget('products.latest.full');
-        Cache::forget('products.featured.full');
-        Cache::forget('categories.active.with_images');
+        Cache::forget('products.new_arrival');
+        Cache::forget('products.trending');
+        Cache::forget('products.latest');
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product and all associated images deleted successfully.');

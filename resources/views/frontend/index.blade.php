@@ -7,11 +7,11 @@
 @section('content')
 
     <!-- new slider -->
-    @if(isset($sliders) && $sliders->isNotEmpty())
+    @if (isset($sliders) && $sliders->isNotEmpty())
         <section class="new-slider">
             <div class="hero-slider-wrapper">
                 <div class="hero-slider-container">
-                    @foreach($sliders as $index => $slider)
+                    @foreach ($sliders as $index => $slider)
                         <div class="hero-slide-item {{ $index === 0 ? 'hero-active-slide' : '' }}">
                             @if ($slider->website_slider_image)
                                 @php
@@ -57,7 +57,7 @@
 
                     <!-- Pagination Dots -->
                     <div class="hero-pagination-dots">
-                        @foreach($sliders as $index => $slider)
+                        @foreach ($sliders as $index => $slider)
                             <div class="hero-pagination-dot {{ $index === 0 ? 'hero-dot-active' : '' }}"
                                 onclick="heroGoToSlide({{ $index }})"></div>
                         @endforeach
@@ -72,7 +72,7 @@
         <div class="container-fluid text-center">
             <div class="p-b-30">
                 <h2 class="ltext-103 cl5">
-                    Collections
+                    Top Picks for You
                 </h2>
             </div>
 
@@ -81,7 +81,8 @@
                 <div class="collections-slider-track" id="collectionsSliderTrack">
                     @forelse($categories ?? [] as $index => $category)
                         <div class="collections-slider-item">
-                            <a href="{{ route('shop', ['categories' => [$category->id]]) }}" class="block1-gradient-card">
+                            <a href="{{ $category->category_link ?? route('shop', ['categories' => [$category->id]]) }}"
+                                class="block1-gradient-card">
                                 <div class="block1-img-wrapper">
                                     @if ($category->banner_image)
                                         <img src="{{ asset($category->banner_image) }}" alt="{{ $category->name }}"
@@ -156,37 +157,68 @@
     </div>
 
     <!-- Summer Collection Products Section -->
-    {{-- @if(isset($summerCollectionProducts) && $summerCollectionProducts->count() > 0)
-    <section class="bg0 p-t-10 p-b-10">
-        <div class="container trending-section">
-            <div class="title-divider">
-                <hr>
-                <h2 class="section-title">Summer Collection</h2>
-                <hr>
-            </div>
+    @if (isset($summerCollectionProducts) && $summerCollectionProducts->count() > 0)
+        <section class="bg0 p-t-10 p-b-10">
+            <div class="container trending-section">
+                <div class="title-divider">
+                    <hr>
+                    <h2 class="section-title">Summer Collection</h2>
+                    <hr>
+                </div>
 
-            <div class="row mt-5">
-                @forelse($summerCollectionProducts ?? [] as $product)
-                    @include('frontend.partials.product-card', [
-                        'product' => $product,
-                        'isFirst' => $loop->first,
-                        'columnClasses' => 'col-6 col-lg-3'
-                    ])
-                @empty
-                    <!-- Fallback if no summer collection products -->
-                    <div class="col-12 text-center">
-                        <p class="text-muted">No Summer Collection products available at the moment.</p>
-                    </div>
-                @endforelse
+                <div class="row mt-5">
+                    @forelse($summerCollectionProducts ?? [] as $product)
+                        @include('frontend.partials.product-card', [
+                            'product' => $product,
+                            'isFirst' => $loop->first,
+                            'columnClasses' => 'col-6 col-lg-3',
+                        ])
+                    @empty
+                        <div class="col-12 text-center">
+                            <p class="text-muted">No Summer Collection products available at the moment.</p>
+                        </div>
+                    @endforelse
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ route('shop') }}" class="view-more-btn btn btn-outline-dark">
+                        View More
+                    </a>
+                </div>
             </div>
-            <div class="text-center mt-4">
-                <a href="{{ route('shop') }}" class="view-more-btn btn btn-outline-dark">
-                    View More
-                </a>
+        </section>
+    @endif
+
+    <!-- Eid Collection Products Section -->
+    @if (isset($eidCollectionProducts) && $eidCollectionProducts->count() > 0)
+        <section class="bg0 p-t-10 p-b-10">
+            <div class="container trending-section">
+                <div class="title-divider">
+                    <hr>
+                    <h2 class="section-title">Eid Collection</h2>
+                    <hr>
+                </div>
+
+                <div class="row mt-5">
+                    @forelse($eidCollectionProducts ?? [] as $product)
+                        @include('frontend.partials.product-card', [
+                            'product' => $product,
+                            'isFirst' => $loop->first,
+                            'columnClasses' => 'col-6 col-lg-3',
+                        ])
+                    @empty
+                        <div class="col-12 text-center">
+                            <p class="text-muted">No Eid Collection products available at the moment.</p>
+                        </div>
+                    @endforelse
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ route('shop') }}" class="view-more-btn btn btn-outline-dark">
+                        View More
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
-    @endif --}}
+        </section>
+    @endif
 
     <!-- new arrivals Products Section -->
     <section class="bg0 p-t-10 p-b-10">
@@ -202,7 +234,7 @@
                     @include('frontend.partials.product-card', [
                         'product' => $product,
                         'isFirst' => $loop->first,
-                        'columnClasses' => 'col-6 col-lg-3'
+                        'columnClasses' => 'col-6 col-lg-3',
                     ])
                 @empty
                     <!-- Fallback if no new arrival products -->
@@ -213,12 +245,12 @@
             </div>
 
             <div class="text-center mt-4">
-                    <a href="{{ route('shop') }}" class="view-more-btn btn btn-outline-dark">
-                        View More
-                    </a>
+                <a href="{{ route('shop') }}" class="view-more-btn btn btn-outline-dark">
+                    View More
+                </a>
             </div>
 
-            {{-- @if(isset($newArrivalProducts) && $newArrivalTotal > 4)
+            {{-- @if (isset($newArrivalProducts) && $newArrivalTotal > 4)
                 <div class="text-center mt-4">
                     <button class="view-more-btn btn btn-outline-dark" data-section="new_arrival" data-offset="4">View More</button>
                 </div>
@@ -233,12 +265,12 @@
                 <!-- Casual Banner -->
                 <a href="{{ url('/shop?categories[0]=4') }}" class="banner-link">
                     <div class="banner-item">
-                        <img src="{{ asset('frontend/images/banner.jpg') }}" alt="Batool Pret Casual Collection"
+                        <img src="{{ asset('frontend/images/banner.jpg') }}" alt="Zaylish Casual Collection"
                             class="banner-image">
                         <div class="banner-content">
                             <h2 class="banner-title">Casuals</h2>
                             <p class="banner-description">
-                                Batool Pret brings modern casual wear for women—comfortable, stylish, and perfect for everyday
+                                Zaylish brings modern casual wear for women—comfortable, stylish, and perfect for everyday
                                 fashion.
                             </p>
                         </div>
@@ -248,12 +280,13 @@
                 <!-- Formal Banner -->
                 <a href="{{ url('/shop?categories[0]=3') }}" class="banner-link">
                     <div class="banner-item marginLeft">
-                        <img src="{{ asset('frontend/images/banner2.jpg') }}" alt="Batool Pret Formal Collection"
+                        <img src="{{ asset('frontend/images/banner2.jpg') }}" alt="Zaylish Formal Collection"
                             class="banner-image">
                         <div class="banner-content">
-                            <h2 class="banner-title">Formals</h2>
+                            <h2 class="banner-title">Luxury Pret</h2>
                             <p class="banner-description">
-                                Batool Pret formal wear blends timeless elegance with modern design, perfect for festive events
+                                Zaylish luxury pret wear blends timeless elegance with modern design, perfect for festive
+                                events
                                 and special occasions.
                             </p>
                         </div>
@@ -279,7 +312,7 @@
                     @include('frontend.partials.product-card', [
                         'product' => $product,
                         'isFirst' => $loop->first,
-                        'columnClasses' => 'col-6 col-lg-3'
+                        'columnClasses' => 'col-6 col-lg-3',
                     ])
                 @empty
                     <!-- Fallback if no trending products -->
@@ -294,7 +327,7 @@
                     View More
                 </a>
             </div>
-            {{-- @if(isset($trendingProducts) && $trendingTotal > 4)
+            {{-- @if (isset($trendingProducts) && $trendingTotal > 4)
                 <div class="text-center mt-4">
                     <button class="view-more-btn btn btn-outline-dark" data-section="trending" data-offset="4">View More</button>
                 </div>
@@ -309,7 +342,7 @@
         <div class="container trending-section">
             <div class="title-divider">
                 <hr>
-                <h2 class="section-title">Best Selling</h2>
+                <h2 class="section-title">Bestsellers</h2>
                 <hr>
             </div>
 
@@ -318,7 +351,7 @@
                     @include('frontend.partials.product-card', [
                         'product' => $product,
                         'isFirst' => $loop->first,
-                        'columnClasses' => 'col-6 col-lg-3'
+                        'columnClasses' => 'col-6 col-lg-3',
                     ])
                 @empty
                     <!-- Fallback if no best selling products -->
@@ -334,7 +367,7 @@
                 </a>
             </div>
 
-            {{-- @if(isset($bestSellingProducts) && $bestSellingTotal > 4)
+            {{-- @if (isset($bestSellingProducts) && $bestSellingTotal > 4)
                 <div class="text-center mt-4">
                     <button class="view-more-btn btn btn-outline-dark" data-section="best_selling" data-offset="4">View More</button>
                 </div>
@@ -358,7 +391,7 @@
                          data-video="{{ $testimonial->video ? asset($testimonial->video) : '' }}"
                          onclick="openVideoModal(this)">
                         <div class="video-testimonial-media">
-                            @if($testimonial->video)
+                            @if ($testimonial->video)
                                 <!-- Video Thumbnail -->
                                 <video preload="metadata" muted>
                                     <source src="{{ asset($testimonial->video) }}#t=0.1" type="video/mp4">
@@ -441,9 +474,12 @@
                 btn.prop('disabled', true).text('Loading...');
 
                 $.ajax({
-                    url: '{{ route("loadMoreProducts") }}',
+                    url: '{{ route('loadMoreProducts') }}',
                     method: 'GET',
-                    data: { section: section, offset: offset },
+                    data: {
+                        section: section,
+                        offset: offset
+                    },
                     success: function(data) {
                         if (data.products && data.products.length > 0) {
                             row.append(data.products.join(''));

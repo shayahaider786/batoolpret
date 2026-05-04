@@ -56,6 +56,16 @@
             color: #4c84ff;
             margin-top: 15px;
         }
+        .delivery-row {
+            color: #666;
+        }
+        .grand-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4c84ff;
+            border-top: 2px solid #4c84ff;
+            padding-top: 10px;
+        }
         .button {
             display: inline-block;
             padding: 12px 24px;
@@ -70,6 +80,42 @@
             margin-top: 20px;
             color: #666;
             font-size: 12px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .status-processing {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .status-completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-cancelled {
+            background-color: #dc3545;
+            color: white;
+        }
+        .alert-info {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .payment-info {
+            background-color: #fff3e0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #ff9800;
         }
     </style>
 </head>
@@ -87,8 +133,16 @@
             <h2>Order Information</h2>
             <p><strong>Order Number:</strong> {{ $order->order_number }}</p>
             <p><strong>Order Date:</strong> {{ $order->created_at->format('F d, Y h:i A') }}</p>
-            <p><strong>Status:</strong> <span style="text-transform: capitalize;">{{ $order->status }}</span></p>
+            <p><strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}</p>
+            <p><strong>Status:</strong> <span class="status-badge status-{{ $order->status }}">{{ ucfirst($order->status) }}</span></p>
         </div>
+
+        @if($order->payment_method == 'bank')
+        <div class="payment-info">
+            <strong>⚠️ Payment Verification Required!</strong><br>
+            Customer has uploaded a payment screenshot for Bank Transfer. Please verify the payment in the admin panel.
+        </div>
+        @endif
 
         <div class="order-details">
             <h3>Customer Information</h3>
@@ -133,7 +187,6 @@
                         <th>Size</th>
                         <th>Quantity</th>
                         <th>Price</th>
-                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,7 +196,6 @@
                         <td>{{ $item->size ?? 'N/A' }}</td>
                         <td>{{ $item->quantity }}</td>
                         <td>PKR {{ number_format($item->price, 0) }}</td>
-                        <td>PKR {{ number_format($item->total, 0) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -152,10 +204,6 @@
 
         <div class="order-details">
             <table>
-                <tr>
-                    <th>Subtotal</th>
-                    <td>PKR {{ number_format($order->subtotal, 0) }}</td>
-                </tr>
                 @if($order->discount_amount > 0)
                 <tr>
                     <th>Discount
@@ -163,15 +211,27 @@
                             ({{ $order->coupon_code }})
                         @endif
                     </th>
-                    <td>-PKR {{ number_format($order->discount_amount, 0) }}</td>
+                    <td style="color: #4caf50;">-PKR {{ number_format($order->discount_amount, 0) }}</td>
                 </tr>
                 @endif
-                <tr class="total">
-                    <th>Total</th>
-                    <td>PKR {{ number_format($order->total, 0) }}</td>
+                <tr class="delivery-row">
+                    <th>Delivery Charges</th>
+                    <td>PKR {{ number_format($order->delivery_charges ?? 199, 0) }}</td>
+                </tr>
+                <tr class="grand-total">
+                    <th>Grand Total</th>
+                    <td>PKR {{ number_format($order->grand_total ?? ($order->total + 199), 0) }}</td>
                 </tr>
             </table>
         </div>
+
+        @if($order->payment_method == 'bank' && $order->payment_screenshot)
+        <div class="order-info">
+            <h3>Payment Screenshot</h3>
+            <p>A payment screenshot has been uploaded for this order.</p>
+            <p><strong>View in admin panel to verify the payment.</strong></p>
+        </div>
+        @endif
 
         @if($order->order_notes)
         <div class="order-info">
@@ -187,7 +247,7 @@
 
     <div class="footer">
         <p>This is an automated notification from {{ config('app.name') }}</p>
+        <p>Please process this order as soon as possible.</p>
     </div>
 </body>
 </html>
-

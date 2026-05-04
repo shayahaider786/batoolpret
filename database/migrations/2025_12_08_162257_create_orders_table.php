@@ -31,8 +31,11 @@ return new class extends Migration
 
             // Order Totals
             $table->decimal('subtotal', 10, 2);
-            $table->decimal('total', 10, 2);
 
+            $table->decimal('delivery_charges', 10, 2)->default(0)->after('subtotal');
+            $table->decimal('total', 10, 2);
+            $table->decimal('grand_total', 10, 2)->after('total')->nullable();
+            
             // Order Status
             $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
             $table->string('payment_method')->default('cash_on_delivery');

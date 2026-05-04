@@ -2,58 +2,99 @@
 <html lang="en">
 
 <head>
-    <title>Batool Pret - The Pure One</title>
+    <title>Zaylish Studio - Grace in Every Thread</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description"
-        content="Batool Pret - The Pure One. Discover our premium collection of elegant fashion and lifestyle products.">
-    <meta name="keywords" content="Batool Pret, fashion, clothing, grace in every thread, premium fashion, lifestyle">
-    <meta name="author" content="Batool Pret">
-    <meta property="og:site_name" content="Batool Pret">
-    <meta property="og:title" content="Batool Pret - The Pure One">
+        content="Zaylish - Grace in Every Thread. Discover our premium collection of elegant fashion and lifestyle products.">
+    <meta name="keywords" content="zaylish, fashion, clothing, grace in every thread, premium fashion, lifestyle">
+    <meta name="author" content="Zaylish">
+    <meta property="og:site_name" content="Zaylish">
+    <meta property="og:title" content="Zaylish Studio - Grace in Every Thread">
     <meta property="og:description"
-        content="Batool Pret - The Pure One. Discover our premium collection of elegant fashion and lifestyle products.">
-    <!--===============================================================================================-->
+        content="Zaylish - Grace in Every Thread. Discover our premium collection of elegant fashion and lifestyle products.">
+
+
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicon.png') }}" />
+
+    <!-- Font Awesome - Using Bootstrap CDN (more reliable in Pakistan) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    
     @stack('meta')
     @stack('canonical')
-    <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicons.png') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!--===============================================================================================-->
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/bootstrap/css/bootstrap.min.css') }}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css"
-        {{-- href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"> --}}
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
-    <!--===============================================================================================-->
+
+    <!-- Other CSS files -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/linearicons-v1.0.0/icon-font.min.css') }}">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/animate/animate.css') }}">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/css-hamburgers/hamburgers.min.css') }}">
-    <!--===============================================================================================-->
-    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/animsition/css/animsition.min.css') }}"> --}}
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/select2/select2.min.css') }}">
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/daterangepicker/daterangepicker.css') }}">
-    <!--===============================================================================================-->
-    <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/MagnificPopup/magnific-popup.css') }}">
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('frontend/vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
-    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/perfect-scrollbar/perfect-scrollbar.css') }}">
+
+    <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
-    <!--===============================================================================================-->
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/util.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/navbar-premium.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/mobile-menu.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/banner-section.css') }}">
+
     @stack('styles')
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N7323YQZYG"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-N7323YQZYG');
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s) {
+            if(f.fbq)return;
+            n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;
+            n.push=n;
+            n.loaded=!0;
+            n.version='2.0';
+            n.queue=[];
+            t=b.createElement(e);
+            t.async=!0;
+            t.src=v;
+            s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)
+        }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1596194501725991');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1596194501725991&ev=PageView&noscript=1" /></noscript>
+
+    <!-- TikTok Pixel -->
+    <script>
+        !function(w,d,t){
+            w.TiktokAnalyticsObject=t;a
+            var ttq=w[t]=w[t]||[];
+            ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],
+            ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+            for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+            ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},
+            ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+            ttq.load('D6HHD4BC77U7C65PCLVG');
+            ttq.page();
+        }(window, document, 'ttq');
+    </script>
 </head>
 
 <body>
@@ -65,24 +106,12 @@
             <!-- Topbar -->
             <div class="top-bar">
                 <div class="content-topbar flex-sb-m h-full container">
-                    <div class="left-top-bar text-white d-flex align-items-center">
-                        <div class="social-icons-top d-flex align-items-center">
-                            <a href="#" target="blank"
-                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                                <i class="fa-brands fa-facebook"></i>
-                            </a>
-
-                            <a href="#" target="blank"
-                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
-
-                            <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
-                                target="blank">
-                                <i class="fa-brands fa-tiktok"></i>
-                            </a>
-                        </div>
-                        <marquee class="top-bar-marquee">FREE SHIPPING ON ORDERS ABOVE RS. 5000 | PAKISTAN'S PREMIUM LADIES BRAND</marquee>
+                    <div class="center-top-bar" style="flex: 1; text-align: center;">
+                    </div>
+                    <div class="left-top-bar text-white" style="flex: 3; text-align: center;">
+                        <marquee>Delivery Across Pakistan</marquee>
+                    </div>
+                    <div class="right-top-bar" style="flex: 1; text-align: center;">
                     </div>
 
                     <div class="right-top-bar flex-w h-full">
@@ -111,13 +140,6 @@
 
             <div class="wrap-menu-desktop">
                 <nav class="limiter-menu-desktop container">
-
-                    <!-- Hamburger desktop -->
-                    <div class="btn-show-menu-mobile hamburger hamburger--squeeze desktop-hamburger">
-                        <span class="hamburger-box">
-                            <span class="hamburger-inner"></span>
-                        </span>
-                    </div>
 
                     <!-- Logo desktop -->
                     <a href="{{ route('index') }}" class="logo">
@@ -150,6 +172,8 @@
                                         (request('tag') == 'new_arrival' ||
                                             request('tag') == 'trending' ||
                                             request('tag') == 'best_selling');
+
+                                    // Get category IDs
                                     $bagsCategory = \App\Models\Category::where(function ($q) {
                                         $q->where('name', 'LIKE', '%bag%')->orWhere('slug', 'LIKE', '%bag%');
                                     })
@@ -157,7 +181,7 @@
                                         ->first();
                                     $bagsCategoryId = $bagsCategory ? $bagsCategory->id : null;
 
-                                    // SUMMER Collection category (replaces Eid Collection)
+                                    // SUMMER Collection category
                                     $summerCategory = \App\Models\Category::where(function ($q) {
                                         $q->where('name', 'LIKE', '%summer%')
                                             ->orWhere('slug', 'LIKE', '%summer%')
@@ -167,7 +191,17 @@
                                         ->first();
                                     $summerCategoryId = $summerCategory ? $summerCategory->id : null;
 
-                                    // Casual category (if exists)
+                                    // EID Collection category - NEW
+                                    $eidCategory = \App\Models\Category::where(function ($q) {
+                                        $q->where('name', 'LIKE', '%eid%')
+                                            ->orWhere('slug', 'eid-collection')
+                                            ->orWhere('slug', 'LIKE', '%eid%');
+                                    })
+                                        ->active()
+                                        ->first();
+                                    $eidCategoryId = $eidCategory ? $eidCategory->id : null;
+
+                                    // Casual category
                                     $casualCategory = \App\Models\Category::where(function ($q) {
                                         $q->where('name', 'LIKE', '%casual%')->orWhere('slug', 'LIKE', '%casual%');
                                     })
@@ -175,7 +209,7 @@
                                         ->first();
                                     $casualCategoryId = $casualCategory ? $casualCategory->id : null;
 
-                                    // Formal category (if exists)
+                                    // Formal category
                                     $formalCategory = \App\Models\Category::where(function ($q) {
                                         $q->where('name', 'LIKE', '%formal%')->orWhere('slug', 'LIKE', '%formal%');
                                     })
@@ -189,21 +223,24 @@
                                         is_array(request('categories')) &&
                                         $bagsCategoryId &&
                                         in_array($bagsCategoryId, request('categories'));
-
                                     $isSummerActive =
                                         (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
                                         request('categories') &&
                                         is_array(request('categories')) &&
                                         $summerCategoryId &&
                                         in_array($summerCategoryId, request('categories'));
-
+                                    $isEidActive =
+                                        (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
+                                        request('categories') &&
+                                        is_array(request('categories')) &&
+                                        $eidCategoryId &&
+                                        in_array($eidCategoryId, request('categories'));
                                     $isCasualActive =
                                         (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
                                         request('categories') &&
                                         is_array(request('categories')) &&
                                         $casualCategoryId &&
                                         in_array($casualCategoryId, request('categories'));
-
                                     $isFormalActive =
                                         (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
                                         request('categories') &&
@@ -212,45 +249,62 @@
                                         in_array($formalCategoryId, request('categories'));
                                 @endphp
 
-                                <li class="label1 {{ $isNewInActive ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop', ['tag' => 'new_arrival']) }}">New Arrival</a>
-                                </li>
+                                {{-- EID COLLECTION - Show if category is active --}}
+                                @if ($eidCategoryId)
+                                    <li class="{{ $isEidActive ? 'active-menu' : '' }}">
+                                        <a href="{{ route('shop') }}">Eid
+                                            Collection</a>
+                                    </li>
+                                @endif
+
+                                {{-- @if ($eidCategoryId)
+                                    <li class="{{ $isEidActive ? 'active-menu' : '' }}">
+                                        <a href="{{ route('shop', ['categories' => [$eidCategoryId]]) }}">Eid
+                                            Collection</a>
+                                    </li>
+                                @endif --}}
+
+                                {{-- SUMMER COLLECTION - Show if category is active --}}
+                                @if ($summerCategoryId)
+                                    <li class="{{ $isSummerActive ? 'active-menu' : '' }}">
+                                        <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}">Summer
+                                            Collection</a>
+                                    </li>
+                                @endif
+
+                                {{-- <li class="label1 {{ $isNewInActive ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['tag' => 'new_arrival']) }}">New In</a>
+                                </li> --}}
 
                                 @if ($casualCategoryId)
                                     <li class="{{ $isCasualActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Casual</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Summer</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Winter</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Spring</a></li>
-                                        </ul>
+                                        {{-- <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Casual</a> --}}
+                                        <a href="{{ route('shop') }}">Casual</a>
                                     </li>
                                 @endif
 
-                                @if ($formalCategoryId)
+                                <li class="{{ $isFormalActive ? 'active-menu' : '' }}">
+                                    <a href="https://zaylish.pk/shop?categories%5B0%5D=3">Luxury Pret</a>
+                                </li>
+
+                                {{-- @if ($formalCategoryId)
                                     <li class="{{ $isFormalActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}">Semi Formal</a>
+                                        <a
+                                            href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}">Luxury Pret</a>
                                     </li>
-                                @endif
+                                @endif --}}
+
+                                <li class="label1 {{ $isCollectionsActive ? 'active-menu' : '' }}" data-label1="hot">
+                                    <a href="{{ route('shop') }}">All Products</a>
+                                </li>
 
                                 @if ($bagsCategoryId)
                                     <li class="{{ $isBagsActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Kids</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Summer</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Winter</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Spring</a></li>
-                                        </ul>
+                                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Bags</a>
                                     </li>
                                 @endif
-
-                                <li class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop', ['sale' => 'true']) }}">Sale</a>
-                                </li>
-
                             </ul>
                         </div>
-
                         <!-- Icon header -->
                         <div class="wrap-icon-header flex-w flex-r-m">
                             <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
@@ -277,14 +331,13 @@
             </div>
 
             <!-- Icon header -->
-            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-
-                <!--Search.icon-->
-                <div class="icon-header-item-s cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+            <div class="wrap-icon-header flex-w flex-r-m">
+                <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
                     <i class="zmdi zmdi-search"></i>
                 </div>
+
                 <a href="{{ route('cart') }}"
-                    class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+                    class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
                     data-notify="{{ $cartCount ?? 0 }}" title="View Cart">
                     <i class="zmdi zmdi-shopping-cart"></i>
                 </a>
@@ -310,63 +363,92 @@
                     </a>
                 </li>
 
-                <li>
+                {{-- EID COLLECTION - Show if category is active --}}
+                @if ($eidCategoryId)
+                    <li>
+                        <a href="{{ route('shop') }}"
+                            class="{{ $isEidActive ?? false ? 'active' : '' }}">
+                            Eid Collection
+                        </a>
+                    </li>
+                @endif
+
+                {{-- @if ($eidCategoryId)
+                    <li>
+                        <a href="{{ route('shop', ['categories' => [$eidCategoryId]]) }}"
+                            class="{{ $isEidActive ?? false ? 'active' : '' }}">
+                            Eid Collection
+                        </a>
+                    </li>
+                @endif --}}
+
+                {{-- SUMMER COLLECTION - Show if category is active --}}
+                @if ($summerCategoryId)
+                    <li>
+                        <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}"
+                            class="{{ $isSummerActive ?? false ? 'active' : '' }}">
+                            Summer Collection
+                        </a>
+                    </li>
+                @endif
+
+                {{-- <li>
                     <a href="{{ route('shop', ['tag' => 'new_arrival']) }}"
                         class="{{ request()->routeIs('shop') && request('tag') == 'new_arrival' ? 'active' : '' }}">
-                        New Arrival
+                        New In
+                    </a>
+                </li> --}}
+
+                @if ($casualCategoryId)
+                    <li>
+                        {{-- <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}"
+                            class="{{ $isCasualActive ?? false ? 'active' : '' }}">
+                            Casual
+                        </a> --}}
+                        <a href="{{ route('shop') }}" class="{{ $isCasualActive ?? false ? 'active' : '' }}">
+                            Casual
+                        </a>
+                    </li>
+                @endif
+
+                <li>
+                    <a href="https://zaylish.pk/shop?categories%5B0%5D=3"
+                        class="{{ $isFormalActive ?? false ? 'active' : '' }}">
+                        Luxury Pret
                     </a>
                 </li>
 
-                @if ($casualCategoryId)
-                    <li class="has-submenu">
-                        <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}"
-                            class="{{ $isCasualActive ? 'active' : '' }}">
-                            Casual
-                            <span class="arrow-main-menu-m">
-                                <i class="fa fa-plus"></i>
-                            </span>
-                        </a>
-                        <ul class="sub-menu-m">
-                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Summer</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Winter</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Spring</a></li>
-                        </ul>
-                    </li>
-                @endif
-
-                @if ($formalCategoryId)
+                {{-- @if ($formalCategoryId)
                     <li>
                         <a href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}"
-                            class="{{ $isFormalActive ? 'active' : '' }}">
-                            Semi Formal
+                            class="{{ $isFormalActive ?? false ? 'active' : '' }}">
+                            Luxury Pret
                         </a>
                     </li>
-                @endif
-
-                @if ($bagsCategoryId)
-                    <li class="has-submenu">
-                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}"
-                            class="{{ $isBagsActive ? 'active' : '' }}">
-                            Kids
-                            <span class="arrow-main-menu-m">
-                                <i class="fa fa-plus"></i>
-                            </span>
-                        </a>
-                        <ul class="sub-menu-m">
-                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Summer</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Winter</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Spring</a></li>
-                        </ul>
-                    </li>
-                @endif
+                @endif --}}
 
                 <li>
+                    <a href="{{ route('shop') }}" class="{{ $isCollectionsActive ?? false ? 'active' : '' }}">
+                        All Products
+                    </a>
+                </li>
+
+                {{-- <li>
                     <a href="{{ route('shop', ['sale' => 'true']) }}"
                         class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active' : '' }}">
                         Sale
-                        {{-- <span class="label-hot">Hot</span> --}}
+                        <span class="label-hot">Hot</span>
                     </a>
-                </li>
+                </li> --}}
+
+                @if ($bagsCategoryId)
+                    <li>
+                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}"
+                            class="{{ $isBagsActive ?? false ? 'active' : '' }}">
+                            Bags
+                        </a>
+                    </li>
+                @endif
 
                 @guest
                     <li>
@@ -420,6 +502,24 @@
                     </h4>
 
                     <ul class="footer-list">
+                        @if ($eidCategoryId ?? false)
+                            <li class="p-b-10">
+                                <a href="{{ route('shop', ['categories' => [$eidCategoryId]]) }}"
+                                    class="stext-107 cl7 hov-cl1 trans-04">
+                                    Eid Collection
+                                </a>
+                            </li>
+                        @endif
+
+                        @if ($summerCategoryId ?? false)
+                            <li class="p-b-10">
+                                <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}"
+                                    class="stext-107 cl7 hov-cl1 trans-04">
+                                    Summer Collection
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="p-b-10">
                             <a href="{{ route('shop', ['tag' => 'new_arrival']) }}"
                                 class="stext-107 cl7 hov-cl1 trans-04">
@@ -437,11 +537,9 @@
                         <li class="p-b-10">
                             <a href="{{ route('shop', ['tag' => 'best_selling']) }}"
                                 class="stext-107 cl7 hov-cl1 trans-04">
-                                Best Selling
+                                Bestsellers
                             </a>
                         </li>
-
-
 
                         <li class="p-b-10">
                             <a href="{{ route('contact') }}" class="stext-107 cl7 hov-cl1 trans-04">
@@ -497,24 +595,25 @@
 
                     <p class="stext-107 cl7 size-201">
                         Any questions about our products or orders? Our customer support team is always available to
-                        assist you. Call us at <a href="tel:+923144707099">+923224741317</a>
+                        assist you. Call us at <a href="tel:+923144707099">+923144707099</a>
 
                     </p>
 
                     <div class="p-t-27">
-                        <a href="#" target="blank"
+                        <a href="https://www.facebook.com/zaylishstudio" target="blank"
                             class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                            <i class="fa-brands fa-facebook"></i>
+                            <i class="fa fa-facebook"></i>
                         </a>
 
-                        <a href="#" target="blank"
+                        <a href="https://www.instagram.com/zaylishstudio" target="blank"
                             class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                            <i class="fa-brands fa-instagram"></i>
+                            <i class="fa fa-instagram"></i>
                         </a>
 
-                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
+                        <a href="https://www.tiktok.com/@zaylishofficial" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
                             target="blank">
                             <i class="fa-brands fa-tiktok"></i>
+
                         </a>
                     </div>
                 </div>
@@ -542,7 +641,7 @@
 
 
             <p class="stext-107 cl6 txt-center">
-                Copyright &copy; {{ date('Y') }} Batool Pret - The Pure One. All rights reserved.
+                Copyright &copy; {{ date('Y') }} Zaylish - Grace in Every Thread. All rights reserved.
             </p>
         </div>
         </div>
@@ -562,9 +661,9 @@
     </div>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/923224741317?text={{ urlencode('Hi! I would like to know more about your products.') }}"
+    <a href="https://wa.me/923144707099?text={{ urlencode('Hi! I would like to know more about your products.') }}"
         target="_blank" class="whatsapp-float" title="Contact us on WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
+        <i class="fa fa-whatsapp"></i>
     </a>
 
     <!--===============================================================================================-->
@@ -780,7 +879,7 @@
     <script src="{{ asset('frontend/js/main.js') }}" defer></script>
     <script src="{{ asset('frontend/js/navbar-premium.js') }}" defer></script>
     <script src="{{ asset('frontend/js/mobile-menu.js') }}" defer></script>
-    <script src="{{ asset('frontend/js/trending-carousel.js') }}" defer></script>
+
 
 
     <!-- Search Functionality - Ensure it works with deferred scripts -->
@@ -1106,10 +1205,53 @@
     <nav class="bottom-nav-mobile">
         @php
             $isHomeActive = request()->routeIs('index');
-            $isShopActiveMobile = (request()->routeIs('shop') || request()->routeIs('tagShop') || request()->routeIs('productDetail')) && !request('sale') && !request('tag');
+            $isShopActiveMobile =
+                (request()->routeIs('shop') || request()->routeIs('tagShop') || request()->routeIs('productDetail')) &&
+                !request('sale') &&
+                !request('tag');
             $isSaleActiveMobile = request()->routeIs('shop') && request('sale') == 'true';
             $isContactActive = request()->routeIs('contact');
-            $isSummerActiveMobile = request()->routeIs('shop') && request('categories') && is_array(request('categories')) && $summerCategoryId && in_array($summerCategoryId, request('categories'));
+
+            // Get category IDs again for bottom nav
+            $eidCategory = \App\Models\Category::where(function ($q) {
+                $q->where('name', 'LIKE', '%eid%')->orWhere('slug', 'eid-collection')->orWhere('slug', 'LIKE', '%eid%');
+            })
+                ->active()
+                ->first();
+            $eidCategoryId = $eidCategory ? $eidCategory->id : null;
+
+            $summerCategory = \App\Models\Category::where(function ($q) {
+                $q->where('name', 'LIKE', '%summer%')->orWhere('slug', 'LIKE', '%summer%');
+            })
+                ->active()
+                ->first();
+            $summerCategoryId = $summerCategory ? $summerCategory->id : null;
+
+            $bagsCategory = \App\Models\Category::where(function ($q) {
+                $q->where('name', 'LIKE', '%bag%')->orWhere('slug', 'LIKE', '%bag%');
+            })
+                ->active()
+                ->first();
+            $bagsCategoryId = $bagsCategory ? $bagsCategory->id : null;
+
+            $isEidActiveMobile =
+                (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
+                request('categories') &&
+                is_array(request('categories')) &&
+                $eidCategoryId &&
+                in_array($eidCategoryId, request('categories'));
+            $isSummerActiveMobile =
+                (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
+                request('categories') &&
+                is_array(request('categories')) &&
+                $summerCategoryId &&
+                in_array($summerCategoryId, request('categories'));
+            $isBagsActive =
+                (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
+                request('categories') &&
+                is_array(request('categories')) &&
+                $bagsCategoryId &&
+                in_array($bagsCategoryId, request('categories'));
         @endphp
 
         <a href="{{ route('index') }}" class="bottom-nav-item {{ $isHomeActive ? 'active' : '' }}">
@@ -1117,17 +1259,35 @@
             <span class="bottom-nav-label">Home</span>
         </a>
 
-        {{-- @if ($summerCategoryId) --}}
+        {{-- EID COLLECTION - Show if category is active --}}
+        @if ($eidCategoryId)
+            <a href="{{ route('shop') }}"
+                class="bottom-nav-item {{ $isEidActiveMobile ? 'active' : '' }}">
+                <i class="zmdi zmdi-star"></i>
+                <span class="bottom-nav-label">Eid Collection</span>
+            </a>
+        @endif
+
+         {{-- @if ($eidCategoryId)
+            <a href="{{ route('shop', ['categories' => [$eidCategoryId]]) }}"
+                class="bottom-nav-item {{ $isEidActiveMobile ? 'active' : '' }}">
+                <i class="zmdi zmdi-star"></i>
+                <span class="bottom-nav-label">Eid Collection</span>
+            </a>
+        @endif --}}
+
+        {{-- SUMMER COLLECTION - Show if category is active --}}
+        @if ($summerCategoryId)
             <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}"
                 class="bottom-nav-item {{ $isSummerActiveMobile ? 'active' : '' }}">
-                <i class="zmdi zmdi-star"></i>
-                <span class="bottom-nav-label">Summer</span>
+                <i class="zmdi zmdi-sun"></i>
+                <span class="bottom-nav-label">Summer Collection</span>
             </a>
-        {{-- @endif --}}
+        @endif
 
-        <a href="{{ route('shop') }}" class="bottom-nav-item {{ $isCollectionsActive ? 'active' : '' }}">
+        <a href="{{ route('shop') }}" class="bottom-nav-item {{ $isCollectionsActive ?? false ? 'active' : '' }}">
             <i class="zmdi zmdi-local-offer"></i>
-            <span class="bottom-nav-label">All Products</span>
+            <span class="bottom-nav-label">Shop</span>
         </a>
 
         @if ($bagsCategoryId)
@@ -1140,204 +1300,12 @@
             <a href="{{ route('contact') }}" class="bottom-nav-item {{ $isContactActive ? 'active' : '' }}">
                 <i class="zmdi zmdi-email"></i>
                 <span class="bottom-nav-label">Contact</span>
-            </a>
-        @endif
+            </a> @endif
     </nav>
 
     <!-- Page-specific scripts -->
     @stack('scripts')
 
-    <!-- Firebase Cloud Messaging -->
-    <script type="module">
-        // Import Firebase modules
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import {
-            getMessaging,
-            getToken,
-            onMessage
-        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-messaging.js";
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKvYZRyQtyxa7j3rSWGF1jliF4QTh7y2E",
-            authDomain: "zaylish-56f79.firebaseapp.com",
-            projectId: "zaylish-56f79",
-            storageBucket: "zaylish-56f79.firebasestorage.app",
-            messagingSenderId: "844375879908",
-            appId: "1:844375879908:web:ad0784e22383426f46fcf1",
-            measurementId: "G-B871GGYC5P"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        let messaging = null;
-
-        // Check if browser supports service workers and notifications
-        if ('serviceWorker' in navigator && 'Notification' in window) {
-            // Request notification permission
-            async function requestNotificationPermission() {
-                try {
-                    const permission = await Notification.requestPermission();
-                    if (permission === 'granted') {
-                        console.log('Notification permission granted');
-                        initializeMessaging();
-                    } else {
-                        console.log('Notification permission denied');
-                    }
-                } catch (error) {
-                    console.error('Error requesting notification permission:', error);
-                }
-            }
-
-            // Initialize Firebase Messaging
-            async function initializeMessaging() {
-                try {
-                    // Register service worker
-                    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-                    console.log('Service Worker registered:', registration);
-
-                    // Wait for service worker to be activated and ready
-                    if (registration.installing) {
-                        await new Promise((resolve) => {
-                            registration.installing.addEventListener('statechange', function() {
-                                if (this.state === 'activated') {
-                                    resolve();
-                                }
-                            });
-                        });
-                    } else if (registration.waiting) {
-                        await new Promise((resolve) => {
-                            registration.waiting.addEventListener('statechange', function() {
-                                if (this.state === 'activated') {
-                                    resolve();
-                                }
-                            });
-                        });
-                    }
-
-                    // Ensure service worker is active and has pushManager
-                    if (!registration.active || !registration.pushManager) {
-                        console.warn('Service worker not fully ready, waiting...');
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
-
-                    // Initialize messaging
-                    messaging = getMessaging(app);
-
-                    // Get FCM token with VAPID key
-                    const vapidKey = '{{ config('services.firebase.vapid_key') }}';
-                    const token = await getToken(messaging, {
-                        vapidKey: vapidKey,
-                        serviceWorkerRegistration: registration
-                    });
-
-                    if (token) {
-                        console.log('FCM Token:', token);
-                        sendTokenToServer(token);
-                    } else {
-                        console.log('No registration token available.');
-                    }
-
-                    // Handle foreground messages
-                    onMessage(messaging, (payload) => {
-                        console.log('Message received in foreground:', payload);
-                        showNotification(payload);
-                    });
-                } catch (error) {
-                    console.error('Error initializing messaging:', error);
-                    // Log more details for debugging
-                    if (error.code) {
-                        console.error('Error code:', error.code);
-                    }
-                    if (error.message) {
-                        console.error('Error message:', error.message);
-                    }
-                }
-            }
-
-            // Send token to server
-            async function sendTokenToServer(token) {
-                try {
-                    const userAgent = navigator.userAgent;
-                    const browser = getBrowserName(userAgent);
-                    const platform = navigator.platform;
-                    const device = /Mobile|Android|iPhone|iPad/.test(userAgent) ? 'Mobile' : 'Desktop';
-
-                    const formData = new FormData();
-                    formData.append('token', token);
-                    formData.append('browser', browser);
-                    formData.append('device', device);
-                    formData.append('platform', platform);
-                    formData.append('_token', '{{ csrf_token() }}');
-
-                    const response = await fetch('{{ route('notifications.storeToken') }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        console.log('Token stored successfully:', result);
-                    } else {
-                        console.error('Error storing token:', result);
-                    }
-                } catch (error) {
-                    console.error('Error storing token:', error);
-                }
-            }
-
-            // Show notification when app is in foreground
-            function showNotification(payload) {
-                const title = payload.notification?.title || 'New Notification';
-                const options = {
-                    body: payload.notification?.body || '',
-                    icon: payload.notification?.icon || '{{ asset('frontend/images/icons/favicon.png') }}',
-                    badge: '{{ asset('frontend/images/icons/favicon.png') }}',
-                    tag: payload.data?.product_id || 'notification',
-                    data: payload.data || {},
-                };
-
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    const notification = new Notification(title, options);
-
-                    notification.onclick = function(event) {
-                        event.preventDefault();
-                        const url = payload.data?.url || payload.data?.click_action || '/';
-                        window.open(url, '_blank');
-                        notification.close();
-                    };
-                }
-            }
-
-            // Get browser name from user agent
-            function getBrowserName(userAgent) {
-                if (userAgent.indexOf('Chrome') > -1) return 'Chrome';
-                if (userAgent.indexOf('Firefox') > -1) return 'Firefox';
-                if (userAgent.indexOf('Safari') > -1) return 'Safari';
-                if (userAgent.indexOf('Edge') > -1) return 'Edge';
-                if (userAgent.indexOf('Opera') > -1) return 'Opera';
-                return 'Unknown';
-            }
-
-            // Check current permission status
-            if (Notification.permission === 'default') {
-                // Request permission after a short delay to avoid blocking page load
-                setTimeout(() => {
-                    requestNotificationPermission();
-                }, 2000);
-            } else if (Notification.permission === 'granted') {
-                // Already granted, initialize messaging
-                initializeMessaging();
-            }
-        } else {
-            console.log('This browser does not support notifications or service workers');
-        }
-    </script>
 
     <!-- Service Worker for Image Caching -->
     <script>

@@ -56,6 +56,16 @@
             color: #28a745;
             margin-top: 15px;
         }
+        .delivery-row {
+            color: #666;
+        }
+        .grand-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+            border-top: 2px solid #28a745;
+            padding-top: 10px;
+        }
         .button {
             display: inline-block;
             padding: 12px 24px;
@@ -94,6 +104,12 @@
             background-color: #dc3545;
             color: white;
         }
+        .payment-info {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -110,6 +126,7 @@
             <h2>Order Information</h2>
             <p><strong>Order Number:</strong> {{ $order->order_number }}</p>
             <p><strong>Order Date:</strong> {{ $order->created_at->format('F d, Y h:i A') }}</p>
+            <p><strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}</p>
             <p><strong>Status:</strong>
                 <span class="status-badge status-{{ $order->status }}">
                     {{ ucfirst($order->status) }}
@@ -160,7 +177,6 @@
                         <th>Size</th>
                         <th>Quantity</th>
                         <th>Price</th>
-                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -170,7 +186,6 @@
                         <td>{{ $item->size ?? 'N/A' }}</td>
                         <td>{{ $item->quantity }}</td>
                         <td>PKR {{ number_format($item->price, 0) }}</td>
-                        <td>PKR {{ number_format($item->total, 0) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -179,10 +194,7 @@
 
         <div class="order-details">
             <table>
-                <tr>
-                    <th>Subtotal</th>
-                    <td>PKR {{ number_format($order->subtotal, 0) }}</td>
-                </tr>
+
                 @if($order->discount_amount > 0)
                 <tr>
                     <th>Discount
@@ -190,15 +202,28 @@
                             ({{ $order->coupon_code }})
                         @endif
                     </th>
-                    <td>-PKR {{ number_format($order->discount_amount, 0) }}</td>
+                    <td style="color: #4caf50;">-PKR {{ number_format($order->discount_amount, 0) }}</td>
                 </tr>
                 @endif
-                <tr class="total">
-                    <th>Total</th>
-                    <td>PKR {{ number_format($order->total, 0) }}</td>
+                <tr class="delivery-row">
+                    <th>Delivery Charges</th>
+                    <td>PKR {{ number_format($order->delivery_charges ?? 199, 0) }}</td>
+                </tr>
+                <tr class="grand-total">
+                    <th>Grand Total</th>
+                    <td>PKR {{ number_format($order->grand_total ?? ($order->total + 199), 0) }}</td>
                 </tr>
             </table>
         </div>
+
+        @if($order->payment_method == 'bank' && $order->payment_screenshot)
+        <div class="payment-info">
+            <h3>Payment Information</h3>
+            <p><strong>Payment Method:</strong> Bank Transfer</p>
+            <p><strong>Payment Screenshot:</strong> Uploaded for verification</p>
+            <p><strong>Status:</strong> Pending Verification</p>
+        </div>
+        @endif
 
         @if($order->order_notes)
         <div class="order-info">

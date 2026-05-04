@@ -15,7 +15,11 @@
                 var cartItems = [];
                 var productIds = [];
                 var productNames = [];
-                var totalValue = {{ isset($total) ? $total : (isset($subtotal) ? $subtotal : 0) }};
+                var deliveryCharges = 199;
+                var subtotalValue = {{ isset($subtotal) ? $subtotal : 0 }};
+                var discountAmount = {{ isset($discountAmount) ? $discountAmount : 0 }};
+                var totalAfterDiscount = subtotalValue - discountAmount;
+                var grandTotalValue = totalAfterDiscount + deliveryCharges;
                 var itemCount = {{ isset($cartItems) ? $cartItems->count() : 0 }};
 
                 @if (isset($cartItems) && $cartItems->count() > 0)
@@ -36,7 +40,7 @@
                     fbq('track', 'InitiateCheckout', {
                         content_ids: productIds,
                         content_type: 'product',
-                        value: totalValue,
+                        value: grandTotalValue,
                         currency: 'PKR',
                         num_items: itemCount
                     });
@@ -49,7 +53,7 @@
                         content_type: 'product',
                         content_name: productNames.join(', '),
                         quantity: itemCount,
-                        value: totalValue,
+                        value: grandTotalValue,
                         currency: 'PKR'
                     });
                 }
@@ -62,7 +66,7 @@
                     fbq('track', 'Purchase', {
                         content_ids: orderData.product_ids || [],
                         content_type: 'product',
-                        value: orderData.total || 0,
+                        value: orderData.grand_total || orderData.total || 0,
                         currency: 'PKR',
                         num_items: orderData.item_count || 0
                     });
@@ -76,12 +80,12 @@
                         content_type: 'product',
                         content_category: 'checkout',
                         quantity: orderData.item_count || 0,
-                        value: orderData.total || 0,
+                        value: orderData.grand_total || orderData.total || 0,
                         currency: 'PKR',
                         description: 'Order completed successfully'
                     });
 
-                    // Also track individual products in the order (optional, for better analytics)
+                    // Also track individual products in the order
                     if (orderData.products && orderData.products.length > 0) {
                         orderData.products.forEach(function(product) {
                             ttq.track('CompletePayment', {
@@ -103,13 +107,18 @@
                 product_names: [],
                 products: [],
                 item_count: {{ isset($cartItems) ? $cartItems->count() : 0 }},
-                total: {{ isset($total) ? $total : (isset($subtotal) ? $subtotal : 0) }}
+                subtotal: {{ isset($subtotal) ? $subtotal : 0 }},
+                discount_amount: {{ isset($discountAmount) ? $discountAmount : 0 }},
+                total: {{ isset($total) ? $total : (isset($subtotal) ? $subtotal : 0) }},
+                delivery_charges: 199,
+                grand_total: {{ isset($total) ? $total + 199 : (isset($subtotal) ? $subtotal + 199 : 199) }}
             };
 
             @if (isset($cartItems) && $cartItems->count() > 0)
                 @foreach ($cartItems as $item)
                     window.currentOrderData.product_ids.push('{{ $item->product_id }}');
-                    window.currentOrderData.product_names.push('{{ $item->product ? addslashes($item->product->name) : 'Product' }}');
+                    window.currentOrderData.product_names.push(
+                        '{{ $item->product ? addslashes($item->product->name) : 'Product' }}');
                     window.currentOrderData.products.push({
                         id: '{{ $item->product_id }}',
                         name: '{{ $item->product ? addslashes($item->product->name) : 'Product' }}',
@@ -222,15 +231,16 @@
 
         </div>
     </div>
+
     <!-- breadcrumb -->
     <div class="container">
         <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-            <a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+            <a href="{{ route('home') }}" class="stext-109 cl8 hov-cl1 trans-04">
                 Home
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
 
-            <a href="shoping-cart.html" class="stext-109 cl8 hov-cl1 trans-04">
+            <a href="{{ route('cart') }}" class="stext-109 cl8 hov-cl1 trans-04">
                 Cart
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
@@ -265,7 +275,6 @@
         </div>
     @endif
 
-
     <!-- Checkout -->
     <section class="bg0 p-t-75 p-b-85">
         <div class="container">
@@ -295,12 +304,14 @@
                                     placeholder="john.doe@example.com">
                             </div>
                             <div class="form-group-checkout">
-                                <label class="form-label-checkout">Phone Number <span class="required-field">*</span></label>
+                                <label class="form-label-checkout">Phone Number <span
+                                        class="required-field">*</span></label>
                                 <input type="tel" name="c_phone" class="form-input-checkout"
                                     placeholder="+1 234 567 8900" required>
                             </div>
                             <div class="form-group-checkout">
-                                <label class="form-label-checkout">Street Address <span class="required-field">*</span></label>
+                                <label class="form-label-checkout">Street Address <span
+                                        class="required-field">*</span></label>
                                 <input type="text" name="c_address" class="form-input-checkout"
                                     placeholder="123 Main Street" required>
                             </div>
@@ -339,13 +350,11 @@
                         </form>
                     </div>
 
-
-
                     <!-- Payment Method -->
                     <div class="checkout-section">
                         <h3 class="section-title">Payment Method</h3>
                         <div class="payment-methods-wrapper">
-                             <div class="payment-method">
+                            <div class="payment-method">
                                 <input type="radio" id="payment-cash" name="payment" value="cash" checked>
                                 <label for="payment-cash" class="payment-label">
                                     <i class="zmdi zmdi-money payment-icon"></i>
@@ -355,14 +364,13 @@
                             </div>
 
                             <div class="payment-method">
-                                <input type="radio" id="payment-bank" name="payment" value="bank" >
+                                <input type="radio" id="payment-bank" name="payment" value="bank">
                                 <label for="payment-bank" class="payment-label">
                                     <i class="fa fa-university payment-icon"></i>
                                     <span>Bank Transfer</span>
                                 </label>
                                 <div class="radio-checkmark">✓</div>
                             </div>
-
                         </div>
 
                         <!-- Payment Screenshot Upload Section -->
@@ -372,39 +380,36 @@
                                 Upload Payment Screenshot
                             </h4>
 
-                            <!-- Bank Details Section (shown when Bank Transfer is selected) -->
+                            <!-- Bank Details Section -->
                             <div class="bank-details-section" id="bank-details-section">
                                 <div class="bank-details-card">
-
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">Bank Name:</span>
-                                        <span class="bank-detail-value">Bank</span>
+                                        <span class="bank-detail-value">Meezan Bank</span>
                                     </div>
 
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">Account Title:</span>
-                                        <span class="bank-detail-value">Batool pret</span>
+                                        <span class="bank-detail-value">AHSAN SAEED</span>
                                     </div>
 
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">Account Number:</span>
-                                        <span class="bank-detail-value">00000000000000 </span>
+                                        <span class="bank-detail-value">02930111855908</span>
                                     </div>
 
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">IBAN:</span>
-                                        <span class="bank-detail-value">PK00MEZN00000000000000</span>
+                                        <span class="bank-detail-value">PK57MEZN0002930111855908</span>
                                     </div>
 
-                                    <div class="bank-note"
-                                        style="margin-top: 15px; padding: 10px; background-color: #e3f2fd; border-radius: 4px; font-size: 13px;">
-                                        <i class="zmdi zmdi-info" style="color: #1976d2; margin-right: 5px;"></i>
+                                    <div class="bank-note">
+                                        <i class="zmdi zmdi-info"></i>
                                         <strong>Note:</strong> Please include your order number in the transfer description.
                                         After making the payment, upload the screenshot below for verification.
                                     </div>
                                 </div>
                             </div>
-
 
                             <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
                                 Please upload a screenshot of your payment confirmation for verification.
@@ -445,7 +450,6 @@
                     <div class="order-summary-card">
                         <div class="order-summary-header">
                             <h3 class="order-summary-title">Order Summary</h3>
-                            {{-- <span class="order-number">Order #12345</span> --}}
                         </div>
 
                         <!-- Coupon Section -->
@@ -544,6 +548,7 @@
                                 <span id="subtotal-amount">Rs.
                                     {{ isset($subtotal) ? number_format($subtotal, 0) : '0' }}</span>
                             </div>
+
                             @if (isset($discountAmount) && $discountAmount > 0)
                                 <div class="total-row" id="discount-row">
                                     <span>Discount ({{ isset($coupon) ? $coupon->code : '' }})</span>
@@ -556,10 +561,19 @@
                                     <span id="discount-amount" style="color: #4caf50;">-Rs. 0</span>
                                 </div>
                             @endif
+
+                            <!-- Delivery Charges Row -->
+                            <div class="total-row" id="delivery-row">
+                                <span>Delivery Charges</span>
+                                <span id="delivery-amount" style="color: #666;">Rs. 199</span>
+                            </div>
+
                             <div class="total-row final">
-                                <span>Total</span>
-                                <span id="total-amount">Rs.
-                                    {{ isset($total) ? number_format($total, 0) : (isset($subtotal) ? number_format($subtotal, 0) : '0') }}</span>
+                                <span>Grand Total</span>
+                                <span id="grand-total-amount">
+                                    Rs.
+                                    {{ isset($total) ? number_format($total + 199, 0) : (isset($subtotal) ? number_format($subtotal + 199, 0) : '199') }}
+                                </span>
                             </div>
                         </div>
 
@@ -601,6 +615,28 @@
                     }
 
                     var $ = jQuery;
+                    var DELIVERY_CHARGES = 199;
+
+                    function updateTotals() {
+                        var subtotal = parseFloat($('#subtotal-amount').text().replace('Rs.', '').replace(/,/g, '').trim()) || 0;
+                        var discountText = $('#discount-amount').text();
+                        var discount = 0;
+
+                        if (discountText && discountText !== '-Rs. 0') {
+                            discount = parseFloat(discountText.replace('-Rs.', '').replace(/,/g, '').trim()) || 0;
+                        }
+
+                        var totalAfterDiscount = subtotal - discount;
+                        var grandTotal = totalAfterDiscount + DELIVERY_CHARGES;
+
+                        $('#grand-total-amount').text('Rs. ' + grandTotal.toLocaleString());
+
+                        // Update order data
+                        if (window.currentOrderData) {
+                            window.currentOrderData.grand_total = grandTotal;
+                            window.currentOrderData.delivery_charges = DELIVERY_CHARGES;
+                        }
+                    }
 
                     $(document).ready(function() {
                         // Handle payment method change - show/hide screenshot section
@@ -613,14 +649,12 @@
                             var paymentMethod = $checkedPayment.val();
                             var $screenshotSection = $('#screenshot-section');
 
-                            // Show screenshot section only for bank transfer
                             if (paymentMethod === 'bank') {
-                                // Add 'active' class to show the section (CSS uses .active class)
                                 $screenshotSection.addClass('active');
+                                $screenshotSection.show();
                             } else {
-                                // Hide for cash on delivery - remove 'active' class
                                 $screenshotSection.removeClass('active');
-                                // Clear file input
+                                $screenshotSection.hide();
                                 $('#payment-screenshot-input').val('');
                                 $('#file-preview').hide();
                                 $('#preview-img').attr('src', '');
@@ -628,33 +662,27 @@
                             }
                         }
 
-                        // Handle payment method change - use direct event binding
                         $('input[name="payment"]').on('change', function() {
                             toggleScreenshotSection();
                         });
 
-                        // Also use event delegation as backup
                         $(document).on('change', 'input[name="payment"]', function() {
                             toggleScreenshotSection();
                         });
 
-                        // Trigger on page load to set initial state
-                        setTimeout(function() {
-                            toggleScreenshotSection();
-                        }, 200);
+                        // Set initial state
+                        toggleScreenshotSection();
 
                         // Handle file preview
                         $(document).on('change', '#payment-screenshot-input', function(e) {
                             var file = e.target.files[0];
                             if (file) {
-                                // Validate file type
                                 if (!file.type.startsWith('image/')) {
                                     alert('Please select a valid image file (PNG, JPG, GIF)');
                                     $(this).val('');
                                     return;
                                 }
 
-                                // Validate file size (5MB max)
                                 if (file.size > 5 * 1024 * 1024) {
                                     alert('File size must be less than 5MB');
                                     $(this).val('');
@@ -689,42 +717,28 @@
                         $('#checkout-form').on('submit', function(e) {
                             e.preventDefault();
 
-                            // Validate only required fields (phone and address)
+                            // Validate required fields
                             if (!$('input[name="c_phone"]').val()) {
-                                if (typeof swal !== 'undefined') {
-                                    swal("Error!", "Please enter your phone number", "error");
-                                } else {
-                                    alert('Please enter your phone number');
-                                }
+                                alert('Please enter your phone number');
                                 return false;
                             }
 
                             if (!$('input[name="c_address"]').val()) {
-                                if (typeof swal !== 'undefined') {
-                                    swal("Error!", "Please enter your address", "error");
-                                } else {
-                                    alert('Please enter your address');
-                                }
+                                alert('Please enter your address');
                                 return false;
                             }
 
-                            // Validate payment screenshot for non-cash payments
+                            // Validate payment screenshot for bank transfer
                             var selectedPayment = $('input[name="payment"]:checked').val();
                             if (selectedPayment === 'bank') {
                                 var screenshotFile = $('#payment-screenshot-input')[0].files[0];
                                 if (!screenshotFile) {
-                                    if (typeof swal !== 'undefined') {
-                                        swal("Error!",
-                                            "Please upload a payment screenshot for Bank Transfer",
-                                            "error");
-                                    } else {
-                                        alert("Please upload a payment screenshot for Bank Transfer.");
-                                    }
+                                    alert("Please upload a payment screenshot for Bank Transfer.");
                                     return false;
                                 }
                             }
 
-                            // Get values from billing form and populate hidden fields
+                            // Get values from billing form
                             $('#checkout-fname').val($('input[name="c_fname"]').val() || '');
                             $('#checkout-lname').val($('input[name="c_lname"]').val() || '');
                             $('#checkout-email').val($('input[name="c_email_address"]').val() || '');
@@ -736,7 +750,7 @@
                             $('#checkout-country').val($('input[name="c_country"]').val() || '');
                             $('#checkout-payment').val($('input[name="payment"]:checked').val() || 'cash');
 
-                            // Get payment screenshot if uploaded and copy to hidden input
+                            // Copy screenshot file
                             var screenshotFile = $('#payment-screenshot-input')[0].files[0];
                             if (screenshotFile) {
                                 var dataTransfer = new DataTransfer();
@@ -754,11 +768,11 @@
                                 product_ids: window.currentOrderData?.product_ids || [],
                                 products: window.currentOrderData?.products || [],
                                 item_count: window.currentOrderData?.item_count || 0,
-                                total: window.currentOrderData?.total || 0,
-                                order_number: null // Will be set from response
+                                grand_total: window.currentOrderData?.grand_total || 0,
+                                order_number: null
                             };
 
-                            // Submit the form using FormData for file upload
+                            // Submit form
                             var formData = new FormData(this);
 
                             $.ajax({
@@ -771,27 +785,22 @@
                                     'X-Requested-With': 'XMLHttpRequest'
                                 },
                                 success: function(response) {
-                                    // Add order number to tracking data if available
                                     if (response.order_number) {
                                         orderData.order_number = response.order_number;
                                     }
 
-                                    // Track purchase event on successful order
                                     if (typeof window.trackPurchase === 'function' && orderData
                                         .product_ids.length > 0) {
                                         window.trackPurchase(orderData);
                                     }
 
-                                    // If response is a redirect, follow it
                                     if (response.redirect) {
                                         window.location.href = response.redirect;
                                     } else if (response.order_number) {
-                                        // Redirect with order number in URL
                                         window.location.href =
                                             '{{ route('thankyou') }}?order=' + response
                                             .order_number;
                                     } else {
-                                        // Otherwise redirect to thankyou page
                                         window.location.href = '{{ route('thankyou') }}';
                                     }
                                 },
@@ -800,14 +809,10 @@
 
                                     var errorMsg = 'An error occurred. Please try again.';
 
-                                    // Check for validation errors
                                     if (xhr.responseJSON) {
-                                        // First try to get the message
                                         if (xhr.responseJSON.message) {
                                             errorMsg = xhr.responseJSON.message;
-                                        }
-                                        // Then try to get errors object
-                                        else if (xhr.responseJSON.errors) {
+                                        } else if (xhr.responseJSON.errors) {
                                             var errors = [];
                                             $.each(xhr.responseJSON.errors, function(key,
                                                 value) {
@@ -817,32 +822,13 @@
                                                     errors.push(value);
                                                 }
                                             });
-                                            errorMsg = errors.join('<br>');
+                                            errorMsg = errors.join('\n');
                                         }
                                     }
 
-                                    // Log to console for debugging
                                     console.error('Order submission error:', xhr.responseJSON ||
                                         xhr.responseText);
-
-                                    if (typeof swal !== 'undefined') {
-                                        swal({
-                                            title: "Error!",
-                                            html: true,
-                                            text: errorMsg,
-                                            type: "error"
-                                        });
-                                    } else {
-                                        alert(errorMsg);
-                                    }
-
-                                    // Don't reload on validation errors - let user fix them
-                                    // Only reload on server errors
-                                    if (xhr.status >= 500) {
-                                        setTimeout(function() {
-                                            window.location.reload();
-                                        }, 2000);
-                                    }
+                                    alert(errorMsg);
                                 }
                             });
 
@@ -851,7 +837,6 @@
                     });
                 }
 
-                // Start initialization
                 if (document.readyState === 'loading') {
                     document.addEventListener('DOMContentLoaded', initCheckoutScript);
                 } else {

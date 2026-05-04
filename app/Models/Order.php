@@ -23,7 +23,9 @@ class Order extends Model
         'phone',
         'order_notes',
         'subtotal',
+        'delivery_charges',
         'total',
+        'grand_total',
         'status',
         'payment_method',
         'payment_screenshot',
@@ -70,7 +72,9 @@ class Order extends Model
     public static function generateOrderNumber()
     {
         do {
-            $orderNumber = 'ORD-' . strtoupper(uniqid());
+            // Generate 6 random digits
+            $randomDigits = rand(100000, 999999);
+            $orderNumber = 'ORD-' . $randomDigits; // This makes ORD + 6 digits = 9 characters total
         } while (self::where('order_number', $orderNumber)->exists());
 
         return $orderNumber;

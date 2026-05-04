@@ -74,25 +74,42 @@
                                                 <input type="text" class="form-control" value="{{ $order->created_at->format('F d, Y h:i A') }}" disabled>
                                             </div>
 
-                                            {{-- <div class="form-group">
+                                            <div class="form-group">
                                                 <label>Subtotal</label>
                                                 <input type="number" step="0.01" class="form-control" name="subtotal" value="{{ old('subtotal', $order->subtotal) }}">
                                             </div>
+
+                                            <div class="form-group">
+                                                <label>Delivery Charges</label>
+                                                <input type="number" step="0.01" class="form-control" name="delivery_charges" value="{{ old('delivery_charges', $order->delivery_charges ?? 199) }}">
+                                                <small class="form-text text-muted">Default delivery charge is Rs. 199</small>
+                                            </div>
+
                                             <div class="form-group">
                                                 <label>Coupon Code</label>
                                                 <input type="text" class="form-control" name="coupon_code" value="{{ old('coupon_code', $order->coupon_code) }}">
                                             </div>
+
                                             <div class="form-group">
                                                 <label>Coupon Discount (%)</label>
                                                 <input type="number" step="0.01" class="form-control" name="coupon_discount" value="{{ old('coupon_discount', $order->coupon_discount) }}">
                                             </div>
+
                                             <div class="form-group">
                                                 <label>Discount Amount</label>
                                                 <input type="number" step="0.01" class="form-control text-success" name="discount_amount" value="{{ old('discount_amount', $order->discount_amount) }}">
-                                            </div> --}}
+                                            </div>
+
                                             <div class="form-group">
-                                                <label>Total Amount</label>
+                                                <label>Total (After Discount)</label>
                                                 <input type="number" step="0.01" class="form-control" name="total" value="{{ old('total', $order->total) }}">
+                                                <small class="form-text text-muted">Subtotal - Discount Amount</small>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Grand Total (Including Delivery)</label>
+                                                <input type="number" step="0.01" class="form-control bg-light" name="grand_total" value="{{ old('grand_total', $order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199))) }}" readonly style="background-color: #f8f9fa;">
+                                                <small class="form-text text-muted">Total + Delivery Charges (Auto-calculated)</small>
                                             </div>
                                         </div>
                                     </div>
@@ -328,8 +345,12 @@
                                                 </tr>
                                                 @endif
                                                 <tr>
-                                                    <th colspan="5" class="text-right">Total:</th>
-                                                    <th class="text-primary">PKR {{ number_format($order->total, 2) }}</th>
+                                                    <th colspan="5" class="text-right">Delivery Charges:</th>
+                                                    <th>PKR {{ number_format($order->delivery_charges ?? 199, 2) }}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="5" class="text-right">Grand Total:</th>
+                                                    <th class="text-primary">PKR {{ number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199)), 2) }}</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -349,3 +370,29 @@
     </div>
 @endsection
 
+<script>
+    // Auto-calculate grand total when delivery charges or total changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const deliveryChargesInput = document.querySelector('input[name="delivery_charges"]');
+        const totalInput = document.querySelector('input[name="total"]');
+        const grandTotalInput = document.querySelector('input[name="grand_total"]');
+
+        function calculateGrandTotal() {
+            let deliveryCharges = parseFloat(deliveryChargesInput?.value) || 0;
+            let total = parseFloat(totalInput?.value) || 0;
+            let grandTotal = total + deliveryCharges;
+
+            if (grandTotalInput) {
+                grandTotalInput.value = grandTotal.toFixed(2);
+            }
+        }
+
+        if (deliveryChargesInput) {
+            deliveryChargesInput.addEventListener('input', calculateGrandTotal);
+        }
+
+        if (totalInput) {
+            totalInput.addEventListener('input', calculateGrandTotal);
+        }
+    });
+</script>

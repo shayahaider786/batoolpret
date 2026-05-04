@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('testimonials', function (Blueprint $table) {
-            $table->string('image')->nullable()->after('name'); // Customer image/photo
-            $table->string('video')->nullable()->after('image'); // Video file path
+            if (!Schema::hasColumn('testimonials', 'image')) {
+                $table->string('image')->nullable()->after('name');
+            }
+
+            if (!Schema::hasColumn('testimonials', 'video')) {
+                $table->string('video')->nullable()->after('image');
+            }
         });
     }
 

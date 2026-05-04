@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Invoice - {{ $order->order_number }} - Zaylish Studio</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         * {
             margin: 0;
@@ -166,7 +170,7 @@
         }
 
         .items-table tfoot th {
-            text-align: center;
+            text-align: left;
             padding: 6px 5px;
             border: 1.5px solid #000;
             background: #fff;
@@ -179,7 +183,6 @@
             padding: 6px 5px;
             border: 1.5px solid #000;
             font-weight: bold;
-            text-align: right;
             font-size: 15px;
             color: #000;
             background: #fff;
@@ -195,6 +198,26 @@
             background: #fff !important;
             color: #000 !important;
             font-size: 14px;
+            font-weight: bold;
+            padding: 7px 5px;
+            border: 2px solid #000 !important;
+        }
+
+        .delivery-row th,
+        .delivery-row td {
+            background: #fff !important;
+            color: #000 !important;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 7px 5px;
+            border: 2px solid #000 !important;
+        }
+
+        .grand-total-row th,
+        .grand-total-row td {
+            background: #fff !important;
+            color: #000 !important;
+            font-size: 16px;
             font-weight: bold;
             padding: 7px 5px;
             border: 2px solid #000 !important;
@@ -280,6 +303,7 @@
                 width: auto;
                 height: auto;
                 min-height: 400px;
+                background: #f8f9fa;
             }
 
             .print-container {
@@ -287,6 +311,8 @@
                 height: 4in;
                 border: 2px dashed #ccc;
                 background: #fff;
+                margin: 0 auto;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
 
             .print-actions {
@@ -296,8 +322,8 @@
                 z-index: 1000;
                 background: #fff;
                 padding: 15px;
-                border: 2px solid #000;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
 
             .print-actions button {
@@ -310,18 +336,21 @@
                 font-weight: bold;
                 text-transform: uppercase;
                 margin-right: 10px;
+                border-radius: 5px;
+                transition: all 0.3s ease;
             }
 
             .print-actions button:hover {
                 background: #333;
+                transform: translateY(-2px);
             }
         }
     </style>
 </head>
 <body>
     <div class="print-actions no-print">
-        <button onclick="window.print()">Print</button>
-        <button onclick="window.close()">Close</button>
+        <button onclick="window.print()" class="btn btn-dark">🖨️ Print</button>
+        <button onclick="window.close()" class="btn btn-secondary">❌ Close</button>
     </div>
 
     <div class="print-container">
@@ -333,6 +362,7 @@
             <div class="order-header-info">
                 <div class="invoice-title">Order Invoice</div>
                 <div class="order-number">#{{ $order->order_number }}</div>
+                <div class="order-date">Date: {{ $order->created_at->format('F d, Y') }}</div>
             </div>
         </div>
 
@@ -351,6 +381,7 @@
                     @endif
                     <p>{{ $order->state_country }}, {{ $order->postal_zip }}</p>
                 </div>
+
                 @if($order->order_notes)
                 <div class="order-notes-box">
                     <strong>Notes:</strong>
@@ -370,7 +401,6 @@
                             <th style="width: 10%;">Size</th>
                             <th style="width: 8%;">Qty</th>
                             <th style="width: 15%;">Price</th>
-                            <th style="width: 15%;">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -382,23 +412,51 @@
                             <td>{{ $item->size ?? '—' }}</td>
                             <td>{{ $item->quantity }}</td>
                             <td>PKR {{ number_format($item->price, 0) }}</td>
-                            <td>PKR {{ number_format($item->total, 0) }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
+                        {{-- <tr class="total-row">
+                            <th colspan="5">Subtotal:</th>
+                            <td>PKR {{ number_format($order->subtotal, 0) }}</td>
+                        </tr> --}}
 
                         @if($order->discount_amount > 0)
-                        <tr>
-                            <th colspan="6">
-                                Discount{{ $order->coupon_code ? ' (' . $order->coupon_code . ')' : '' }}:
+                        <tr class="total-row">
+                            <th colspan="5">
+                                Discount
+                                @if($order->coupon_code)
+                                    ({{ $order->coupon_code }})
+                                @endif
+                                :
                             </th>
-                            <td>-PKR {{ number_format($order->discount_amount, 0) }}</td>
+                            <td style="color: #000;">-PKR {{ number_format($order->discount_amount, 0) }}</td>
                         </tr>
                         @endif
-                        <tr class="total-row">
-                            <th colspan="6">Total Amount:</th>
-                            <td>PKR {{ number_format($order->total, 0) }}</td>
+
+                        {{-- Conditional Delivery Charges Row --}}
+                        @php
+                            // Check if delivery charges exist and are greater than 0
+                            $deliveryCharges = $order->delivery_charges ?? null;
+                            $showDelivery = !is_null($deliveryCharges) && $deliveryCharges > 0;
+                            $deliveryAmount = $showDelivery ? $deliveryCharges : 0;
+
+                            // Calculate grand total based on whether delivery charges are applied
+                            $grandTotal = $showDelivery
+                                ? ($order->grand_total ?? ($order->total + $deliveryAmount))
+                                : ($order->grand_total ?? $order->total);
+                        @endphp
+
+                        @if($showDelivery)
+                        <tr class="delivery-row">
+                            <th colspan="5">Delivery Charges:</th>
+                            <td>PKR {{ number_format($deliveryAmount, 0) }}</td>
+                        </tr>
+                        @endif
+
+                        <tr class="grand-total-row">
+                            <th colspan="5">Grand Total:</th>
+                            <td style="font-size: 16px; font-weight: bold;">PKR {{ number_format($grandTotal, 0) }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -413,8 +471,27 @@
             <div class="footer-text">
                 <strong>Thank you for your order!</strong>
             </div>
-            <div style="width: 25%;"></div>
+            <div style="width: 25%; text-align: right; font-size: 11px;">
+                <strong>Powered by Zaylish Studio</strong>
+            </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS Bundle (optional, for interactivity) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Auto-print when page loads (optional)
+        // Uncomment the line below if you want auto-print
+        // window.onload = function() { window.print(); }
+
+        // Keyboard shortcut for printing (Ctrl+P)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
 </body>
 </html>
