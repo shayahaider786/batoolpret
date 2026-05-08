@@ -1,6 +1,6 @@
 # Security Audit Report
 **Date:** January 15, 2026  
-**Project:** Zaylish Studio E-commerce Platform
+**Project:** batool pret E-commerce Platform
 
 ## Executive Summary
 This security audit identified several security vulnerabilities and areas for improvement. Critical issues have been addressed, and recommendations are provided for remaining items.

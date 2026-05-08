@@ -17,7 +17,7 @@
     @stack('meta')
     @stack('canonical')
     <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicons.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicon.png') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!--===============================================================================================-->
@@ -53,6 +53,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/navbar-premium.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/mobile-menu.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/css/banner-section.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')
 </head>
 
@@ -121,7 +122,7 @@
 
                     <!-- Logo desktop -->
                     <a href="{{ route('index') }}" class="logo">
-                        <img src="../../frontend/images/icons/zaylishlogo-1.png" alt="IMG-LOGO">
+                        <img src="../../frontend/images/icons/batoollogo.png" alt="IMG-LOGO">
                     </a>
 
                     <!-- Menu desktop -->
@@ -272,7 +273,7 @@
         <div class="wrap-header-mobile">
             <!-- Logo moblie -->
             <div class="logo-mobile">
-                <a href="{{ route('index') }}"><img src="../../frontend/images/icons/zaylishlogo-1.png"
+                <a href="{{ route('index') }}"><img src="../../frontend/images/icons/batoollogo.png"
                         alt="IMG-LOGO"></a>
             </div>
 
@@ -497,7 +498,7 @@
 
                     <p class="stext-107 cl7 size-201">
                         Any questions about our products or orders? Our customer support team is always available to
-                        assist you. Call us at <a href="tel:+923144707099">+923224741317</a>
+                        assist you. Call us at <a href="tel:+923144707099">+923712275753</a>
 
                     </p>
 
@@ -1103,7 +1104,7 @@
         <script src="{{ asset('frontend/js/checkout.js') }}" defer></script>
     @endif
     <!-- Bottom Navigation Mobile -->
-    <nav class="bottom-nav-mobile">
+    {{-- <nav class="bottom-nav-mobile">
         @php
             $isHomeActive = request()->routeIs('index');
             $isShopActiveMobile = (request()->routeIs('shop') || request()->routeIs('tagShop') || request()->routeIs('productDetail')) && !request('sale') && !request('tag');
@@ -1117,13 +1118,13 @@
             <span class="bottom-nav-label">Home</span>
         </a>
 
-        {{-- @if ($summerCategoryId) --}}
+        @if ($summerCategoryId)
             <a href="{{ route('shop', ['categories' => [$summerCategoryId]]) }}"
                 class="bottom-nav-item {{ $isSummerActiveMobile ? 'active' : '' }}">
                 <i class="zmdi zmdi-star"></i>
                 <span class="bottom-nav-label">Summer</span>
             </a>
-        {{-- @endif --}}
+        @endif
 
         <a href="{{ route('shop') }}" class="bottom-nav-item {{ $isCollectionsActive ? 'active' : '' }}">
             <i class="zmdi zmdi-local-offer"></i>
@@ -1142,202 +1143,10 @@
                 <span class="bottom-nav-label">Contact</span>
             </a>
         @endif
-    </nav>
+    </nav> --}}
 
     <!-- Page-specific scripts -->
     @stack('scripts')
-
-    <!-- Firebase Cloud Messaging -->
-    <script type="module">
-        // Import Firebase modules
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import {
-            getMessaging,
-            getToken,
-            onMessage
-        } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-messaging.js";
-
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAKvYZRyQtyxa7j3rSWGF1jliF4QTh7y2E",
-            authDomain: "zaylish-56f79.firebaseapp.com",
-            projectId: "zaylish-56f79",
-            storageBucket: "zaylish-56f79.firebasestorage.app",
-            messagingSenderId: "844375879908",
-            appId: "1:844375879908:web:ad0784e22383426f46fcf1",
-            measurementId: "G-B871GGYC5P"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        let messaging = null;
-
-        // Check if browser supports service workers and notifications
-        if ('serviceWorker' in navigator && 'Notification' in window) {
-            // Request notification permission
-            async function requestNotificationPermission() {
-                try {
-                    const permission = await Notification.requestPermission();
-                    if (permission === 'granted') {
-                        console.log('Notification permission granted');
-                        initializeMessaging();
-                    } else {
-                        console.log('Notification permission denied');
-                    }
-                } catch (error) {
-                    console.error('Error requesting notification permission:', error);
-                }
-            }
-
-            // Initialize Firebase Messaging
-            async function initializeMessaging() {
-                try {
-                    // Register service worker
-                    const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-                    console.log('Service Worker registered:', registration);
-
-                    // Wait for service worker to be activated and ready
-                    if (registration.installing) {
-                        await new Promise((resolve) => {
-                            registration.installing.addEventListener('statechange', function() {
-                                if (this.state === 'activated') {
-                                    resolve();
-                                }
-                            });
-                        });
-                    } else if (registration.waiting) {
-                        await new Promise((resolve) => {
-                            registration.waiting.addEventListener('statechange', function() {
-                                if (this.state === 'activated') {
-                                    resolve();
-                                }
-                            });
-                        });
-                    }
-
-                    // Ensure service worker is active and has pushManager
-                    if (!registration.active || !registration.pushManager) {
-                        console.warn('Service worker not fully ready, waiting...');
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
-
-                    // Initialize messaging
-                    messaging = getMessaging(app);
-
-                    // Get FCM token with VAPID key
-                    const vapidKey = '{{ config('services.firebase.vapid_key') }}';
-                    const token = await getToken(messaging, {
-                        vapidKey: vapidKey,
-                        serviceWorkerRegistration: registration
-                    });
-
-                    if (token) {
-                        console.log('FCM Token:', token);
-                        sendTokenToServer(token);
-                    } else {
-                        console.log('No registration token available.');
-                    }
-
-                    // Handle foreground messages
-                    onMessage(messaging, (payload) => {
-                        console.log('Message received in foreground:', payload);
-                        showNotification(payload);
-                    });
-                } catch (error) {
-                    console.error('Error initializing messaging:', error);
-                    // Log more details for debugging
-                    if (error.code) {
-                        console.error('Error code:', error.code);
-                    }
-                    if (error.message) {
-                        console.error('Error message:', error.message);
-                    }
-                }
-            }
-
-            // Send token to server
-            async function sendTokenToServer(token) {
-                try {
-                    const userAgent = navigator.userAgent;
-                    const browser = getBrowserName(userAgent);
-                    const platform = navigator.platform;
-                    const device = /Mobile|Android|iPhone|iPad/.test(userAgent) ? 'Mobile' : 'Desktop';
-
-                    const formData = new FormData();
-                    formData.append('token', token);
-                    formData.append('browser', browser);
-                    formData.append('device', device);
-                    formData.append('platform', platform);
-                    formData.append('_token', '{{ csrf_token() }}');
-
-                    const response = await fetch('{{ route('notifications.storeToken') }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        console.log('Token stored successfully:', result);
-                    } else {
-                        console.error('Error storing token:', result);
-                    }
-                } catch (error) {
-                    console.error('Error storing token:', error);
-                }
-            }
-
-            // Show notification when app is in foreground
-            function showNotification(payload) {
-                const title = payload.notification?.title || 'New Notification';
-                const options = {
-                    body: payload.notification?.body || '',
-                    icon: payload.notification?.icon || '{{ asset('frontend/images/icons/favicon.png') }}',
-                    badge: '{{ asset('frontend/images/icons/favicon.png') }}',
-                    tag: payload.data?.product_id || 'notification',
-                    data: payload.data || {},
-                };
-
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    const notification = new Notification(title, options);
-
-                    notification.onclick = function(event) {
-                        event.preventDefault();
-                        const url = payload.data?.url || payload.data?.click_action || '/';
-                        window.open(url, '_blank');
-                        notification.close();
-                    };
-                }
-            }
-
-            // Get browser name from user agent
-            function getBrowserName(userAgent) {
-                if (userAgent.indexOf('Chrome') > -1) return 'Chrome';
-                if (userAgent.indexOf('Firefox') > -1) return 'Firefox';
-                if (userAgent.indexOf('Safari') > -1) return 'Safari';
-                if (userAgent.indexOf('Edge') > -1) return 'Edge';
-                if (userAgent.indexOf('Opera') > -1) return 'Opera';
-                return 'Unknown';
-            }
-
-            // Check current permission status
-            if (Notification.permission === 'default') {
-                // Request permission after a short delay to avoid blocking page load
-                setTimeout(() => {
-                    requestNotificationPermission();
-                }, 2000);
-            } else if (Notification.permission === 'granted') {
-                // Already granted, initialize messaging
-                initializeMessaging();
-            }
-        } else {
-            console.log('This browser does not support notifications or service workers');
-        }
-    </script>
 
     <!-- Service Worker for Image Caching -->
     <script>

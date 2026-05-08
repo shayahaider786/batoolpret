@@ -17,7 +17,7 @@
             @if($product->discount_price && $product->discount_price < $product->price)
             <g:sale_price>{{ number_format($product->discount_price, 2, '.', '') }} PKR</g:sale_price>
             @endif
-            <g:brand>Zaylish</g:brand>
+            <g:brand>BatoolPret</g:brand>
         </item>
         @endforeach
     </channel>

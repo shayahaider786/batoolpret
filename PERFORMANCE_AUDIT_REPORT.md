@@ -1,6 +1,6 @@
 # Performance Audit Report
 **Date:** January 15, 2026  
-**Project:** Zaylish Studio E-commerce Platform
+**Project:** Batool Pret E-commerce Platform
 
 ## Executive Summary
 This performance audit identified several optimization opportunities. The application has good foundation with eager loading, but lacks caching and has some query optimization opportunities.

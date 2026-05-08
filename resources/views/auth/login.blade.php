@@ -7,7 +7,7 @@
             <div class="auth-form-light text-left p-5">
 
                 <div class="brand-logo">
-                    <h1>Zaylish Studio</h1>
+                    <h1>Batool Pret</h1>
                 </div>
 
                 <h4>Hello! let's get started</h4>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Invoice - {{ $order->order_number }} - Zaylish Studio</title>
+    <title>Order Invoice - {{ $order->order_number }} - Batool Pret</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -357,7 +357,7 @@
         <!-- Header -->
         <div class="header-section">
             <div class="brand-logo">
-                <img src="{{ asset('../../frontend/images/icons/zaylishlogo-1.png') }}" alt="Zaylish Studio">
+                <img src="{{ asset('../../frontend/images/icons/batoollogo.png') }}" alt="Batool Pret">
             </div>
             <div class="order-header-info">
                 <div class="invoice-title">Order Invoice</div>
@@ -466,13 +466,13 @@
         <!-- Footer -->
         <div class="footer-section">
             <div class="footer-logo">
-                <img src="{{ asset('../../frontend/images/icons/zaylishlogo-1.png') }}" alt="Zaylish Studio">
+                <img src="{{ asset('../../frontend/images/icons/batoollogo.png') }}" alt="Batool Pret">
             </div>
             <div class="footer-text">
                 <strong>Thank you for your order!</strong>
             </div>
             <div style="width: 25%; text-align: right; font-size: 11px;">
-                <strong>Powered by Zaylish Studio</strong>
+                <strong>Powered by Batool Pret</strong>
             </div>
         </div>
     </div>

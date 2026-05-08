@@ -34,7 +34,7 @@
 
                         <h2 class="mb-4">Introduction</h2>
                         <p class="mb-4">
-                            Welcome to <strong>Zaylish Studio</strong>. By accessing or using our website,
+                            Welcome to <strong>Batool Pret</strong>. By accessing or using our website,
                             you agree to be bound by these Terms and Conditions. If you do not agree,
                             please do not use our services.
                         </p>
@@ -67,13 +67,13 @@
                         <h2 class="mb-4">Order Confirmation</h2>
                         <p class="mb-4">
                             Once an order is placed, you will receive an order confirmation.
-                            Zaylish Studio reserves the right to cancel or refuse any order
+                            Batool Pret reserves the right to cancel or refuse any order
                             for any reason, including stock unavailability or payment issues.
                         </p>
 
                         <h2 class="mb-4 text-danger">No Return, No Exchange & No Refund Policy</h2>
                         <p class="mb-4">
-                            All sales made at <strong>Zaylish Studio</strong> are final.
+                            All sales made at <strong>Batool Pret</strong> are final.
                             We do not offer returns, exchanges, or refunds under any circumstances.
                             Customers are advised to review product details carefully before placing an order.
                         </p>
@@ -81,14 +81,14 @@
                         <h2 class="mb-4">Shipping & Delivery</h2>
                         <p class="mb-4">
                             Delivery times are estimates and may vary depending on location
-                            and courier services. Zaylish Studio is not responsible for delays
+                            and courier services. Batool Pret is not responsible for delays
                             caused by third-party delivery providers.
                         </p>
 
                         <h2 class="mb-4">Intellectual Property</h2>
                         <p class="mb-4">
                             All content on this website, including logos, images, text, and designs,
-                            is the property of Zaylish Studio and may not be copied or used without permission.
+                            is the property of Batool Pret and may not be copied or used without permission.
                         </p>
 
                         <h2 class="mb-4">User Conduct</h2>
@@ -99,7 +99,7 @@
 
                         <h2 class="mb-4">Limitation of Liability</h2>
                         <p class="mb-4">
-                            Zaylish Studio shall not be liable for any indirect, incidental, or consequential
+                            Batool Pret shall not be liable for any indirect, incidental, or consequential
                             damages arising from the use of our website or products.
                         </p>
 
@@ -111,7 +111,7 @@
 
                         <h2 class="mb-4">Changes to Terms</h2>
                         <p class="mb-4">
-                            Zaylish Studio may update these Terms and Conditions at any time.
+                            Batool Pret may update these Terms and Conditions at any time.
                             Continued use of the website means you accept the updated terms.
                         </p>
 

@@ -6,32 +6,15 @@
 @endphp
 
 @push('meta')
-    <title>{{ $product->meta_title ?? $product->name }} - Zaylish</title>
+    <title>{{ $product->meta_title ?? $product->name }} - Batool Pret</title>
     <meta name="description"
-        content="{{ $product->meta_description ?? ($product->short_description ?? 'Discover ' . $product->name . ' at Zaylish. Premium quality fashion and lifestyle products.') }}">
+        content="{{ $product->meta_description ?? ($product->short_description ?? 'Discover ' . $product->name . ' at Batool Pret. Premium quality fashion and lifestyle products.') }}">
     @if ($product->meta_keywords)
         <meta name="keywords" content="{{ $product->meta_keywords }}">
     @endif
     @if ($product->meta_tags)
         <meta name="tags" content="{{ $product->meta_tags }}">
     @endif
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="product">
-    <meta property="og:url" content="{{ route('productDetail', $product->slug) }}">
-    <meta property="og:title" content="{{ $product->meta_title ?? $product->name }}">
-    <meta property="og:description" content="{{ $product->meta_description ?? ($product->short_description ?? '') }}">
-    @if ($product->image)
-        <meta property="og:image" content="{{ asset($product->image) }}">
-    @endif
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="{{ route('productDetail', $product->slug) }}">
-    <meta property="twitter:title" content="{{ $product->meta_title ?? $product->name }}">
-    <meta property="twitter:description" content="{{ $product->meta_description ?? ($product->short_description ?? '') }}">
-    @if ($product->image)
-        <meta property="twitter:image" content="{{ asset($product->image) }}">
-    @endif
-
     <!-- Preload critical images for faster loading -->
     @if ($product->image)
         <link rel="preload" as="image" href="{{ asset($product->image) }}" fetchpriority="high">
@@ -43,75 +26,6 @@
 @endpush
 
 @section('content')
-
-    <!-- Facebook ViewContent Tracking -->
-    @push('scripts')
-    <script>
-        // Track product view when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof fbq !== 'undefined') {
-                fbq('track', 'ViewContent', {
-                    content_ids: ['{{ $product->id }}'],
-                    content_type: 'product',
-                    value: {{ $product->discount_price ?? $product->price }},
-                    currency: 'PKR'
-                });
-            }
-
-            // TikTok ViewContent Tracking
-            if (typeof ttq !== 'undefined') {
-                ttq.track('ViewContent', {
-                    content_id: '{{ $product->id }}',
-                    content_type: 'product',
-                    content_name: '{{ $product->name }}',
-                    content_category: '{{ $product->category ? $product->category->name : '' }}',
-                    value: {{ $product->discount_price ?? $product->price }},
-                    currency: 'PKR'
-                });
-            }
-        });
-
-        // AddToCart tracking function (Facebook & TikTok)
-        function trackAddToCart() {
-            if (typeof fbq !== 'undefined') {
-                fbq('track', 'AddToCart', {
-                    content_ids: ['{{ $product->id }}'],
-                    content_type: 'product',
-                    value: {{ $product->discount_price ?? $product->price }},
-                    currency: 'PKR'
-                });
-            }
-
-            if (typeof ttq !== 'undefined') {
-                ttq.track('AddToCart', {
-                    content_id: '{{ $product->id }}',
-                    content_type: 'product',
-                    content_name: '{{ $product->name }}',
-                    content_category: '{{ $product->category ? $product->category->name : '' }}',
-                    quantity: document.getElementById('product-quantity')?.value || 1,
-                    value: {{ $product->discount_price ?? $product->price }},
-                    currency: 'PKR'
-                });
-            }
-        }
-
-        // Enhanced AddToCart with size and quantity
-        function trackAddToCartWithDetails(size, quantity) {
-            if (typeof ttq !== 'undefined') {
-                ttq.track('AddToCart', {
-                    content_id: '{{ $product->id }}',
-                    content_type: 'product',
-                    content_name: '{{ $product->name }}',
-                    content_category: '{{ $product->category ? $product->category->name : '' }}',
-                    content_size: size,
-                    quantity: quantity,
-                    value: ({{ $product->discount_price ?? $product->price }} * quantity),
-                    currency: 'PKR'
-                });
-            }
-        }
-    </script>
-    @endpush
 
     <div class="bg-white">
         <div class="container headerTop p-3">
@@ -274,10 +188,6 @@
                                                 <span class="attribute-label">Fabric Type</span>
                                                 <div class="fabric-info">{{ $product->fabric }}</div>
                                             </div>
-                                            {{-- <div class="quality-badge">
-                                                <i class="zmdi zmdi-check"></i>
-                                                <span>Premium Quality</span>
-                                            </div> --}}
                                         </div>
                                     </div>
                                 @endif
@@ -407,27 +317,12 @@
                                             $('#order-quantity-input').val(qty);
                                         });
 
-                                        // Add to cart form submission with TikTok tracking
+                                        // Add to cart form submission
                                         $('#add-to-cart-form').on('submit', function(e) {
                                             e.preventDefault();
                                             var $form = $(this);
                                             var $button = $form.find('button[type="submit"]');
                                             var selectedSize = $('input[name="product-size"]:checked').val();
-                                            var quantity = $('#product-quantity').val();
-
-                                            // Track TikTok AddToCart event before submission
-                                            if (typeof ttq !== 'undefined') {
-                                                ttq.track('AddToCart', {
-                                                    content_id: '{{ $product->id }}',
-                                                    content_type: 'product',
-                                                    content_name: '{{ $product->name }}',
-                                                    content_category: '{{ $product->category ? $product->category->name : '' }}',
-                                                    content_size: selectedSize || '',
-                                                    quantity: parseInt(quantity),
-                                                    value: {{ $product->discount_price ?? $product->price }} * parseInt(quantity),
-                                                    currency: 'PKR'
-                                                });
-                                            }
 
                                             if ($button.prop('disabled')) return false;
                                             $button.prop('disabled', true).html('<i class="zmdi zmdi-shopping-cart"></i>Adding...');
@@ -459,27 +354,12 @@
                                             });
                                         });
 
-                                        // Order Now form submission with TikTok tracking
+                                        // Order Now form submission
                                         $('#order-now-form').on('submit', function(e) {
                                             e.preventDefault();
                                             var $form = $(this);
                                             var $button = $form.find('button[type="submit"]');
                                             var selectedSize = $('input[name="product-size"]:checked').val();
-                                            var quantity = $('#product-quantity').val();
-
-                                            // Track TikTok AddToCart event before submission
-                                            if (typeof ttq !== 'undefined') {
-                                                ttq.track('AddToCart', {
-                                                    content_id: '{{ $product->id }}',
-                                                    content_type: 'product',
-                                                    content_name: '{{ $product->name }}',
-                                                    content_category: '{{ $product->category ? $product->category->name : '' }}',
-                                                    content_size: selectedSize || '',
-                                                    quantity: parseInt(quantity),
-                                                    value: {{ $product->discount_price ?? $product->price }} * parseInt(quantity),
-                                                    currency: 'PKR'
-                                                });
-                                            }
 
                                             if ($button.prop('disabled')) return false;
                                             $button.prop('disabled', true).html('<i class="zmdi zmdi-check"></i>Processing...');
@@ -530,14 +410,6 @@
                                     <i class="fa fa-whatsapp"></i>
                                     <span>Order On WhatsApp</span>
                                 </a>
-
-                                <!-- Social Share Buttons -->
-                                <div class="social-buttons">
-                                    <a href="https://www.instagram.com/zaylishstudio" class="social-btn"
-                                        title="Instagram">
-                                        <i class="fa fa-instagram"></i>
-                                    </a>
-                                </div>
                             </div>
 
                         </div>
@@ -604,10 +476,13 @@
                                 <div class="flex-w flex-t p-b-68">
                                     <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
                                         @php
-                                            $reviewerName = $review->user ? $review->user->name : ($review->name ?? 'Anonymous');
+                                            $reviewerName = $review->user
+                                                ? $review->user->name
+                                                : $review->name ?? 'Anonymous';
                                             $initial = strtoupper(substr($reviewerName, 0, 1));
                                         @endphp
-                                        <div class="avatar-initial" style="width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg,rgb(0, 0, 0) 0%,rgb(0, 0, 0) 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; font-weight: bold; text-transform: uppercase;">
+                                        <div class="avatar-initial"
+                                            style="width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg,rgb(0, 0, 0) 0%,rgb(0, 0, 0) 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; font-weight: bold; text-transform: uppercase;">
                                             {{ $initial }}
                                         </div>
                                     </div>
@@ -616,9 +491,9 @@
                                         <div class="flex-w flex-sb-m p-b-17">
                                             <div>
                                                 <span class="mtext-107 cl2 p-r-20">
-                                                    {{ $review->user ? $review->user->name : ($review->name ?? 'Anonymous') }}
+                                                    {{ $review->user ? $review->user->name : $review->name ?? 'Anonymous' }}
                                                 </span>
-                                                @if($review->title)
+                                                @if ($review->title)
                                                     <div class="stext-101 cl2 p-t-5" style="font-weight: 600;">
                                                         {{ $review->title }}
                                                     </div>
@@ -649,8 +524,10 @@
                                                 <span class="stext-102 cl3">Images </span>
                                                 <div class="d-flex flex-wrap mt-2">
                                                     @foreach ($review->images as $img)
-                                                        <a href="{{ asset($img) }}" target="_blank" style="margin-right: 8px; margin-bottom: 8px;">
-                                                            <img src="{{ asset($img) }}" alt="Review Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #eee;">
+                                                        <a href="{{ asset($img) }}" target="_blank"
+                                                            style="margin-right: 8px; margin-bottom: 8px;">
+                                                            <img src="{{ asset($img) }}" alt="Review Image"
+                                                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #eee;">
                                                         </a>
                                                     @endforeach
                                                 </div>
@@ -665,7 +542,7 @@
                         @endif
 
                         <!-- Add review -->
-                        @if(session('success'))
+                        @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -674,7 +551,7 @@
                             </div>
                         @endif
 
-                        @if(session('error'))
+                        @if (session('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 {{ session('error') }}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -683,10 +560,10 @@
                             </div>
                         @endif
 
-                        @if($errors->any())
+                        @if ($errors->any())
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <ul class="mb-0">
-                                    @foreach($errors->all() as $error)
+                                    @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
                                 </ul>
@@ -697,7 +574,8 @@
                         @endif
 
 
-                        <form action="{{ route('reviews.store') }}" method="POST" class="w-full" id="review-form" enctype="multipart/form-data">
+                        <form action="{{ route('reviews.store') }}" method="POST" class="w-full" id="review-form"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
 
@@ -716,40 +594,46 @@
                                     <i class="item-rating pointer zmdi zmdi-star-outline" data-rating="3"></i>
                                     <i class="item-rating pointer zmdi zmdi-star-outline" data-rating="4"></i>
                                     <i class="item-rating pointer zmdi zmdi-star-outline" data-rating="5"></i>
-                                    <input class="dis-none" type="number" name="rating" id="rating-input" value="" required>
+                                    <input class="dis-none" type="number" name="rating" id="rating-input"
+                                        value="" required>
                                 </span>
                             </div>
 
                             <div class="row p-b-25">
                                 <div class="col-12 p-b-5">
                                     <label class="stext-102 cl3" for="title">Review Title (Optional)</label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="title"
-                                        type="text" name="title" value="{{ old('title') }}" placeholder="Brief summary of your review">
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="title" type="text"
+                                        name="title" value="{{ old('title') }}"
+                                        placeholder="Brief summary of your review">
                                 </div>
 
                                 <div class="col-12 p-b-5">
-                                    <label class="stext-102 cl3" for="comment">Your review <span class="text-danger">*</span></label>
-                                    <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="comment" name="comment" rows="5" required minlength="10" placeholder="Share your experience with this product...">{{ old('comment') }}</textarea>
+                                    <label class="stext-102 cl3" for="comment">Your review <span
+                                            class="text-danger">*</span></label>
+                                    <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="comment" name="comment" rows="5" required
+                                        minlength="10" placeholder="Share your experience with this product...">{{ old('comment') }}</textarea>
                                     <small class="text-muted">Minimum 10 characters required</small>
                                 </div>
 
                                 <div class="col-12 p-b-5">
                                     <label class="stext-102 cl3" for="images">Upload Images (Optional)</label>
-                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="images" type="file" name="images[]" multiple accept="image/*">
+                                    <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="images" type="file"
+                                        name="images[]" multiple accept="image/*">
                                     <small class="text-muted">You can upload multiple images.</small>
                                 </div>
 
                                 @guest
                                     <div class="col-sm-6 p-b-5">
-                                        <label class="stext-102 cl3" for="name">Name <span class="text-danger">*</span></label>
-                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name"
-                                            type="text" name="name" value="{{ old('name') }}" required>
+                                        <label class="stext-102 cl3" for="name">Name <span
+                                                class="text-danger">*</span></label>
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="name" type="text"
+                                            name="name" value="{{ old('name') }}" required>
                                     </div>
 
                                     <div class="col-sm-6 p-b-5">
                                         <label class="stext-102 cl3" for="email">Email</label>
-                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email"
-                                            type="email" name="email" value="{{ old('email') }}">
+                                        <input class="size-111 bor8 stext-102 cl2 p-lr-20" id="email" type="email"
+                                            name="email" value="{{ old('email') }}">
                                     </div>
                                 @else
                                     <input type="hidden" name="name" value="{{ Auth::user()->name }}">
@@ -764,49 +648,54 @@
                         </form>
 
                         @push('scripts')
-                        <script defer>
-                            $(document).ready(function() {
-                                // Ensure rating is set before form submission
-                                $('#review-form').on('submit', function(e) {
-                                    var rating = $('#rating-input').val();
-                                    if (!rating || rating == 0) {
-                                        e.preventDefault();
-                                        if (typeof swal !== 'undefined') {
-                                            swal("Rating Required", "Please select a rating before submitting your review.", "warning");
-                                        } else {
-                                            alert('Please select a rating before submitting your review.');
+                            <script defer>
+                                $(document).ready(function() {
+                                    // Ensure rating is set before form submission
+                                    $('#review-form').on('submit', function(e) {
+                                        var rating = $('#rating-input').val();
+                                        if (!rating || rating == 0) {
+                                            e.preventDefault();
+                                            if (typeof swal !== 'undefined') {
+                                                swal("Rating Required", "Please select a rating before submitting your review.",
+                                                    "warning");
+                                            } else {
+                                                alert('Please select a rating before submitting your review.');
+                                            }
+                                            return false;
                                         }
-                                        return false;
+                                    });
+
+                                    // Update rating display when clicking stars (enhancement to main.js)
+                                    $('#rating-wrapper .item-rating').on('click', function() {
+                                        var rating = $(this).data('rating');
+                                        $('#rating-input').val(rating);
+                                        // Color stars
+                                        $('#rating-wrapper .item-rating').each(function(i) {
+                                            if (i < rating) {
+                                                $(this).removeClass('zmdi-star-outline zmdi-star-half').addClass(
+                                                    'zmdi-star').css('color', '#FFD700');
+                                            } else {
+                                                $(this).removeClass('zmdi-star zmdi-star-half').addClass(
+                                                    'zmdi-star-outline').css('color', '');
+                                            }
+                                        });
+                                    });
+
+                                    // Restore colored stars if form is reloaded with old value
+                                    var oldRating = $('#rating-input').val();
+                                    if (oldRating) {
+                                        $('#rating-wrapper .item-rating').each(function(i) {
+                                            if (i < oldRating) {
+                                                $(this).removeClass('zmdi-star-outline zmdi-star-half').addClass('zmdi-star').css(
+                                                    'color', '#FFD700');
+                                            } else {
+                                                $(this).removeClass('zmdi-star zmdi-star-half').addClass('zmdi-star-outline').css(
+                                                    'color', '');
+                                            }
+                                        });
                                     }
                                 });
-
-                                // Update rating display when clicking stars (enhancement to main.js)
-                                $('#rating-wrapper .item-rating').on('click', function() {
-                                    var rating = $(this).data('rating');
-                                    $('#rating-input').val(rating);
-                                    // Color stars
-                                    $('#rating-wrapper .item-rating').each(function(i) {
-                                        if (i < rating) {
-                                            $(this).removeClass('zmdi-star-outline zmdi-star-half').addClass('zmdi-star').css('color', '#FFD700');
-                                        } else {
-                                            $(this).removeClass('zmdi-star zmdi-star-half').addClass('zmdi-star-outline').css('color', '');
-                                        }
-                                    });
-                                });
-
-                                // Restore colored stars if form is reloaded with old value
-                                var oldRating = $('#rating-input').val();
-                                if (oldRating) {
-                                    $('#rating-wrapper .item-rating').each(function(i) {
-                                        if (i < oldRating) {
-                                            $(this).removeClass('zmdi-star-outline zmdi-star-half').addClass('zmdi-star').css('color', '#FFD700');
-                                        } else {
-                                            $(this).removeClass('zmdi-star zmdi-star-half').addClass('zmdi-star-outline').css('color', '');
-                                        }
-                                    });
-                                }
-                            });
-                        </script>
+                            </script>
                         @endpush
                     </div>
                 </div>

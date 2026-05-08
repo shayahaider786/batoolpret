@@ -6,130 +6,6 @@
 
 @section('content')
 
-    <!-- Facebook & TikTok Tracking Scripts -->
-    @push('scripts')
-        <script>
-            // Track Checkout Initiation when page loads
-            document.addEventListener('DOMContentLoaded', function() {
-                // Get cart items for tracking
-                var cartItems = [];
-                var productIds = [];
-                var productNames = [];
-                var deliveryCharges = 199;
-                var subtotalValue = {{ isset($subtotal) ? $subtotal : 0 }};
-                var discountAmount = {{ isset($discountAmount) ? $discountAmount : 0 }};
-                var totalAfterDiscount = subtotalValue - discountAmount;
-                var grandTotalValue = totalAfterDiscount + deliveryCharges;
-                var itemCount = {{ isset($cartItems) ? $cartItems->count() : 0 }};
-
-                @if (isset($cartItems) && $cartItems->count() > 0)
-                    @foreach ($cartItems as $item)
-                        cartItems.push({
-                            id: '{{ $item->product_id }}',
-                            name: '{{ $item->product ? addslashes($item->product->name) : 'Product' }}',
-                            quantity: {{ $item->quantity }},
-                            price: {{ $item->price }}
-                        });
-                        productIds.push('{{ $item->product_id }}');
-                        productNames.push('{{ $item->product ? addslashes($item->product->name) : 'Product' }}');
-                    @endforeach
-                @endif
-
-                // Facebook InitiateCheckout
-                if (typeof fbq !== 'undefined') {
-                    fbq('track', 'InitiateCheckout', {
-                        content_ids: productIds,
-                        content_type: 'product',
-                        value: grandTotalValue,
-                        currency: 'PKR',
-                        num_items: itemCount
-                    });
-                }
-
-                // TikTok InitiateCheckout
-                if (typeof ttq !== 'undefined') {
-                    ttq.track('InitiateCheckout', {
-                        content_id: productIds.join(','),
-                        content_type: 'product',
-                        content_name: productNames.join(', '),
-                        quantity: itemCount,
-                        value: grandTotalValue,
-                        currency: 'PKR'
-                    });
-                }
-            });
-
-            // Function to track purchase after successful order
-            function trackPurchase(orderData) {
-                // Facebook Purchase tracking
-                if (typeof fbq !== 'undefined' && orderData) {
-                    fbq('track', 'Purchase', {
-                        content_ids: orderData.product_ids || [],
-                        content_type: 'product',
-                        value: orderData.grand_total || orderData.total || 0,
-                        currency: 'PKR',
-                        num_items: orderData.item_count || 0
-                    });
-                }
-
-                // TikTok CompletePayment tracking
-                if (typeof ttq !== 'undefined' && orderData) {
-                    ttq.track('CompletePayment', {
-                        content_id: orderData.order_number || orderData.order_id,
-                        content_name: orderData.order_number ? 'Order #' + orderData.order_number : 'Order',
-                        content_type: 'product',
-                        content_category: 'checkout',
-                        quantity: orderData.item_count || 0,
-                        value: orderData.grand_total || orderData.total || 0,
-                        currency: 'PKR',
-                        description: 'Order completed successfully'
-                    });
-
-                    // Also track individual products in the order
-                    if (orderData.products && orderData.products.length > 0) {
-                        orderData.products.forEach(function(product) {
-                            ttq.track('CompletePayment', {
-                                content_id: product.id,
-                                content_name: product.name,
-                                content_type: 'product',
-                                quantity: product.quantity,
-                                value: product.price * product.quantity,
-                                currency: 'PKR'
-                            });
-                        });
-                    }
-                }
-            }
-
-            // Store order data globally for access after successful submission
-            window.currentOrderData = {
-                product_ids: [],
-                product_names: [],
-                products: [],
-                item_count: {{ isset($cartItems) ? $cartItems->count() : 0 }},
-                subtotal: {{ isset($subtotal) ? $subtotal : 0 }},
-                discount_amount: {{ isset($discountAmount) ? $discountAmount : 0 }},
-                total: {{ isset($total) ? $total : (isset($subtotal) ? $subtotal : 0) }},
-                delivery_charges: 199,
-                grand_total: {{ isset($total) ? $total + 199 : (isset($subtotal) ? $subtotal + 199 : 199) }}
-            };
-
-            @if (isset($cartItems) && $cartItems->count() > 0)
-                @foreach ($cartItems as $item)
-                    window.currentOrderData.product_ids.push('{{ $item->product_id }}');
-                    window.currentOrderData.product_names.push(
-                        '{{ $item->product ? addslashes($item->product->name) : 'Product' }}');
-                    window.currentOrderData.products.push({
-                        id: '{{ $item->product_id }}',
-                        name: '{{ $item->product ? addslashes($item->product->name) : 'Product' }}',
-                        quantity: {{ $item->quantity }},
-                        price: {{ $item->price }}
-                    });
-                @endforeach
-            @endif
-        </script>
-    @endpush
-
     <style>
         /* Bank Details Section */
         .bank-details-section {
@@ -224,6 +100,30 @@
                 margin-bottom: 4px;
             }
         }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 
     <div class="bg-white">
@@ -283,51 +183,49 @@
                     <!-- Billing Information -->
                     <div class="checkout-section">
                         <h3 class="section-title">Billing Information</h3>
-                        <form id="billing-form">
+                        <div id="billing-info">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">First Name</label>
-                                        <input type="text" name="c_fname" class="form-input-checkout" placeholder="John">
+                                        <input type="text" name="c_fname" id="c_fname" class="form-input-checkout" placeholder="John" value="{{ old('c_fname') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">Last Name</label>
-                                        <input type="text" name="c_lname" class="form-input-checkout" placeholder="Doe">
+                                        <input type="text" name="c_lname" id="c_lname" class="form-input-checkout" placeholder="Doe" value="{{ old('c_lname') }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group-checkout">
                                 <label class="form-label-checkout">Email Address</label>
-                                <input type="email" name="c_email_address" class="form-input-checkout"
-                                    placeholder="john.doe@example.com">
+                                <input type="email" name="c_email_address" id="c_email_address" class="form-input-checkout"
+                                    placeholder="john.doe@example.com" value="{{ old('c_email_address') }}">
                             </div>
                             <div class="form-group-checkout">
-                                <label class="form-label-checkout">Phone Number <span
-                                        class="required-field">*</span></label>
-                                <input type="tel" name="c_phone" class="form-input-checkout"
-                                    placeholder="+1 234 567 8900" required>
+                                <label class="form-label-checkout">Phone Number <span class="required-field">*</span></label>
+                                <input type="tel" name="c_phone" id="c_phone" class="form-input-checkout"
+                                    placeholder="+1 234 567 8900" required value="{{ old('c_phone') }}">
                             </div>
                             <div class="form-group-checkout">
-                                <label class="form-label-checkout">Street Address <span
-                                        class="required-field">*</span></label>
-                                <input type="text" name="c_address" class="form-input-checkout"
-                                    placeholder="123 Main Street" required>
+                                <label class="form-label-checkout">Street Address <span class="required-field">*</span></label>
+                                <input type="text" name="c_address" id="c_address" class="form-input-checkout"
+                                    placeholder="123 Main Street" required value="{{ old('c_address') }}">
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">City</label>
-                                        <input type="text" name="c_city" class="form-input-checkout"
-                                            placeholder="New York">
+                                        <input type="text" name="c_city" id="c_city" class="form-input-checkout"
+                                            placeholder="New York" value="{{ old('c_city') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">State/Province</label>
-                                        <input type="text" name="c_state_country" class="form-input-checkout"
-                                            placeholder="NY">
+                                        <input type="text" name="c_state_country" id="c_state_country" class="form-input-checkout"
+                                            placeholder="NY" value="{{ old('c_state_country') }}">
                                     </div>
                                 </div>
                             </div>
@@ -335,19 +233,23 @@
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">Postal Code</label>
-                                        <input type="text" name="c_postal_zip" class="form-input-checkout"
-                                            placeholder="10001">
+                                        <input type="text" name="c_postal_zip" id="c_postal_zip" class="form-input-checkout"
+                                            placeholder="10001" value="{{ old('c_postal_zip') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">Country</label>
-                                        <input type="text" name="c_country" class="form-input-checkout"
-                                            placeholder="country">
+                                        <input type="text" name="c_country" id="c_country" class="form-input-checkout"
+                                            placeholder="Pakistan" value="{{ old('c_country', 'Pakistan') }}">
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                            <div class="form-group-checkout">
+                                <label class="form-label-checkout">Order Notes (Optional)</label>
+                                <textarea name="c_order_notes" id="c_order_notes" class="form-input-checkout" rows="3" placeholder="Special instructions for delivery...">{{ old('c_order_notes') }}</textarea>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Payment Method -->
@@ -355,7 +257,7 @@
                         <h3 class="section-title">Payment Method</h3>
                         <div class="payment-methods-wrapper">
                             <div class="payment-method">
-                                <input type="radio" id="payment-cash" name="payment" value="cash" checked>
+                                <input type="radio" id="payment-cash" name="payment_method" value="cash" {{ old('payment_method', 'cash') == 'cash' ? 'checked' : '' }}>
                                 <label for="payment-cash" class="payment-label">
                                     <i class="zmdi zmdi-money payment-icon"></i>
                                     <span>Cash on Delivery</span>
@@ -364,7 +266,7 @@
                             </div>
 
                             <div class="payment-method">
-                                <input type="radio" id="payment-bank" name="payment" value="bank">
+                                <input type="radio" id="payment-bank" name="payment_method" value="bank" {{ old('payment_method') == 'bank' ? 'checked' : '' }}>
                                 <label for="payment-bank" class="payment-label">
                                     <i class="fa fa-university payment-icon"></i>
                                     <span>Bank Transfer</span>
@@ -374,14 +276,14 @@
                         </div>
 
                         <!-- Payment Screenshot Upload Section -->
-                        <div class="payment-screenshot-section" id="screenshot-section">
+                        <div class="payment-screenshot-section" id="screenshot-section" style="display: none;">
                             <h4 style="margin-bottom: 15px;">
                                 <i class="zmdi zmdi-cloud-upload" style="margin-right: 8px;"></i>
                                 Upload Payment Screenshot
                             </h4>
 
                             <!-- Bank Details Section -->
-                            <div class="bank-details-section" id="bank-details-section">
+                            <div class="bank-details-section">
                                 <div class="bank-details-card">
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">Bank Name:</span>
@@ -415,30 +317,23 @@
                                 Please upload a screenshot of your payment confirmation for verification.
                             </p>
 
-                            <div class="screenshot-input-wrapper" style="display: block;">
+                            <div class="screenshot-input-wrapper">
                                 <div class="file-input-custom">
-                                    <input type="file" id="payment-screenshot-input" accept="image/*"
-                                        style="display: none;">
+                                    <input type="file" id="payment-screenshot-input" name="payment_screenshot" accept="image/*">
                                     <label for="payment-screenshot-input" class="file-input-custom-label"
                                         style="display: block; padding: 20px; border: 2px dashed #ddd; text-align: center; cursor: pointer; background-color: #f9f9f9;">
                                         <i class="zmdi zmdi-camera"
                                             style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
-                                        <span style="display: block; margin-bottom: 5px;">Click to upload or drag and
-                                            drop</span>
-                                        <span class="small-text"
-                                            style="display: block; font-size: 12px; color: #999;">PNG, JPG, GIF up to
-                                            5MB</span>
+                                        <span style="display: block; margin-bottom: 5px;">Click to upload or drag and drop</span>
+                                        <span class="small-text" style="display: block; font-size: 12px; color: #999;">PNG, JPG, GIF up to 5MB</span>
                                     </label>
                                 </div>
 
-                                <div class="file-preview" id="file-preview"
-                                    style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
-                                    <img id="preview-img" class="file-preview-img" alt="Preview"
-                                        style="max-width: 100%; height: auto; margin-bottom: 10px;">
+                                <div class="file-preview" id="file-preview" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
+                                    <img id="preview-img" class="file-preview-img" alt="Preview" style="max-width: 100%; height: auto; margin-bottom: 10px;">
                                     <div class="file-preview-name" id="preview-name" style="margin-bottom: 10px;"></div>
                                     <button type="button" class="remove-file-btn" id="remove-file-btn"
-                                        style="padding: 8px 15px; background-color: #f44336; color: white; border: none; cursor: pointer; border-radius: 4px;">Remove
-                                        File</button>
+                                        style="padding: 8px 15px; background-color: #f44336; color: white; border: none; cursor: pointer; border-radius: 4px;">Remove File</button>
                                 </div>
                             </div>
                         </div>
@@ -461,43 +356,30 @@
                                 <div>
                                     <h4 class="coupon-title">Have a Coupon?</h4>
                                     <p class="coupon-subtitle">Save more with promo codes</p>
-                                    @if (isset($hasDiscountedProducts) && $hasDiscountedProducts)
-                                        <p class="coupon-warning"
-                                            style="color: #ff9800; font-size: 12px; margin-top: 5px;">
-                                            <i class="zmdi zmdi-info"></i> Coupons cannot be applied to discounted products
-                                        </p>
-                                    @endif
                                 </div>
                             </div>
 
-                            <form method="POST" action="{{ route('checkout.applyCoupon') }}" class="coupon-form"
-                                id="coupon-form">
+                            <form method="POST" action="{{ route('checkout.applyCoupon') }}" class="coupon-form" id="coupon-form">
                                 @csrf
                                 <div class="coupon-input-wrapper">
                                     <input type="text" name="coupon_code" id="coupon_code" class="coupon-input"
-                                        placeholder="Enter coupon code" @if (isset($hasDiscountedProducts) && $hasDiscountedProducts) disabled @endif
-                                        value="{{ isset($coupon) ? $coupon->code : '' }}">
-                                    <button type="submit" class="coupon-apply-btn"
-                                        @if (isset($hasDiscountedProducts) && $hasDiscountedProducts) disabled @endif>Apply</button>
+                                        placeholder="Enter coupon code" value="{{ isset($coupon) ? $coupon->code : '' }}">
+                                    <button type="submit" class="coupon-apply-btn">Apply</button>
                                 </div>
                             </form>
 
                             @if (session('coupon_error'))
-                                <div
-                                    style="margin-top: 10px; padding: 10px; background-color: #ffebee; border-radius: 4px; color: #f44336; font-size: 13px;">
+                                <div style="margin-top: 10px; padding: 10px; background-color: #ffebee; border-radius: 4px; color: #f44336; font-size: 13px;">
                                     <i class="zmdi zmdi-close-circle"></i> {{ session('coupon_error') }}
                                 </div>
                             @endif
 
                             @if (isset($coupon) && $coupon)
-                                <div class="coupon-applied"
-                                    style="margin-top: 10px; padding: 10px; background-color: #e8f5e9; border-radius: 4px;">
+                                <div class="coupon-applied" style="margin-top: 10px; padding: 10px; background-color: #e8f5e9; border-radius: 4px;">
                                     <span style="color: #4caf50; font-weight: bold;">
-                                        <i class="zmdi zmdi-check-circle"></i> Coupon "{{ $coupon->code }}" applied
-                                        ({{ $coupon->discount_percent }}% off)
+                                        <i class="zmdi zmdi-check-circle"></i> Coupon "{{ $coupon->code }}" applied ({{ $coupon->discount_percent }}% off)
                                     </span>
-                                    <button type="button" id="remove-coupon-btn"
-                                        style="float: right; background: none; border: none; color: #f44336; cursor: pointer;">
+                                    <button type="button" id="remove-coupon-btn" style="float: right; background: none; border: none; color: #f44336; cursor: pointer;">
                                         <i class="zmdi zmdi-close"></i>
                                     </button>
                                 </div>
@@ -510,24 +392,17 @@
                                 @foreach ($cartItems as $cartItem)
                                     @php
                                         $product = $cartItem->product;
-                                        $productImage =
-                                            $product && $product->image
-                                                ? asset($product->image)
-                                                : asset('frontend/images/item-cart-04.jpg');
+                                        $productImage = $product && $product->image ? asset($product->image) : asset('frontend/images/item-cart-04.jpg');
                                         $itemTotal = $cartItem->price * $cartItem->quantity;
                                     @endphp
                                     <div class="order-item">
-                                        <img src="{{ $productImage }}" alt="{{ $product ? $product->name : 'Product' }}"
-                                            class="order-item-img" loading="lazy">
+                                        <img src="{{ $productImage }}" alt="{{ $product ? $product->name : 'Product' }}" class="order-item-img" loading="lazy">
                                         <div class="order-item-details">
-                                            <div class="order-item-name">
-                                                {{ $product ? $product->name : 'Product Not Available' }}</div>
+                                            <div class="order-item-name">{{ $product ? $product->name : 'Product Not Available' }}</div>
                                             <div class="order-item-info">
-                                                Qty: {{ $cartItem->quantity }} × Rs.
-                                                {{ number_format($cartItem->price, 0) }}
+                                                Qty: {{ $cartItem->quantity }} × Rs. {{ number_format($cartItem->price, 0) }}
                                                 @if ($cartItem->size)
-                                                    <br><small style="color: #666;">Size:
-                                                        {{ strtoupper($cartItem->size) }}</small>
+                                                    <br><small style="color: #666;">Size: {{ strtoupper($cartItem->size) }}</small>
                                                 @endif
                                             </div>
                                         </div>
@@ -545,24 +420,16 @@
                         <div class="order-totals">
                             <div class="total-row">
                                 <span>Subtotal</span>
-                                <span id="subtotal-amount">Rs.
-                                    {{ isset($subtotal) ? number_format($subtotal, 0) : '0' }}</span>
+                                <span id="subtotal-amount">Rs. {{ isset($subtotal) ? number_format($subtotal, 0) : '0' }}</span>
                             </div>
 
                             @if (isset($discountAmount) && $discountAmount > 0)
                                 <div class="total-row" id="discount-row">
                                     <span>Discount ({{ isset($coupon) ? $coupon->code : '' }})</span>
-                                    <span id="discount-amount" style="color: #4caf50;">-Rs.
-                                        {{ number_format($discountAmount, 0) }}</span>
-                                </div>
-                            @else
-                                <div class="total-row" id="discount-row" style="display: none;">
-                                    <span>Discount</span>
-                                    <span id="discount-amount" style="color: #4caf50;">-Rs. 0</span>
+                                    <span id="discount-amount" style="color: #4caf50;">-Rs. {{ number_format($discountAmount, 0) }}</span>
                                 </div>
                             @endif
 
-                            <!-- Delivery Charges Row -->
                             <div class="total-row" id="delivery-row">
                                 <span>Delivery Charges</span>
                                 <span id="delivery-amount" style="color: #666;">Rs. 199</span>
@@ -571,14 +438,12 @@
                             <div class="total-row final">
                                 <span>Grand Total</span>
                                 <span id="grand-total-amount">
-                                    Rs.
-                                    {{ isset($total) ? number_format($total + 199, 0) : (isset($subtotal) ? number_format($subtotal + 199, 0) : '199') }}
+                                    Rs. {{ isset($total) ? number_format($total + 199, 0) : (isset($subtotal) ? number_format($subtotal + 199, 0) : '199') }}
                                 </span>
                             </div>
                         </div>
 
-                        <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form"
-                            enctype="multipart/form-data">
+                        <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="c_fname" id="checkout-fname">
                             <input type="hidden" name="c_lname" id="checkout-lname">
@@ -589,12 +454,11 @@
                             <input type="hidden" name="c_state_country" id="checkout-state">
                             <input type="hidden" name="c_postal_zip" id="checkout-postal">
                             <input type="hidden" name="c_country" id="checkout-country">
-                            <input type="hidden" name="payment_method" id="checkout-payment" value="bank">
-                            <input type="hidden" name="coupon_code" id="checkout-coupon"
-                                value="{{ isset($coupon) ? $coupon->code : '' }}">
-                            <input type="file" name="payment_screenshot" id="checkout-screenshot"
-                                style="display: none;" accept="image/*">
-                            <button type="submit" class="checkout-btn">
+                            <input type="hidden" name="c_order_notes" id="checkout-notes">
+                            <input type="hidden" name="payment_method" id="checkout-payment" value="">
+                            <input type="hidden" name="coupon_code" id="checkout-coupon" value="{{ isset($coupon) ? $coupon->code : '' }}">
+                            <input type="file" name="payment_screenshot" id="checkout-screenshot" style="display: none;" accept="image/*">
+                            <button type="submit" class="checkout-btn" id="place-order-btn">
                                 Place Order
                             </button>
                         </form>
@@ -605,76 +469,43 @@
     </section>
 
     @push('scripts')
-        <script defer>
-            // Wait for jQuery to be loaded
+        <script>
             (function() {
-                function initCheckoutScript() {
+                function initCheckout() {
                     if (typeof jQuery === 'undefined') {
-                        setTimeout(initCheckoutScript, 100);
+                        setTimeout(initCheckout, 100);
                         return;
                     }
 
                     var $ = jQuery;
                     var DELIVERY_CHARGES = 199;
 
-                    function updateTotals() {
-                        var subtotal = parseFloat($('#subtotal-amount').text().replace('Rs.', '').replace(/,/g, '').trim()) || 0;
-                        var discountText = $('#discount-amount').text();
-                        var discount = 0;
+                    function toggleScreenshotSection() {
+                        var paymentMethod = $('input[name="payment_method"]:checked').val();
+                        var $screenshotSection = $('#screenshot-section');
 
-                        if (discountText && discountText !== '-Rs. 0') {
-                            discount = parseFloat(discountText.replace('-Rs.', '').replace(/,/g, '').trim()) || 0;
-                        }
-
-                        var totalAfterDiscount = subtotal - discount;
-                        var grandTotal = totalAfterDiscount + DELIVERY_CHARGES;
-
-                        $('#grand-total-amount').text('Rs. ' + grandTotal.toLocaleString());
-
-                        // Update order data
-                        if (window.currentOrderData) {
-                            window.currentOrderData.grand_total = grandTotal;
-                            window.currentOrderData.delivery_charges = DELIVERY_CHARGES;
+                        if (paymentMethod === 'bank') {
+                            $screenshotSection.show();
+                        } else {
+                            $screenshotSection.hide();
+                            $('#payment-screenshot-input').val('');
+                            $('#file-preview').hide();
+                            $('#preview-img').attr('src', '');
+                            $('#preview-name').text('');
                         }
                     }
 
                     $(document).ready(function() {
-                        // Handle payment method change - show/hide screenshot section
-                        function toggleScreenshotSection() {
-                            var $checkedPayment = $('input[name="payment"]:checked');
-                            if ($checkedPayment.length === 0) {
-                                return;
-                            }
-
-                            var paymentMethod = $checkedPayment.val();
-                            var $screenshotSection = $('#screenshot-section');
-
-                            if (paymentMethod === 'bank') {
-                                $screenshotSection.addClass('active');
-                                $screenshotSection.show();
-                            } else {
-                                $screenshotSection.removeClass('active');
-                                $screenshotSection.hide();
-                                $('#payment-screenshot-input').val('');
-                                $('#file-preview').hide();
-                                $('#preview-img').attr('src', '');
-                                $('#preview-name').text('');
-                            }
-                        }
-
-                        $('input[name="payment"]').on('change', function() {
-                            toggleScreenshotSection();
-                        });
-
-                        $(document).on('change', 'input[name="payment"]', function() {
-                            toggleScreenshotSection();
-                        });
-
-                        // Set initial state
+                        // Initial setup
                         toggleScreenshotSection();
 
-                        // Handle file preview
-                        $(document).on('change', '#payment-screenshot-input', function(e) {
+                        // Payment method change
+                        $('input[name="payment_method"]').on('change', function() {
+                            toggleScreenshotSection();
+                        });
+
+                        // File preview
+                        $('#payment-screenshot-input').on('change', function(e) {
                             var file = e.target.files[0];
                             if (file) {
                                 if (!file.type.startsWith('image/')) {
@@ -692,44 +523,48 @@
                                 var reader = new FileReader();
                                 reader.onload = function(e) {
                                     $('#preview-img').attr('src', e.target.result);
-                                    $('#preview-name').text(file.name + ' (' + (file.size / 1024)
-                                        .toFixed(2) + ' KB)');
+                                    $('#preview-name').text(file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)');
                                     $('#file-preview').show();
                                 };
                                 reader.readAsDataURL(file);
                             }
                         });
 
-                        // Handle remove file button
-                        $(document).on('click', '#remove-file-btn', function() {
+                        // Remove file
+                        $('#remove-file-btn').on('click', function() {
                             $('#payment-screenshot-input').val('');
                             $('#file-preview').hide();
                             $('#preview-img').attr('src', '');
                             $('#preview-name').text('');
                         });
 
-                        // Handle remove coupon
+                        // Remove coupon
                         $('#remove-coupon-btn').on('click', function() {
                             window.location.href = '{{ route('checkout') }}?remove_coupon=1';
                         });
 
-                        // Handle checkout form submission
+                        // Form submission
                         $('#checkout-form').on('submit', function(e) {
                             e.preventDefault();
 
                             // Validate required fields
-                            if (!$('input[name="c_phone"]').val()) {
+                            var phone = $('#c_phone').val();
+                            var address = $('#c_address').val();
+
+                            if (!phone) {
                                 alert('Please enter your phone number');
+                                $('#c_phone').focus();
                                 return false;
                             }
 
-                            if (!$('input[name="c_address"]').val()) {
+                            if (!address) {
                                 alert('Please enter your address');
+                                $('#c_address').focus();
                                 return false;
                             }
 
                             // Validate payment screenshot for bank transfer
-                            var selectedPayment = $('input[name="payment"]:checked').val();
+                            var selectedPayment = $('input[name="payment_method"]:checked').val();
                             if (selectedPayment === 'bank') {
                                 var screenshotFile = $('#payment-screenshot-input')[0].files[0];
                                 if (!screenshotFile) {
@@ -738,41 +573,36 @@
                                 }
                             }
 
-                            // Get values from billing form
-                            $('#checkout-fname').val($('input[name="c_fname"]').val() || '');
-                            $('#checkout-lname').val($('input[name="c_lname"]').val() || '');
-                            $('#checkout-email').val($('input[name="c_email_address"]').val() || '');
-                            $('#checkout-phone').val($('input[name="c_phone"]').val());
-                            $('#checkout-address').val($('input[name="c_address"]').val());
-                            $('#checkout-city').val($('input[name="c_city"]').val() || '');
-                            $('#checkout-state').val($('input[name="c_state_country"]').val() || '');
-                            $('#checkout-postal').val($('input[name="c_postal_zip"]').val() || '');
-                            $('#checkout-country').val($('input[name="c_country"]').val() || '');
-                            $('#checkout-payment').val($('input[name="payment"]:checked').val() || 'cash');
+                            // Populate hidden fields
+                            $('#checkout-fname').val($('#c_fname').val() || '');
+                            $('#checkout-lname').val($('#c_lname').val() || '');
+                            $('#checkout-email').val($('#c_email_address').val() || '');
+                            $('#checkout-phone').val(phone);
+                            $('#checkout-address').val(address);
+                            $('#checkout-city').val($('#c_city').val() || '');
+                            $('#checkout-state').val($('#c_state_country').val() || '');
+                            $('#checkout-postal').val($('#c_postal_zip').val() || '');
+                            $('#checkout-country').val($('#c_country').val() || 'Pakistan');
+                            $('#checkout-notes').val($('#c_order_notes').val() || '');
+                            $('#checkout-payment').val(selectedPayment);
+                            $('#checkout-coupon').val($('#coupon_code').val() || '');
 
                             // Copy screenshot file
-                            var screenshotFile = $('#payment-screenshot-input')[0].files[0];
-                            if (screenshotFile) {
-                                var dataTransfer = new DataTransfer();
-                                dataTransfer.items.add(screenshotFile);
-                                $('#checkout-screenshot')[0].files = dataTransfer.files;
+                            if (selectedPayment === 'bank') {
+                                var screenshotFile = $('#payment-screenshot-input')[0].files[0];
+                                if (screenshotFile) {
+                                    var dataTransfer = new DataTransfer();
+                                    dataTransfer.items.add(screenshotFile);
+                                    $('#checkout-screenshot')[0].files = dataTransfer.files;
+                                }
                             }
 
-                            // Show loading state
-                            var $submitBtn = $(this).find('button[type="submit"]');
+                            // Disable submit button
+                            var $submitBtn = $('#place-order-btn');
                             var originalText = $submitBtn.html();
-                            $submitBtn.prop('disabled', true).html('Processing...');
+                            $submitBtn.prop('disabled', true).html('<span class="loading-spinner"></span> Processing...');
 
-                            // Prepare order data for tracking
-                            var orderData = {
-                                product_ids: window.currentOrderData?.product_ids || [],
-                                products: window.currentOrderData?.products || [],
-                                item_count: window.currentOrderData?.item_count || 0,
-                                grand_total: window.currentOrderData?.grand_total || 0,
-                                order_number: null
-                            };
-
-                            // Submit form
+                            // Submit form via AJAX
                             var formData = new FormData(this);
 
                             $.ajax({
@@ -782,24 +612,15 @@
                                 processData: false,
                                 contentType: false,
                                 headers: {
-                                    'X-Requested-With': 'XMLHttpRequest'
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
                                 },
                                 success: function(response) {
-                                    if (response.order_number) {
-                                        orderData.order_number = response.order_number;
-                                    }
-
-                                    if (typeof window.trackPurchase === 'function' && orderData
-                                        .product_ids.length > 0) {
-                                        window.trackPurchase(orderData);
-                                    }
+                                    console.log('Success:', response);
 
                                     if (response.redirect) {
                                         window.location.href = response.redirect;
                                     } else if (response.order_number) {
-                                        window.location.href =
-                                            '{{ route('thankyou') }}?order=' + response
-                                            .order_number;
+                                        window.location.href = '{{ route('thankyou') }}?order=' + response.order_number;
                                     } else {
                                         window.location.href = '{{ route('thankyou') }}';
                                     }
@@ -807,27 +628,15 @@
                                 error: function(xhr) {
                                     $submitBtn.prop('disabled', false).html(originalText);
 
-                                    var errorMsg = 'An error occurred. Please try again.';
+                                    var errorMsg = 'An error occurred while processing your order. Please try again.';
 
                                     if (xhr.responseJSON) {
                                         if (xhr.responseJSON.message) {
                                             errorMsg = xhr.responseJSON.message;
-                                        } else if (xhr.responseJSON.errors) {
-                                            var errors = [];
-                                            $.each(xhr.responseJSON.errors, function(key,
-                                                value) {
-                                                if (Array.isArray(value)) {
-                                                    errors.push(value[0]);
-                                                } else {
-                                                    errors.push(value);
-                                                }
-                                            });
-                                            errorMsg = errors.join('\n');
                                         }
                                     }
 
-                                    console.error('Order submission error:', xhr.responseJSON ||
-                                        xhr.responseText);
+                                    console.error('Error:', xhr.responseJSON || xhr.responseText);
                                     alert(errorMsg);
                                 }
                             });
@@ -838,9 +647,9 @@
                 }
 
                 if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', initCheckoutScript);
+                    document.addEventListener('DOMContentLoaded', initCheckout);
                 } else {
-                    initCheckoutScript();
+                    initCheckout();
                 }
             })();
         </script>

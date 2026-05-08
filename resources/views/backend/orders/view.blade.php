@@ -149,7 +149,7 @@
                                                             ' ' .
                                                             $order->last_name .
                                                             "\n\n";
-                                                        $message .= "Thank you for shopping with Zaylish Studio.\n";
+                                                        $message .= "Thank you for shopping with Batool Pret.\n";
                                                         $message .=
                                                             'Your order #' .
                                                             $order->order_number .
@@ -181,7 +181,7 @@
 
                                                         $message .=
                                                             "Kindly reply CONFIRM to proceed with your order.\n\n";
-                                                        $message .= 'Thank you for choosing Zaylish Studio.';
+                                                        $message .= 'Thank you for choosing Batool Pret.';
 
                                                         // 4. Encode message for URL
                                                         $encodedMessage = urlencode($message);

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Schema;
 class OrderController extends Controller
 {
 
@@ -24,14 +24,21 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
+        // Debug logging
+        \Log::info('Order creation started', [
+            'request_data' => $request->except(['payment_screenshot']),
+            'has_file' => $request->hasFile('payment_screenshot'),
+            'user_id' => Auth::id(),
+            'session_id' => Session::getId()
+        ]);
+
         try {
+            // Validate the request - make fields optional that might be missing
             $validated = $request->validate([
                 'c_fname' => 'nullable|string|max:255',
                 'c_lname' => 'nullable|string|max:255',
                 'c_email_address' => 'nullable|email|max:255',
                 'c_phone' => 'required|string|max:255',
-                'c_companyname' => 'nullable|string|max:255',
                 'c_address' => 'required|string|max:255',
                 'c_city' => 'nullable|string|max:255',
                 'c_state_country' => 'nullable|string|max:255',
@@ -43,39 +50,39 @@ class OrderController extends Controller
                 'payment_screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
-                $errorMessages = [];
-                foreach ($e->errors() as $field => $messages) {
-                    foreach ($messages as $message) {
-                        $errorMessages[] = $message;
-                    }
-                }
+            \Log::error('Validation failed: ' . json_encode($e->errors()));
+
+            if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => implode('<br>', $errorMessages),
+                    'message' => 'Validation failed: ' . implode(', ', array_collapse($e->errors())),
                     'errors' => $e->errors()
                 ], 422);
             }
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput();
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
         // Get cart items
-        if (Auth::check()) {
-            $cartItems = Cart::with('product')
-                ->where('user_id', Auth::id())
-                ->get();
-        } else {
-            $sessionId = Session::getId();
-            $cartItems = Cart::with('product')
-                ->where('session_id', $sessionId)
-                ->get();
+        try {
+            if (Auth::check()) {
+                $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+            } else {
+                $sessionId = Session::getId();
+                $cartItems = Cart::with('product')->where('session_id', $sessionId)->get();
+            }
+        } catch (\Exception $e) {
+            \Log::error('Cart retrieval failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to retrieve cart items: ' . $e->getMessage()
+            ], 500);
         }
 
-        // Check if cart is empty
         if ($cartItems->count() == 0) {
-            return redirect()->route('cart')->with('error', 'Your cart is empty.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Your cart is empty.'
+            ], 400);
         }
 
         // Calculate subtotal
@@ -99,39 +106,28 @@ class OrderController extends Controller
             $coupon = Coupon::where('code', $couponCode)->first();
 
             if (!$coupon) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Invalid coupon code.');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid coupon code.'
+                ], 400);
             }
 
             if (!$coupon->isValid()) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'This coupon is not valid or has expired.');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This coupon is not valid or has expired.'
+                ], 400);
             }
 
             $discountAmount = ($subtotal * $coupon->discount_percent) / 100;
             $couponDiscountPercent = $coupon->discount_percent;
-        } else {
-            if ($hasDiscountedProducts && $request->filled('coupon_code')) {
-                if ($request->ajax() || $request->wantsJson() || $request->expectsJson()) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Coupon cannot be applied to orders with discounted products.'
-                    ], 400);
-                }
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Coupon cannot be applied to orders with discounted products.');
-            }
         }
 
-        // Calculate totals with delivery charges
+        // Calculate totals
         $totalAfterDiscount = $subtotal - $discountAmount;
         $deliveryCharges = self::DELIVERY_CHARGES;
         $grandTotal = $totalAfterDiscount + $deliveryCharges;
 
-        // Start database transaction
         DB::beginTransaction();
 
         try {
@@ -150,33 +146,56 @@ class OrderController extends Controller
                 $paymentScreenshotPath = 'uploads/payment_screenshots/' . $filename;
             }
 
-            // Create order
-            $order = Order::create([
+            // Prepare order data - handle missing fields gracefully
+            $orderData = [
                 'user_id' => Auth::id(),
                 'session_id' => Auth::check() ? null : Session::getId(),
                 'order_number' => Order::generateOrderNumber(),
-                'first_name' => $validated['c_fname'] ?? '',
-                'last_name' => $validated['c_lname'] ?? '',
-                'company_name' => $validated['c_companyname'] ?? null,
+                'first_name' => $request->input('c_fname', ''),
+                'last_name' => $request->input('c_lname', ''),
                 'address' => $validated['c_address'],
-                'apartment' => $request->input('apartment') ?? null,
-                'state_country' => $validated['c_state_country'] ?? '',
-                'postal_zip' => $validated['c_postal_zip'] ?? '',
-                'email' => $validated['c_email_address'] ?? '',
+                'email' => $request->input('c_email_address', ''),
                 'phone' => $validated['c_phone'],
-                'order_notes' => $validated['c_order_notes'] ?? null,
+                'order_notes' => $request->input('c_order_notes'),
                 'subtotal' => $subtotal,
                 'delivery_charges' => $deliveryCharges,
                 'total' => $totalAfterDiscount,
                 'grand_total' => $grandTotal,
                 'status' => 'pending',
-                'payment_method' => $validated['payment_method'] ?? 'cash',
+                'payment_method' => $request->input('payment_method', 'cash'),
                 'payment_screenshot' => $paymentScreenshotPath,
                 'coupon_code' => $couponCode,
                 'coupon_id' => $coupon ? $coupon->id : null,
                 'coupon_discount' => $couponDiscountPercent,
                 'discount_amount' => $discountAmount,
-            ]);
+            ];
+
+            // Only add these fields if they exist in the database
+            if (Schema::hasColumn('orders', 'company_name')) {
+                $orderData['company_name'] = $request->input('c_companyname');
+            }
+            if (Schema::hasColumn('orders', 'apartment')) {
+                $orderData['apartment'] = $request->input('apartment');
+            }
+            if (Schema::hasColumn('orders', 'city')) {
+                $orderData['city'] = $request->input('c_city');
+            }
+            if (Schema::hasColumn('orders', 'state_country')) {
+                $orderData['state_country'] = $request->input('c_state_country');
+            }
+            if (Schema::hasColumn('orders', 'postal_zip')) {
+                $orderData['postal_zip'] = $request->input('c_postal_zip');
+            }
+            if (Schema::hasColumn('orders', 'country')) {
+                $orderData['country'] = $request->input('c_country');
+            }
+
+            \Log::info('Attempting to create order with data: ', $orderData);
+
+            // Create order
+            $order = Order::create($orderData);
+
+            \Log::info('Order created successfully: ' . $order->id);
 
             // Increment coupon usage if applied
             if ($coupon) {
@@ -206,56 +225,40 @@ class OrderController extends Controller
 
             DB::commit();
 
-            // Load order relationships for email
-            $order->load('items.product');
-
-            // Send email notifications
+            // Send emails (wrap in try-catch so order still succeeds even if email fails)
             try {
+                $order->load('items.product');
                 $adminUsers = User::where('type', 1)->get();
                 foreach ($adminUsers as $admin) {
                     Mail::to($admin->email)->send(new NewOrderNotification($order));
                 }
-            } catch (\Exception $e) {
-                \Log::error('Failed to send admin order notification: ' . $e->getMessage());
-            }
 
-            try {
                 if ($order->email) {
                     Mail::to($order->email)->send(new CustomerOrderConfirmation($order));
                 }
             } catch (\Exception $e) {
-                \Log::error('Failed to send customer order confirmation: ' . $e->getMessage());
+                \Log::error('Email sending failed but order was created: ' . $e->getMessage());
             }
 
-            if ($request->expectsJson() || $request->ajax()) {
-                session()->flash('order_number', $order->order_number);
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Order placed successfully!',
-                    'redirect' => route('thankyou', ['order' => $order->order_number]),
-                    'order_number' => $order->order_number
-                ]);
-            }
-
-            return redirect()->route('thankyou', ['order' => $order->order_number])->with('order_number', $order->order_number);
+            return response()->json([
+                'success' => true,
+                'message' => 'Order placed successfully!',
+                'redirect' => route('thankyou', ['order' => $order->order_number]),
+                'order_number' => $order->order_number
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             \Log::error('Order creation failed: ' . $e->getMessage(), [
                 'exception' => $e,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'order_data' => $orderData ?? null
             ]);
 
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'An error occurred while processing your order. Please try again.',
-                ], 500);
-            }
-
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'An error occurred while processing your order. Please try again.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Database error: ' . $e->getMessage()
+            ], 500);
         }
     }
     /**

@@ -5,7 +5,7 @@
 @endpush
 
 @section('content')
-<div class="bg-white"> 
+<div class="bg-white">
     <div class="container headerTop p-5">
     </div>
 </div>
@@ -29,7 +29,7 @@
     <h2 class="ltext-105 cl0 txt-center">
         {{ __('messages.contact.title') ?? 'Contact' }}
     </h2>
-</section>	
+</section>
 
 
 <!-- Content page -->
@@ -69,11 +69,11 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="bor8 m-b-20">
-                                <input class="stext-111 cl2 plh3 size-116 p-lr-30 @error('fname') is-invalid @enderror" 
-                                       type="text" 
-                                       name="fname" 
+                                <input class="stext-111 cl2 plh3 size-116 p-lr-30 @error('fname') is-invalid @enderror"
+                                       type="text"
+                                       name="fname"
                                        value="{{ old('fname') }}"
-                                       placeholder="{{ __('messages.contact.firstName') ?? 'First Name' }} *" 
+                                       placeholder="{{ __('messages.contact.firstName') ?? 'First Name' }} *"
                                        required>
                                 @error('fname')
                                     <span class="invalid-feedback" role="alert" style="display: block; color: #f44336; margin-top: 5px; font-size: 12px;">
@@ -85,11 +85,11 @@
 
                         <div class="col-md-6">
                             <div class="bor8 m-b-20">
-                                <input class="stext-111 cl2 plh3 size-116 p-lr-30 @error('lname') is-invalid @enderror" 
-                                       type="text" 
-                                       name="lname" 
+                                <input class="stext-111 cl2 plh3 size-116 p-lr-30 @error('lname') is-invalid @enderror"
+                                       type="text"
+                                       name="lname"
                                        value="{{ old('lname') }}"
-                                       placeholder="{{ __('messages.contact.lastName') ?? 'Last Name' }} *" 
+                                       placeholder="{{ __('messages.contact.lastName') ?? 'Last Name' }} *"
                                        required>
                                 @error('lname')
                                     <span class="invalid-feedback" role="alert" style="display: block; color: #f44336; margin-top: 5px; font-size: 12px;">
@@ -101,11 +101,11 @@
                     </div>
 
                     <div class="bor8 m-b-20 how-pos4-parent">
-                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 @error('phone') is-invalid @enderror" 
-                               type="text" 
-                               name="phone" 
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 @error('phone') is-invalid @enderror"
+                               type="text"
+                               name="phone"
                                value="{{ old('phone') }}"
-                               placeholder="{{ __('messages.contact.phone') ?? 'Phone Number' }} *" 
+                               placeholder="{{ __('messages.contact.phone') ?? 'Phone Number' }} *"
                                required>
                         <img class="how-pos4 pointer-none" src="{{ asset('frontend/images/icons/icon-email.png') }}" alt="ICON">
                         @error('phone')
@@ -116,11 +116,11 @@
                     </div>
 
                     <div class="bor8 m-b-20 how-pos4-parent">
-                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 @error('email') is-invalid @enderror" 
-                               type="email" 
-                               name="email" 
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 @error('email') is-invalid @enderror"
+                               type="email"
+                               name="email"
                                value="{{ old('email') }}"
-                               placeholder="{{ __('messages.contact.email') ?? 'Your Email Address' }} *" 
+                               placeholder="{{ __('messages.contact.email') ?? 'Your Email Address' }} *"
                                required>
                         <img class="how-pos4 pointer-none" src="{{ asset('frontend/images/icons/icon-email.png') }}" alt="ICON">
                         @error('email')
@@ -131,9 +131,9 @@
                     </div>
 
                     <div class="bor8 m-b-30">
-                        <textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25 @error('message') is-invalid @enderror" 
-                                  name="message" 
-                                  placeholder="{{ __('messages.contact.message') ?? 'How Can We Help?' }} *" 
+                        <textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25 @error('message') is-invalid @enderror"
+                                  name="message"
+                                  placeholder="{{ __('messages.contact.message') ?? 'How Can We Help?' }} *"
                                   required>{{ old('message') }}</textarea>
                         @error('message')
                             <span class="invalid-feedback" role="alert" style="display: block; color: #f44336; margin-top: 5px; font-size: 12px;">
@@ -163,7 +163,7 @@
                         </span>
 
                         <p class="stext-115 cl6 size-213 p-t-18">
-                            Lakshmi Chowk Lahore, Pakistan
+                            Lahore, Pakistan
                         </p>
                     </div>
                 </div>
@@ -179,7 +179,7 @@
                         </span>
 
                         <p class="stext-115 cl1 size-213 p-t-18">
-                            03144707099
+                            03712275753
                         </p>
                     </div>
                 </div>
@@ -195,14 +195,14 @@
                         </span>
 
                         <p class="stext-115 cl1 size-213 p-t-18">
-                            zaylishofficial@gmail.com
+                            batoolpret@gmail.com
                         </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>	
+</section>
 
 
 <!-- Map -->

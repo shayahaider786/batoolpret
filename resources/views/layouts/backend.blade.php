@@ -19,6 +19,7 @@
     <!-- End plugin css for this page -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('frontend/images/icons/favicon.png') }}" />
 </head>
 
 <body>
