@@ -62,7 +62,6 @@
     display: flex;
     align-items: center;
     padding: 0 30px;
-    position: relative;
 }
 
 /* Logo Styling */
@@ -71,9 +70,6 @@
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 .logo img {
@@ -86,40 +82,12 @@
     transform: scale(1.02);
 }
 
-/* Desktop Hamburger */
-.btn-show-menu-mobile.desktop-hamburger {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1101;
-    position: absolute;
-    left: 0;
-}
-
-/* Override menu-mobile z-index for desktop */
-.menu-mobile {
-    z-index: 1200 !important;
-}
-
-/* Show menu-mobile on desktop */
-@media (min-width: 992px) {
-    .menu-mobile {
-        display: block !important;
-        top: 108px !important;
-        height: calc(100vh - 108px) !important;
-        max-height: calc(100vh - 108px) !important;
-        width: 350px !important;
-    }
-    .menu-mobile-overlay {
-        top: 108px !important;
-        height: calc(100vh - 108px) !important;
-    }
-}
-
-/* Main Menu Styling - Hidden on Desktop */
+/* Main Menu Styling */
 .menu-desktop {
-    display: none;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .main-menu {
@@ -230,13 +198,13 @@
     top: 0;
     height: 100%;
     width: 3px;
-    background: #ca6eac;
+    background: #8a6937;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .sub-menu li:hover > a {
-    color: #ca6eac;
+    color: #8a6937;
     padding-left: 25px;
 }
 
@@ -720,7 +688,7 @@
 .cart-preview-header {
     position: sticky;
     top: 0;
-    background: linear-gradient(135deg, #ca6eac, #ca6eac);
+    background: linear-gradient(135deg, #8a6937, #8a6937);
     color: white;
     padding: 20px;
     display: flex;
@@ -781,7 +749,7 @@
 }
 
 .cart-preview-price {
-    color: #ca6eac;
+    color: #8a6937;
     font-weight: 600;
 }
 
@@ -804,7 +772,7 @@
     width: calc(100% - 40px);
     margin: 20px;
     padding: 14px;
-    background: linear-gradient(135deg, #ca6eac, #ca6eac);
+    background: linear-gradient(135deg, #8a6937, #8a6937);
     color: white;
     border: none;
     border-radius: 6px;
@@ -878,16 +846,11 @@
         min-height: 35px;
     }
     .top-bar .left-top-bar {
-        flex: 1 !important;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 12px;
+        flex: 20 !important;
+        order: 1;
+        font-size: 10px;
         padding: 2px 0;
-        text-align: left;
-    }
-    .top-bar .left-top-bar .social-icons-top a {
-        margin-right: 10px;
+        text-align: center;
     }
     .top-bar .right-top-bar.flex-w {
         flex: 0 0 auto;

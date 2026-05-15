@@ -23,10 +23,8 @@
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/bootstrap/css/bootstrap.min.css') }}">
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css"
-        {{-- href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"> --}}
-    <link rel="stylesheet" type="text/css"
-        href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
+    {{-- <link rel="stylesheet" type="text/css"  href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"> --}}
+    <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/linearicons-v1.0.0/icon-font.min.css') }}">
     <!--===============================================================================================-->
@@ -68,22 +66,20 @@
                 <div class="content-topbar flex-sb-m h-full container">
                     <div class="left-top-bar text-white d-flex align-items-center">
                         <div class="social-icons-top d-flex align-items-center">
-                            <a href="#" target="blank"
-                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                                 <i class="fa-brands fa-facebook"></i>
                             </a>
 
-                            <a href="#" target="blank"
-                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                                 <i class="fa-brands fa-instagram"></i>
                             </a>
 
-                            <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
-                                target="blank">
+                            <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
                                 <i class="fa-brands fa-tiktok"></i>
                             </a>
                         </div>
-                        <marquee class="top-bar-marquee">FREE SHIPPING ON ORDERS ABOVE RS. 5000 | PAKISTAN'S PREMIUM LADIES BRAND</marquee>
+                        <marquee class="top-bar-marquee">FREE SHIPPING ON ORDERS ABOVE RS. 5000 | PAKISTAN'S PREMIUM
+                            LADIES BRAND</marquee>
                     </div>
 
                     <div class="right-top-bar flex-w h-full">
@@ -113,16 +109,9 @@
             <div class="wrap-menu-desktop">
                 <nav class="limiter-menu-desktop container">
 
-                    <!-- Hamburger desktop -->
-                    <div class="btn-show-menu-mobile hamburger hamburger--squeeze desktop-hamburger">
-                        <span class="hamburger-box">
-                            <span class="hamburger-inner"></span>
-                        </span>
-                    </div>
-
                     <!-- Logo desktop -->
                     <a href="{{ route('index') }}" class="logo">
-                        <img src="../../frontend/images/icons/batoollogo.png" alt="IMG-LOGO">
+                        <img src="../../frontend/images/icons/batoollogo.png" alt="batool pret">
                     </a>
 
                     <!-- Menu desktop -->
@@ -132,126 +121,43 @@
                                 <li class="{{ request()->routeIs('index') ? 'active-menu' : '' }}">
                                     <a href="{{ route('index') }}">Home</a>
                                 </li>
-
-                                @php
-                                    $isShopActive =
-                                        (request()->routeIs('shop') ||
-                                            request()->routeIs('tagShop') ||
-                                            request()->routeIs('productDetail')) &&
-                                        !request('sale') &&
-                                        !request('tag') &&
-                                        !request('categories');
-                                    $isSaleActive = request()->routeIs('shop') && request('sale') == 'true';
-                                    $isNewInActive = request()->routeIs('shop') && request('tag') == 'new_arrival';
-                                    $isTrendingActive = request()->routeIs('shop') && request('tag') == 'trending';
-                                    $isBestSellingActive =
-                                        request()->routeIs('shop') && request('tag') == 'best_selling';
-                                    $isCollectionsActive =
-                                        (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
-                                        (request('tag') == 'new_arrival' ||
-                                            request('tag') == 'trending' ||
-                                            request('tag') == 'best_selling');
-                                    $bagsCategory = \App\Models\Category::where(function ($q) {
-                                        $q->where('name', 'LIKE', '%bag%')->orWhere('slug', 'LIKE', '%bag%');
-                                    })
-                                        ->active()
-                                        ->first();
-                                    $bagsCategoryId = $bagsCategory ? $bagsCategory->id : null;
-
-                                    // SUMMER Collection category (replaces Eid Collection)
-                                    $summerCategory = \App\Models\Category::where(function ($q) {
-                                        $q->where('name', 'LIKE', '%summer%')
-                                            ->orWhere('slug', 'LIKE', '%summer%')
-                                            ->orWhere('name', 'LIKE', '%seasonal%');
-                                    })
-                                        ->active()
-                                        ->first();
-                                    $summerCategoryId = $summerCategory ? $summerCategory->id : null;
-
-                                    // Casual category (if exists)
-                                    $casualCategory = \App\Models\Category::where(function ($q) {
-                                        $q->where('name', 'LIKE', '%casual%')->orWhere('slug', 'LIKE', '%casual%');
-                                    })
-                                        ->active()
-                                        ->first();
-                                    $casualCategoryId = $casualCategory ? $casualCategory->id : null;
-
-                                    // Formal category (if exists)
-                                    $formalCategory = \App\Models\Category::where(function ($q) {
-                                        $q->where('name', 'LIKE', '%formal%')->orWhere('slug', 'LIKE', '%formal%');
-                                    })
-                                        ->active()
-                                        ->first();
-                                    $formalCategoryId = $formalCategory ? $formalCategory->id : null;
-
-                                    $isBagsActive =
-                                        (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
-                                        request('categories') &&
-                                        is_array(request('categories')) &&
-                                        $bagsCategoryId &&
-                                        in_array($bagsCategoryId, request('categories'));
-
-                                    $isSummerActive =
-                                        (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
-                                        request('categories') &&
-                                        is_array(request('categories')) &&
-                                        $summerCategoryId &&
-                                        in_array($summerCategoryId, request('categories'));
-
-                                    $isCasualActive =
-                                        (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
-                                        request('categories') &&
-                                        is_array(request('categories')) &&
-                                        $casualCategoryId &&
-                                        in_array($casualCategoryId, request('categories'));
-
-                                    $isFormalActive =
-                                        (request()->routeIs('shop') || request()->routeIs('tagShop')) &&
-                                        request('categories') &&
-                                        is_array(request('categories')) &&
-                                        $formalCategoryId &&
-                                        in_array($formalCategoryId, request('categories'));
-                                @endphp
-
-                                <li class="label1 {{ $isNewInActive ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop', ['tag' => 'new_arrival']) }}">New Arrival</a>
+                                <li
+                                    class="{{ request()->routeIs('shop') && !request()->has('category') ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop') }}">New Arrival</a>
                                 </li>
-
-                                @if ($casualCategoryId)
-                                    <li class="{{ $isCasualActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Casual</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Summer</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Winter</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Spring</a></li>
-                                        </ul>
-                                    </li>
-                                @endif
-
-                                @if ($formalCategoryId)
-                                    <li class="{{ $isFormalActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}">Semi Formal</a>
-                                    </li>
-                                @endif
-
-                                @if ($bagsCategoryId)
-                                    <li class="{{ $isBagsActive ? 'active-menu' : '' }}">
-                                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Kids</a>
-                                        <ul class="sub-menu">
-                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Summer</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Winter</a></li>
-                                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Spring</a></li>
-                                        </ul>
-                                    </li>
-                                @endif
-
-                                <li class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop', ['sale' => 'true']) }}">Sale</a>
+                                <li
+                                    class="menu-item-has-children {{ request()->routeIs('shop') && in_array(request('category'), ['summer', 'winter', 'spring']) ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop') }}">Casual <i class="zmdi zmdi-chevron-down"
+                                            style="font-size:16px;"></i></a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{{ route('shop', ['category' => 'summer']) }}">Summer</a></li>
+                                        <li><a href="{{ route('shop', ['category' => 'winter']) }}">Winter</a></li>
+                                        <li><a href="{{ route('shop', ['category' => 'spring']) }}">Spring</a></li>
+                                    </ul>
                                 </li>
-
+                                <li
+                                    class="{{ request()->routeIs('shop') && request('category') == 'semi-formal' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['category' => 'semi-formal']) }}">Semi Formal</a>
+                                </li>
+                                <li
+                                    class="{{ request()->routeIs('shop') && request('category') == 'sale' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['category' => 'sale']) }}">Sale</a>
+                                </li>
+                                <li
+                                    class="menu-item-has-children {{ request()->routeIs('shop') && in_array(request('category'), ['kids-summer', 'kids-winter', 'kids-spring']) ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop') }}">Kids <i class="zmdi zmdi-chevron-down"
+                                            style="font-size:16px;"></i></a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{{ route('shop', ['category' => 'kids-summer']) }}">Summer</a>
+                                        </li>
+                                        <li><a href="{{ route('shop', ['category' => 'kids-winter']) }}">Winter</a>
+                                        </li>
+                                        <li><a href="{{ route('shop', ['category' => 'kids-spring']) }}">Spring</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
-
                         <!-- Icon header -->
                         <div class="wrap-icon-header flex-w flex-r-m">
                             <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
@@ -259,13 +165,14 @@
                             </div>
 
                             <a href="{{ route('cart') }}"
-                                class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
+                                class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart {{ request()->routeIs('cart') ? 'active-cart' : '' }}"
                                 data-notify="{{ $cartCount ?? 0 }}" title="View Cart">
                                 <i class="zmdi zmdi-shopping-cart"></i>
                             </a>
                         </div>
                     </div>
                 </nav>
+
             </div>
         </div>
 
@@ -274,18 +181,17 @@
             <!-- Logo moblie -->
             <div class="logo-mobile">
                 <a href="{{ route('index') }}"><img src="../../frontend/images/icons/batoollogo.png"
-                        alt="IMG-LOGO"></a>
+                        alt="batool pret"></a>
             </div>
 
             <!-- Icon header -->
-            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-
-                <!--Search.icon-->
-                <div class="icon-header-item-s cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+            <div class="wrap-icon-header flex-w flex-r-m">
+                <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
                     <i class="zmdi zmdi-search"></i>
                 </div>
+
                 <a href="{{ route('cart') }}"
-                    class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+                    class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"
                     data-notify="{{ $cartCount ?? 0 }}" title="View Cart">
                     <i class="zmdi zmdi-shopping-cart"></i>
                 </a>
@@ -317,49 +223,39 @@
                         New Arrival
                     </a>
                 </li>
+                <li class="has-submenu">
+                    <a href="{{ route('shop') }}">
+                        Casual
+                        <span class="arrow-main-menu-m">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </a>
+                    <ul class="sub-menu-m">
+                        <li><a href="{{ route('shop') }}">Summer</a></li>
+                        <li><a href="{{ route('shop') }}">Winter</a></li>
+                        <li><a href="{{ route('shop') }}">Spring</a></li>
+                    </ul>
+                </li>
 
-                @if ($casualCategoryId)
-                    <li class="has-submenu">
-                        <a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}"
-                            class="{{ $isCasualActive ? 'active' : '' }}">
-                            Casual
-                            <span class="arrow-main-menu-m">
-                                <i class="fa fa-plus"></i>
-                            </span>
-                        </a>
-                        <ul class="sub-menu-m">
-                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Summer</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Winter</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$casualCategoryId]]) }}">Spring</a></li>
-                        </ul>
-                    </li>
-                @endif
+                <li>
+                    <a href="{{ route('shop') }}">
+                        Semi Formal
+                    </a>
+                </li>
 
-                @if ($formalCategoryId)
-                    <li>
-                        <a href="{{ route('shop', ['categories' => [$formalCategoryId]]) }}"
-                            class="{{ $isFormalActive ? 'active' : '' }}">
-                            Semi Formal
-                        </a>
-                    </li>
-                @endif
-
-                @if ($bagsCategoryId)
-                    <li class="has-submenu">
-                        <a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}"
-                            class="{{ $isBagsActive ? 'active' : '' }}">
-                            Kids
-                            <span class="arrow-main-menu-m">
-                                <i class="fa fa-plus"></i>
-                            </span>
-                        </a>
-                        <ul class="sub-menu-m">
-                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Summer</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Winter</a></li>
-                            <li><a href="{{ route('shop', ['categories' => [$bagsCategoryId]]) }}">Spring</a></li>
-                        </ul>
-                    </li>
-                @endif
+                <li class="has-submenu">
+                    <a href="{{ route('shop') }}">
+                        Kids
+                        <span class="arrow-main-menu-m">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                    </a>
+                    <ul class="sub-menu-m">
+                        <li><a href="{{ route('shop') }}">Summer</a></li>
+                        <li><a href="{{ route('shop') }}">Winter</a></li>
+                        <li><a href="{{ route('shop') }}">Spring</a></li>
+                    </ul>
+                </li>
 
                 <li>
                     <a href="{{ route('shop', ['sale' => 'true']) }}"
@@ -503,18 +399,15 @@
                     </p>
 
                     <div class="p-t-27">
-                        <a href="#" target="blank"
-                            class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-facebook"></i>
                         </a>
 
-                        <a href="#" target="blank"
-                            class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
 
-                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
-                            target="blank">
+                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
                             <i class="fa-brands fa-tiktok"></i>
                         </a>
                     </div>

@@ -407,7 +407,7 @@
                                 @endphp
                                 <a href="https://wa.me/923144707099?text={{ $whatsappMessage }}" target="_blank"
                                     rel="noopener noreferrer" class="whatsapp-order-btn" title="Order on WhatsApp">
-                                    <i class="fa fa-whatsapp"></i>
+                                    <i class="fa-brands fa-whatsapp"></i>
                                     <span>Order On WhatsApp</span>
                                 </a>
                             </div>
