@@ -24,7 +24,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/vendor/bootstrap/css/bootstrap.min.css') }}">
     <!--===============================================================================================-->
     {{-- <link rel="stylesheet" type="text/css"  href="{{ asset('frontend/fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}"> --}}
-    <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('frontend/fonts/iconic/css/material-design-iconic-font.min.css') }}">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="{{ asset('frontend/fonts/linearicons-v1.0.0/icon-font.min.css') }}">
     <!--===============================================================================================-->
@@ -67,15 +68,18 @@
                     <div class="left-top-bar text-white d-flex align-items-center">
                         <div class="social-icons-top d-flex align-items-center">
                             <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                                <i class="fa-brands fa-facebook"></i>
+                                <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i>
+                                {{-- <img src="frontend/images/icons/facebook.png" class="iconWidth" alt=""> --}}
                             </a>
 
                             <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                                <i class="fa-brands fa-instagram"></i>
+                                <i class="fa-brands fa-instagram" style="color: #E4405F;"></i>
+                                {{-- <img src="frontend/images/icons/instagram.png" class="iconWidth" alt=""> --}}
                             </a>
 
                             <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
-                                <i class="fa-brands fa-tiktok"></i>
+                                <i class="fa-brands fa-tiktok" style="color: #fe2c55;"></i>
+                                {{-- <img src="frontend/images/icons/tiktok.png" class="iconWidth" alt=""> --}}
                             </a>
                         </div>
                         <marquee class="top-bar-marquee">FREE SHIPPING ON ORDERS ABOVE RS. 5000 | PAKISTAN'S PREMIUM
@@ -399,16 +403,19 @@
                     </p>
 
                     <div class="p-t-27">
-                        <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                            <i class="fa-brands fa-facebook"></i>
+                        <!-- Facebook -->
+                        <a href="#" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i>
                         </a>
 
-                        <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-                            <i class="fa-brands fa-instagram"></i>
+                        <!-- Instagram -->
+                        <a href="#" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <i class="fa-brands fa-instagram" style="color: #E4405F;"></i>
                         </a>
 
-                        <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
-                            <i class="fa-brands fa-tiktok"></i>
+                        <!-- TikTok -->
+                        <a href="#" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <i class="fa-brands fa-tiktok" style="color: #fe2c55;"></i>
                         </a>
                     </div>
                 </div>
