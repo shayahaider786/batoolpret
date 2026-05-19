@@ -683,7 +683,7 @@
             opacity: 1;
         }
 
-        /* Mobile Zoom Panel */
+        /* Mobile Zoom Panel - Updated for better visibility */
         @media (max-width: 992px) {
             .zoom-result-panel {
                 position: fixed;
@@ -692,19 +692,23 @@
                 left: auto;
                 top: auto;
                 transform: none;
-                width: 200px;
-                height: 200px;
-                border: 2px solid #ff6b6b;
+                width: 350px !important;
+                /* Increased from 200px */
+                height: 350px !important;
+                /* Increased from 200px */
+                border: 3px solid #ff6b6b;
                 border-radius: 12px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
                 background-size: 250%;
                 z-index: 1001;
                 background-color: white;
+                background-repeat: no-repeat;
+                background-position: center;
             }
 
             .zoom-lens {
-                width: 100px !important;
-                height: 100px !important;
+                width: 120px !important;
+                height: 120px !important;
             }
 
             .zoom-result-panel.active {
@@ -725,7 +729,7 @@
                 }
             }
 
-            /* Mobile zoom instruction */
+            /* Optional: Add instruction text for better UX */
             .mobile-zoom-instruction {
                 position: absolute;
                 bottom: 10px;
@@ -733,32 +737,39 @@
                 transform: translateX(-50%);
                 background: rgba(0, 0, 0, 0.7);
                 color: white;
-                padding: 5px 12px;
+                padding: 6px 14px;
                 border-radius: 20px;
-                font-size: 11px;
+                font-size: 12px;
                 pointer-events: none;
                 z-index: 102;
                 white-space: nowrap;
                 font-family: Arial, sans-serif;
-            }
-
-            .image-zoom-container {
-                position: relative;
+                font-weight: 500;
             }
         }
 
-        /* Small mobile devices */
+        /* Small mobile devices (phones) */
         @media (max-width: 576px) {
             .zoom-result-panel {
-                width: 150px;
-                height: 150px;
-                bottom: 10px;
-                right: 10px;
+                width: 280px !important;
+                /* Slightly smaller but still visible */
+                height: 280px !important;
+                bottom: 15px;
+                right: 15px;
+                border-width: 2px;
             }
 
             .zoom-lens {
-                width: 80px !important;
-                height: 80px !important;
+                width: 100px !important;
+                height: 100px !important;
+            }
+        }
+
+        /* Larger mobile devices / phablets */
+        @media (min-width: 577px) and (max-width: 768px) {
+            .zoom-result-panel {
+                width: 380px !important;
+                height: 380px !important;
             }
         }
 
@@ -846,9 +857,9 @@
                 let lensSize = isMobile ? 100 : 150;
                 if (window.innerWidth <= 576) lensSize = 80;
                 if (window.innerWidth >= 1400) lensSize = 180;
-
-                // Zoom ratio
-                let zoomRatio = isMobile ? 2.2 : 2.8;
+                
+                // Zoom ratio - increased for mobile for more zoomed-in view
+                let zoomRatio = isMobile ? 3.2 : 2.8;
 
                 // Set lens size
                 $lens.css({
