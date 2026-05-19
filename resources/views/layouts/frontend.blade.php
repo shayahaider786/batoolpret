@@ -67,17 +67,17 @@
                 <div class="content-topbar flex-sb-m h-full container">
                     <div class="left-top-bar text-white d-flex align-items-center">
                         <div class="social-icons-top d-flex align-items-center">
-                            <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <a href="https://www.facebook.com/profile.php?id=61573626186682" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                                 <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i>
                                 {{-- <img src="frontend/images/icons/facebook.png" class="iconWidth" alt=""> --}}
                             </a>
 
-                            <a href="#" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <a href="https://www.instagram.com/batoolpret/" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                                 <i class="fa-brands fa-instagram" style="color: #E4405F;"></i>
                                 {{-- <img src="frontend/images/icons/instagram.png" class="iconWidth" alt=""> --}}
                             </a>
 
-                            <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
+                            <a href="https://www.tiktok.com/@batool.pret" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
                                 <i class="fa-brands fa-tiktok" style="color: #fe2c55;"></i>
                                 {{-- <img src="frontend/images/icons/tiktok.png" class="iconWidth" alt=""> --}}
                             </a>
@@ -404,17 +404,17 @@
 
                     <div class="p-t-27">
                         <!-- Facebook -->
-                        <a href="#" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="https://www.facebook.com/profile.php?id=61573626186682" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i>
                         </a>
 
                         <!-- Instagram -->
-                        <a href="#" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="https://www.instagram.com/batoolpret/" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-instagram" style="color: #E4405F;"></i>
                         </a>
 
                         <!-- TikTok -->
-                        <a href="#" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="https://www.tiktok.com/@batool.pret" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-tiktok" style="color: #fe2c55;"></i>
                         </a>
                     </div>
