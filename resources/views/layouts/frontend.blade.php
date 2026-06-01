@@ -78,7 +78,7 @@
                             </a>
 
                             <a href="https://www.tiktok.com/@batool.pret" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
-                                <i class="fa-brands fa-tiktok" style="color: #fe2c55;"></i>
+                               <i class="fa-brands fa-tiktok tiktok-icon"></i>
                                 {{-- <img src="frontend/images/icons/tiktok.png" class="iconWidth" alt=""> --}}
                             </a>
                         </div>
