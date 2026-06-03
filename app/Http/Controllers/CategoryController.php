@@ -16,6 +16,18 @@ class CategoryController extends Controller
     private function convertToWebP($imageFile, $destinationPath, $fileName)
     {
         try {
+            // Ensure the destination directory exists and is writable
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            // Check if directory is writable, if not try to set permissions
+            if (!is_writable($destinationPath)) {
+                // On Windows, we need to use icacls command or just try to continue
+                // Sometimes is_writable returns false even when it works
+                \Log::info('Directory may not be writable, attempting anyway: ' . $destinationPath);
+            }
+
             // Check if GD extension is available and supports WebP
             if (!extension_loaded('gd') || !function_exists('imagewebp')) {
                 throw new \Exception('GD extension with WebP support is not available');
@@ -41,7 +53,7 @@ class CategoryController extends Controller
                     $image = imagecreatefromgif($sourcePath);
                     break;
                 case 'image/webp':
-                    // Already WebP, just copy it
+                    // Already WebP, just copy it using copy() instead of move
                     copy($sourcePath, $webpPath);
                     return $fileName;
                 default:
@@ -66,7 +78,15 @@ class CategoryController extends Controller
             \Log::warning('WebP conversion failed: ' . $e->getMessage());
             $extension = $imageFile->guessExtension() ?: $imageFile->getClientOriginalExtension();
             $fallbackName = str_replace('.webp', '.' . $extension, $fileName);
-            $imageFile->move($destinationPath, $fallbackName);
+
+            // Ensure directory exists before moving file
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            // Use copy instead of move to avoid permission issues
+            copy($imageFile->getRealPath(), $destinationPath . '/' . $fallbackName);
+
             return $fallbackName;
         }
     }
@@ -105,7 +125,7 @@ class CategoryController extends Controller
             'status' => 'required|in:active,inactive',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'category_link' => 'nullable|url|max:500', // Add validation for category_link
+            'category_link' => 'nullable|url|max:500',
         ]);
 
         // Generate slug from name
@@ -119,16 +139,13 @@ class CategoryController extends Controller
             $counter++;
         }
 
+        // Define the destination path
+        $destinationPath = public_path('categories');
+
         // Handle image upload - convert to WebP and store in public/categories folder
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::random(10) . '.webp';
-
-            // Create categories directory if it doesn't exist
-            $destinationPath = public_path('categories');
-            if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0755, true);
-            }
 
             $savedFileName = $this->convertToWebP($image, $destinationPath, $imageName);
             $validated['image'] = 'categories/' . $savedFileName;
@@ -138,12 +155,6 @@ class CategoryController extends Controller
         if ($request->hasFile('banner_image')) {
             $bannerImage = $request->file('banner_image');
             $bannerImageName = time() . '_' . Str::random(10) . '_banner.webp';
-
-            // Create categories directory if it doesn't exist
-            $destinationPath = public_path('categories');
-            if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0755, true);
-            }
 
             $savedFileName = $this->convertToWebP($bannerImage, $destinationPath, $bannerImageName);
             $validated['banner_image'] = 'categories/' . $savedFileName;
@@ -198,7 +209,7 @@ class CategoryController extends Controller
             'status' => 'required|in:active,inactive',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'category_link' => 'nullable|url|max:500', // Add validation for category_link
+            'category_link' => 'nullable|url|max:500',
         ]);
 
         // Update slug if name changed
@@ -212,14 +223,65 @@ class CategoryController extends Controller
                 $validated['slug'] = $originalSlug . '-' . $counter;
                 $counter++;
             }
+        } else {
+            // Keep existing slug
+            $validated['slug'] = $category->slug;
         }
 
-        // Handle image upload similarly to store method...
-        // (Same image handling code as in store method)
+        // Define the destination path
+        $destinationPath = public_path('categories');
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image) {
+                $oldImagePath = public_path($category->image);
+                if (File::exists($oldImagePath)) {
+                    try {
+                        File::delete($oldImagePath);
+                    } catch (\Exception $e) {
+                        \Log::warning('Failed to delete old category image: ' . $e->getMessage());
+                    }
+                }
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '_' . Str::random(10) . '.webp';
+
+            $savedFileName = $this->convertToWebP($image, $destinationPath, $imageName);
+            $validated['image'] = 'categories/' . $savedFileName;
+        } else {
+            // Keep existing image
+            $validated['image'] = $category->image;
+        }
+
+        // Handle banner image upload
+        if ($request->hasFile('banner_image')) {
+            // Delete old banner image if exists
+            if ($category->banner_image) {
+                $oldBannerPath = public_path($category->banner_image);
+                if (File::exists($oldBannerPath)) {
+                    try {
+                        File::delete($oldBannerPath);
+                    } catch (\Exception $e) {
+                        \Log::warning('Failed to delete old banner image: ' . $e->getMessage());
+                    }
+                }
+            }
+
+            $bannerImage = $request->file('banner_image');
+            $bannerImageName = time() . '_' . Str::random(10) . '_banner.webp';
+
+            $savedFileName = $this->convertToWebP($bannerImage, $destinationPath, $bannerImageName);
+            $validated['banner_image'] = 'categories/' . $savedFileName;
+        } else {
+            // Keep existing banner image
+            $validated['banner_image'] = $category->banner_image;
+        }
 
         $category->update($validated);
 
-        // Clear cache
+        // Clear cache for categories
         Cache::forget('categories.active.with_images');
         Cache::forget('categories.active.all');
         Cache::forget('categories.parents.active');
@@ -273,6 +335,6 @@ class CategoryController extends Controller
         Cache::forget('categories.parents.active');
 
         return redirect()->route('admin.categories.index')
-            ->with('success', 'Category and associated image deleted successfully.');
+            ->with('success', 'Category and associated images deleted successfully.');
     }
 }
