@@ -443,7 +443,7 @@
 
 
             <p class="stext-107 cl6 txt-center">
-                Copyright &copy; {{ date('Y') }} Batool Pret - The Pure One. All rights reserved.
+                Copyright &copy; {{ date('Y') }} Batool Pret - The Pure One. Designed by <a target="_blank" href="https://inspecttechnologies.zaylish.pk/">Inspect Technologies</a> All rights reserved.
             </p>
         </div>
         </div>
