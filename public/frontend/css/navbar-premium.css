@@ -13,7 +13,8 @@
 }
 
 .top-bar {
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    /* background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); */
+    background-color: #ffffff;
     height: 38px;
     font-size: 11px;
     letter-spacing: 0.5px;
@@ -32,16 +33,17 @@
 }
 
 .right-top-bar a:hover {
-    color: #fff;
+    color: rgb(36, 35, 35);
     background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* .right-top-bar a:first-child {
   border-left: 1px solid rgba(255, 255, 255, 0.15);
 } */
-.iconWidth{
+.iconWidth {
     width: 50%;
 }
+
 .wrap-menu-desktop {
     /* position: fixed; */
     z-index: 1100;
@@ -74,6 +76,10 @@
     align-items: center;
 }
 
+.top-bar .top-bar-marquee {
+    color: #000;
+}
+
 .logo img {
     max-width: 145px;
     height: auto;
@@ -100,7 +106,7 @@
     gap: 5px;
 }
 
-.main-menu > li {
+.main-menu>li {
     position: relative;
     padding: 20px 8px;
     margin: 0;
@@ -108,7 +114,7 @@
     align-items: center;
 }
 
-.main-menu > li > a {
+.main-menu>li>a {
     font-family: "Poppins-Medium";
     font-size: 14px;
     color: #333;
@@ -120,7 +126,7 @@
     text-decoration: none;
 }
 
-.main-menu > li > a::before {
+.main-menu>li>a::before {
     content: "";
     position: absolute;
     bottom: -2px;
@@ -131,19 +137,19 @@
     transition: width 0.3s ease;
 }
 
-.main-menu > li > a:hover {
+.main-menu>li>a:hover {
     color: #000000;
 }
 
-.main-menu > li > a:hover::before {
+.main-menu>li>a:hover::before {
     width: calc(100% - 32px);
 }
 
-.main-menu > li.active-menu > a {
+.main-menu>li.active-menu>a {
     color: #000000;
 }
 
-.main-menu > li.active-menu > a::before {
+.main-menu>li.active-menu>a::before {
     width: calc(100% - 32px);
 }
 
@@ -167,7 +173,7 @@
     z-index: 1200;
 }
 
-.main-menu > li:hover > .sub-menu {
+.main-menu>li:hover>.sub-menu {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
@@ -205,12 +211,12 @@
     transition: opacity 0.3s ease;
 }
 
-.sub-menu li:hover > a {
+.sub-menu li:hover>a {
     color: #8a6937;
     padding-left: 25px;
 }
 
-.sub-menu li:hover > a::before {
+.sub-menu li:hover>a::before {
     opacity: 1;
 }
 
@@ -354,6 +360,7 @@
         min-height: 44px;
         padding: 0 5px !important;
     }
+
     .icon-header-item-s {
         width: 25px;
         height: 35px;
@@ -482,11 +489,13 @@
         width: 170px;
         height: 55px;
     }
+
     .logo-mobile img {
         max-width: 125px;
         height: 100%;
         object-fit: contain;
     }
+
     .bottom-nav-mobile {
         height: 75px;
     }
@@ -533,6 +542,7 @@
         width: 160px;
         height: 48px;
     }
+
     .logo-mobile img {
         max-width: 110px;
         height: 100%;
@@ -582,6 +592,7 @@
     .product-card:hover .js-show-modal1 {
         display: e !important;
     }
+
     .product-image a.block2-btn {
         display: none !important;
     }
@@ -619,6 +630,7 @@
         transform: translateY(-100%);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -630,6 +642,7 @@
         transform: translateY(100%);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -784,9 +797,11 @@
     font-size: 14px;
     min-height: 44px;
 }
+
 .stext-101 {
     font-size: 13px;
 }
+
 .cart-checkout-btn:active {
     transform: scale(0.98);
 }
@@ -796,6 +811,7 @@
         opacity: 0;
         transform: translateX(20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -808,6 +824,7 @@
 
 /* Glass morphism effect for better appearance */
 @supports (backdrop-filter: blur(10px)) {
+
     .wrap-menu-desktop.scrolled,
     .wrap-header-mobile,
     .bottom-nav-mobile {
@@ -817,7 +834,7 @@
 }
 
 /* Smooth color transitions */
-.main-menu > li > a,
+.main-menu>li>a,
 .icon-header-item,
 .bottom-nav-item {
     -webkit-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -840,13 +857,15 @@
         position: static !important;
         height: auto;
         min-height: 35px;
-        background-color: #222 !important;
+        background-color: #ffffff !important;
     }
+
     .top-bar .content-topbar {
         flex-wrap: wrap;
         padding: 5px 10px;
         min-height: 35px;
     }
+
     .top-bar .left-top-bar {
         flex: 20 !important;
         order: 1;
@@ -854,41 +873,60 @@
         padding: 2px 0;
         text-align: center;
     }
+
     .top-bar .right-top-bar.flex-w {
         flex: 0 0 auto;
         order: 2;
         margin-left: auto;
     }
+
     .top-bar .right-top-bar.flex-w a {
         font-size: 11px;
         padding: 4px 10px;
     }
+
     .top-bar .right-top-bar.flex-w span {
         display: none;
     }
+
     .top-bar .right-top-bar.flex-w i {
         font-size: 16px;
         margin-right: 0;
     }
+
     .top-bar marquee {
         font-size: 13px;
     }
+
     /* Remove fixed positioning from mobile nav - make it static/relative */
     .wrap-header-mobile {
         position: relative !important;
         top: auto !important;
         transform: none !important;
     }
+
     .wrap-header-mobile.hide-header {
         transform: none !important;
     }
+
     .container-menu-desktop {
         display: block !important;
     }
+
     .wrap-menu-desktop {
         display: none !important;
     }
+
     .headerTop {
         padding: 0 !important;
     }
+}
+
+
+.tiktok-icon {
+    font-size: 20px;
+    background: linear-gradient(45deg, #25F4EE, #FE2C55, #000000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
