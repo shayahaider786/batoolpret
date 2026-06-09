@@ -463,7 +463,7 @@
     </div>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/923224741317?text={{ urlencode('Hi! I would like to know more about your products.') }}"
+    <a href="https://wa.me/923712275753?text={{ urlencode('Hi! I would like to know more about your products.') }}"
         target="_blank" class="whatsapp-float" title="Contact us on WhatsApp">
         <i class="fa-brands fa-whatsapp"></i>
     </a>

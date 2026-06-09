@@ -259,7 +259,7 @@
                                     $whatsappMessage .= 'Link: ' . route('productDetail', $product->slug);
                                     $whatsappMessage = urlencode($whatsappMessage);
                                 @endphp
-                                <a href="https://wa.me/923144707099?text={{ $whatsappMessage }}" target="_blank"
+                                <a href="https://wa.me/923712275753?text={{ $whatsappMessage }}" target="_blank"
                                     rel="noopener noreferrer" class="whatsapp-order-btn" title="Order on WhatsApp">
                                     <i class="fa-brands fa-whatsapp"></i>
                                     <span>Order On WhatsApp</span>
@@ -857,7 +857,7 @@
                 let lensSize = isMobile ? 100 : 150;
                 if (window.innerWidth <= 576) lensSize = 80;
                 if (window.innerWidth >= 1400) lensSize = 180;
-                
+
                 // Zoom ratio - increased for mobile for more zoomed-in view
                 let zoomRatio = isMobile ? 3.2 : 2.8;
 
