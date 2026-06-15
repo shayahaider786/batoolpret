@@ -501,8 +501,16 @@
                         <div class="video-container" style="width: 80%; margin: 0 auto;">
                             @php
                                 $videoId = '';
+                                $isShorts = false;
                                 $url = $product->youtube_link;
-                                if (
+
+                                // Check for shorts URL
+                                if (preg_match('/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/', $url, $shortsMatches)) {
+                                    $videoId = $shortsMatches[1];
+                                    $isShorts = true;
+                                }
+                                // Check for regular YouTube URLs
+                                elseif (
                                     preg_match(
                                         '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i',
                                         $url,
@@ -511,11 +519,26 @@
                                 ) {
                                     $videoId = $matches[1];
                                 }
+
+                                // Set height based on video type
+                                $videoHeight = $isShorts ? '700px' : '500px';
                             @endphp
                             @if ($videoId)
-                                <iframe src="https://www.youtube.com/embed/{{ $videoId }}?rel=0" frameborder="0"
-                                    allowfullscreen loading="lazy"
-                                    style="width: 100%; height: 500px; display: block;"></iframe>
+                                @if ($isShorts)
+                                    {{-- Better vertical display for Shorts --}}
+                                    <div style="display: flex; justify-content: center;">
+                                        <iframe
+                                            src="https://www.youtube.com/embed/{{ $videoId }}?rel=0&autoplay=1&mute=1"
+                                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
+                                            loading="lazy"
+                                            style="width: auto; height: {{ $videoHeight }}; max-width: 100%; aspect-ratio: 9 / 16;"></iframe>
+                                    </div>
+                                @else
+                                    <iframe
+                                        src="https://www.youtube.com/embed/{{ $videoId }}?rel=0&autoplay=1&mute=1"
+                                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"
+                                        style="width: 100%; height: {{ $videoHeight }}; display: block;"></iframe>
+                                @endif
                             @else
                                 <iframe src="{{ $product->youtube_link }}" frameborder="0" allowfullscreen
                                     loading="lazy" style="width: 100%; height: 500px; display: block;"></iframe>
@@ -526,7 +549,6 @@
             </div>
         </section>
     @endif
-
     <!-- Related Products -->
     <section class="sec-relate-product bg0 p-t-45 p-b-105">
         <div class="container">
