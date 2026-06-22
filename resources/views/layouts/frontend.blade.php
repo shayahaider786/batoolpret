@@ -67,18 +67,21 @@
                 <div class="content-topbar flex-sb-m h-full container">
                     <div class="left-top-bar text-white d-flex align-items-center">
                         <div class="social-icons-top d-flex align-items-center">
-                            <a href="https://www.facebook.com/profile.php?id=61573626186682" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <a href="https://www.facebook.com/profile.php?id=61573626186682" target="blank"
+                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                                 <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i>
                                 {{-- <img src="frontend/images/icons/facebook.png" class="iconWidth" alt=""> --}}
                             </a>
 
-                            <a href="https://www.instagram.com/batoolpret/" target="blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                            <a href="https://www.instagram.com/batoolpret/" target="blank"
+                                class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                                 <i class="fa-brands fa-instagram" style="color: #E4405F;"></i>
                                 {{-- <img src="frontend/images/icons/instagram.png" class="iconWidth" alt=""> --}}
                             </a>
 
-                            <a href="https://www.tiktok.com/@batool.pret" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="blank">
-                               <i class="fa-brands fa-tiktok tiktok-icon"></i>
+                            <a href="https://www.tiktok.com/@batool.pret" class="fs-18 cl7 hov-cl1 trans-04 m-r-16"
+                                target="blank">
+                                <i class="fa-brands fa-tiktok tiktok-icon"></i>
                                 {{-- <img src="frontend/images/icons/tiktok.png" class="iconWidth" alt=""> --}}
                             </a>
                         </div>
@@ -125,38 +128,63 @@
                                 <li class="{{ request()->routeIs('index') ? 'active-menu' : '' }}">
                                     <a href="{{ route('index') }}">Home</a>
                                 </li>
+
+                                <!-- NEW ARRIVAL - This is a TAG -->
                                 <li
-                                    class="{{ request()->routeIs('shop') && !request()->has('category') ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop') }}">New Arrival</a>
+                                    class="{{ request()->routeIs('shop') && request('tag') == 'new-arrival' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['tag' => 'new-arrival']) }}">New Arrival</a>
                                 </li>
+
+                                <!-- CASUAL - This is a CATEGORY with subcategories -->
                                 <li
-                                    class="menu-item-has-children {{ request()->routeIs('shop') && in_array(request('category'), ['summer', 'winter', 'spring']) ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop') }}">Casual <i class="zmdi zmdi-chevron-down"
-                                            style="font-size:16px;"></i></a>
+                                    class="menu-item-has-children {{ request()->routeIs('shop') && request('category') == 'casual' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['category' => 'casual']) }}">Casual <i
+                                            class="zmdi zmdi-chevron-down" style="font-size:16px;"></i></a>
                                     <ul class="sub-menu">
-                                        <li><a href="{{ route('shop', ['category' => 'summer']) }}">Summer</a></li>
-                                        <li><a href="{{ route('shop', ['category' => 'winter']) }}">Winter</a></li>
-                                        <li><a href="{{ route('shop', ['category' => 'spring']) }}">Spring</a></li>
+                                        <li><a
+                                                href="{{ route('shop', ['category' => 'casual', 'subcategory' => 'summer']) }}">Summer</a>
+                                        </li>
+                                        <li><a
+                                                href="{{ route('shop', ['category' => 'casual', 'subcategory' => 'winter']) }}">Winter</a>
+                                        </li>
+                                        <li><a
+                                                href="{{ route('shop', ['category' => 'casual', 'subcategory' => 'spring']) }}">Spring</a>
+                                        </li>
                                     </ul>
                                 </li>
+
+                                <!-- SEMI FORMAL - This is a CATEGORY -->
                                 <li
                                     class="{{ request()->routeIs('shop') && request('category') == 'semi-formal' ? 'active-menu' : '' }}">
                                     <a href="{{ route('shop', ['category' => 'semi-formal']) }}">Semi Formal</a>
                                 </li>
+
+                                <!-- PRINTED - This is a CATEGORY -->
                                 <li
-                                    class="{{ request()->routeIs('shop') && request('category') == 'sale' ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop', ['category' => 'sale']) }}">Sale</a>
+                                    class="{{ request()->routeIs('shop') && request('category') == 'printed' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['category' => 'printed']) }}">Printed</a>
                                 </li>
+
+                                <!-- SALE - This filters by discount (products with price > sale_price) -->
                                 <li
-                                    class="menu-item-has-children {{ request()->routeIs('shop') && in_array(request('category'), ['kids-summer', 'kids-winter', 'kids-spring']) ? 'active-menu' : '' }}">
-                                    <a href="{{ route('shop') }}">Kids <i class="zmdi zmdi-chevron-down"
-                                            style="font-size:16px;"></i></a>
+                                    class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['sale' => 'true']) }}">Sale</a>
+                                </li>
+
+                                <!-- KIDS - This is a CATEGORY with subcategories -->
+                                <li
+                                    class="menu-item-has-children {{ request()->routeIs('shop') && request('category') == 'kids' ? 'active-menu' : '' }}">
+                                    <a href="{{ route('shop', ['category' => 'kids']) }}">Kids <i
+                                            class="zmdi zmdi-chevron-down" style="font-size:16px;"></i></a>
                                     <ul class="sub-menu">
-                                        <li><a href="{{ route('shop', ['category' => 'kids-summer']) }}">Summer</a>
+                                        <li><a
+                                                href="{{ route('shop', ['category' => 'kids', 'subcategory' => 'summer']) }}">Summer</a>
                                         </li>
-                                        <li><a href="{{ route('shop', ['category' => 'kids-winter']) }}">Winter</a>
+                                        <li><a
+                                                href="{{ route('shop', ['category' => 'kids', 'subcategory' => 'winter']) }}">Winter</a>
                                         </li>
-                                        <li><a href="{{ route('shop', ['category' => 'kids-spring']) }}">Spring</a>
+                                        <li><a
+                                                href="{{ route('shop', ['category' => 'kids', 'subcategory' => 'spring']) }}">Spring</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -167,7 +195,6 @@
                             <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
                                 <i class="zmdi zmdi-search"></i>
                             </div>
-
                             <a href="{{ route('cart') }}"
                                 class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart {{ request()->routeIs('cart') ? 'active-cart' : '' }}"
                                 data-notify="{{ $cartCount ?? 0 }}" title="View Cart">
@@ -221,52 +248,78 @@
                     </a>
                 </li>
 
+                <!-- NEW ARRIVAL - This is a TAG -->
                 <li>
-                    <a href="{{ route('shop', ['tag' => 'new_arrival']) }}"
-                        class="{{ request()->routeIs('shop') && request('tag') == 'new_arrival' ? 'active' : '' }}">
+                    <a href="{{ route('shop', ['tag' => 'new-arrival']) }}"
+                        class="{{ request()->routeIs('shop') && request('tag') == 'new-arrival' ? 'active' : '' }}">
                         New Arrival
                     </a>
                 </li>
+
+                <!-- CASUAL - This is a CATEGORY with subcategories -->
                 <li class="has-submenu">
-                    <a href="{{ route('shop') }}">
+                    <a href="{{ route('shop', ['category' => 'casual']) }}">
                         Casual
                         <span class="arrow-main-menu-m">
                             <i class="fa fa-plus"></i>
                         </span>
                     </a>
                     <ul class="sub-menu-m">
-                        <li><a href="{{ route('shop') }}">Summer</a></li>
-                        <li><a href="{{ route('shop') }}">Winter</a></li>
-                        <li><a href="{{ route('shop') }}">Spring</a></li>
+                        <li><a
+                                href="{{ route('shop', ['category' => 'casual', 'subcategory' => 'summer']) }}">Summer</a>
+                        </li>
+                        <li><a
+                                href="{{ route('shop', ['category' => 'casual', 'subcategory' => 'winter']) }}">Winter</a>
+                        </li>
+                        <li><a
+                                href="{{ route('shop', ['category' => 'casual', 'subcategory' => 'spring']) }}">Spring</a>
+                        </li>
                     </ul>
                 </li>
 
+                <!-- SEMI FORMAL - This is a CATEGORY -->
                 <li>
-                    <a href="{{ route('shop') }}">
+                    <a href="{{ route('shop', ['category' => 'semi-formal']) }}"
+                        class="{{ request()->routeIs('shop') && request('category') == 'semi-formal' ? 'active' : '' }}">
                         Semi Formal
                     </a>
                 </li>
 
+                <!-- PRINTED - This is a CATEGORY -->
+                <li>
+                    <a href="{{ route('shop', ['category' => 'printed']) }}"
+                        class="{{ request()->routeIs('shop') && request('category') == 'printed' ? 'active' : '' }}">
+                        Printed
+                    </a>
+                </li>
+
+                <!-- SALE - This filters by discount -->
+                <li>
+                    <a href="{{ route('shop', ['sale' => 'true']) }}"
+                        class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active' : '' }}">
+                        Sale
+                    </a>
+                </li>
+
+                <!-- KIDS - This is a CATEGORY with subcategories -->
                 <li class="has-submenu">
-                    <a href="{{ route('shop') }}">
+                    <a href="{{ route('shop', ['category' => 'kids']) }}">
                         Kids
                         <span class="arrow-main-menu-m">
                             <i class="fa fa-plus"></i>
                         </span>
                     </a>
                     <ul class="sub-menu-m">
-                        <li><a href="{{ route('shop') }}">Summer</a></li>
-                        <li><a href="{{ route('shop') }}">Winter</a></li>
-                        <li><a href="{{ route('shop') }}">Spring</a></li>
+                        <li><a
+                                href="{{ route('shop', ['category' => 'kids', 'subcategory' => 'summer']) }}">Summer</a>
+                        </li>
+                        <li><a
+                                href="{{ route('shop', ['category' => 'kids', 'subcategory' => 'winter']) }}">Winter</a>
+                        </li>
+                        <li><a
+                                href="{{ route('shop', ['category' => 'kids', 'subcategory' => 'spring']) }}">Spring</a>
+                        </li>
                     </ul>
-                </li>
-
-                <li>
-                    <a href="{{ route('shop', ['sale' => 'true']) }}"
-                        class="{{ request()->routeIs('shop') && request('sale') == 'true' ? 'active' : '' }}">
-                        Sale
-                        {{-- <span class="label-hot">Hot</span> --}}
-                    </a>
                 </li>
 
                 @guest
@@ -404,17 +457,20 @@
 
                     <div class="p-t-27">
                         <!-- Facebook -->
-                        <a href="https://www.facebook.com/profile.php?id=61573626186682" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="https://www.facebook.com/profile.php?id=61573626186682" target="_blank"
+                            class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i>
                         </a>
 
                         <!-- Instagram -->
-                        <a href="https://www.instagram.com/batoolpret/" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="https://www.instagram.com/batoolpret/" target="_blank"
+                            class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-instagram" style="color: #E4405F;"></i>
                         </a>
 
                         <!-- TikTok -->
-                        <a href="https://www.tiktok.com/@batool.pret" target="_blank" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <a href="https://www.tiktok.com/@batool.pret" target="_blank"
+                            class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
                             <i class="fa-brands fa-tiktok" style="color: #fe2c55;"></i>
                         </a>
                     </div>
@@ -443,7 +499,8 @@
 
 
             <p class="stext-107 cl6 txt-center">
-                Copyright &copy; {{ date('Y') }} Batool Pret - The Pure One. Designed by <a target="_blank" href="https://inspecttechnologies.zaylish.pk/">Inspect Technologies</a> All rights reserved.
+                Copyright &copy; {{ date('Y') }} Batool Pret - The Pure One. Designed by <a target="_blank"
+                    href="https://inspecttechnologies.zaylish.pk/">Inspect Technologies</a> All rights reserved.
             </p>
         </div>
         </div>
