@@ -57,7 +57,7 @@ class frontendController extends Controller
         // Cache categories for 1 hour - only select needed fields
         $categories = Cache::remember('categories.active.with_images', 3600, function () {
             return Category::select('id', 'name', 'slug', 'description', 'image', 'banner_image', 'category_link')
-                ->active() // This already filters by status = active
+                ->active()
                 ->where(function ($query) {
                     $query->whereNotNull('banner_image')
                         ->orWhereNotNull('image');
@@ -69,11 +69,11 @@ class frontendController extends Controller
 
         // Cache new arrival products for 30 minutes
         $newArrivalProducts = Cache::remember('products.new_arrival.full', 1800, function () {
-            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                 ->with([
-                    'category' => function ($query) {
-                        $query->select('id', 'name', 'slug')
-                            ->active(); // Only load active categories
+                    'categories' => function ($query) {
+                        $query->select('categories.id', 'categories.name', 'categories.slug')
+                            ->where('categories.status', 'active');
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
@@ -81,8 +81,8 @@ class frontendController extends Controller
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'new_arrival')
-                ->whereHas('category', function ($query) {
-                    $query->active(); // Ensure product's category is active
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->latest()
                 ->limit(4)
@@ -93,19 +93,19 @@ class frontendController extends Controller
         $newArrivalTotal = Cache::remember('products.new_arrival.count', 1800, function () {
             return Product::where('status', 'active')
                 ->where('tag', 'new_arrival')
-                ->whereHas('category', function ($query) {
-                    $query->active();
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->count();
         });
 
         // Cache trending products for 30 minutes
         $trendingProducts = Cache::remember('products.trending.full', 1800, function () {
-            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                 ->with([
-                    'category' => function ($query) {
-                        $query->select('id', 'name', 'slug')
-                            ->active();
+                    'categories' => function ($query) {
+                        $query->select('categories.id', 'categories.name', 'categories.slug')
+                            ->where('categories.status', 'active');
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
@@ -113,8 +113,8 @@ class frontendController extends Controller
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'trending')
-                ->whereHas('category', function ($query) {
-                    $query->active();
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->latest()
                 ->limit(4)
@@ -125,19 +125,19 @@ class frontendController extends Controller
         $trendingTotal = Cache::remember('products.trending.count', 1800, function () {
             return Product::where('status', 'active')
                 ->where('tag', 'trending')
-                ->whereHas('category', function ($query) {
-                    $query->active();
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->count();
         });
 
         // Cache best selling products for 30 minutes
         $bestSellingProducts = Cache::remember('products.best_selling.full', 1800, function () {
-            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                 ->with([
-                    'category' => function ($query) {
-                        $query->select('id', 'name', 'slug')
-                            ->active();
+                    'categories' => function ($query) {
+                        $query->select('categories.id', 'categories.name', 'categories.slug')
+                            ->where('categories.status', 'active');
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
@@ -145,8 +145,8 @@ class frontendController extends Controller
                 ])
                 ->where('status', 'active')
                 ->where('tag', 'best_selling')
-                ->whereHas('category', function ($query) {
-                    $query->active();
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->latest()
                 ->limit(4)
@@ -157,27 +157,27 @@ class frontendController extends Controller
         $bestSellingTotal = Cache::remember('products.best_selling.count', 1800, function () {
             return Product::where('status', 'active')
                 ->where('tag', 'best_selling')
-                ->whereHas('category', function ($query) {
-                    $query->active();
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->count();
         });
 
         // Cache latest products for 30 minutes
         $products = Cache::remember('products.latest.full', 1800, function () {
-            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id')
+            return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image')
                 ->with([
-                    'category' => function ($query) {
-                        $query->select('id', 'name', 'slug')
-                            ->active();
+                    'categories' => function ($query) {
+                        $query->select('categories.id', 'categories.name', 'categories.slug')
+                            ->where('categories.status', 'active');
                     },
                     'images' => function ($query) {
                         $query->select('id', 'product_id', 'image')->limit(1);
                     },
                 ])
                 ->where('status', 'active')
-                ->whereHas('category', function ($query) {
-                    $query->active();
+                ->whereHas('categories', function ($query) {
+                    $query->where('categories.status', 'active');
                 })
                 ->latest()
                 ->limit(12)
@@ -192,32 +192,32 @@ class frontendController extends Controller
                     ->orWhere('slug', 'LIKE', '%summer%')
                     ->orWhere('name', 'LIKE', '%seasonal%');
             })
-                ->active() // Only get active category
+                ->active()
                 ->first();
 
             if ($summerCategory) {
                 // Get category IDs (parent + children) but only active ones
                 $categoryIds = [$summerCategory->id];
                 $childCategoryIds = Category::where('parent_id', $summerCategory->id)
-                    ->active() // Only active child categories
+                    ->active()
                     ->pluck('id')
                     ->toArray();
                 $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
-                return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                     ->with([
-                        'category' => function ($query) {
-                            $query->select('id', 'name', 'slug')
-                                ->active();
+                        'categories' => function ($query) {
+                            $query->select('categories.id', 'categories.name', 'categories.slug')
+                                ->where('categories.status', 'active');
                         },
                         'images' => function ($query) {
                             $query->select('id', 'product_id', 'image')->limit(1);
                         },
                     ])
                     ->where('status', 'active')
-                    ->whereIn('category_id', $categoryIds)
-                    ->whereHas('category', function ($query) {
-                        $query->active(); // Additional safety check
+                    ->whereHas('categories', function ($query) use ($categoryIds) {
+                        $query->whereIn('categories.id', $categoryIds)
+                            ->where('categories.status', 'active');
                     })
                     ->latest()
                     ->limit(8)
@@ -246,9 +246,9 @@ class frontendController extends Controller
                 $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
                 return Product::where('status', 'active')
-                    ->whereIn('category_id', $categoryIds)
-                    ->whereHas('category', function ($query) {
-                        $query->active();
+                    ->whereHas('categories', function ($query) use ($categoryIds) {
+                        $query->whereIn('categories.id', $categoryIds)
+                            ->where('categories.status', 'active');
                     })
                     ->count();
             }
@@ -275,32 +275,32 @@ class frontendController extends Controller
             // Find Eid Collection category (only if active)
             $eidCategory = Category::where('slug', 'eid-collection')
                 ->orWhere('name', 'Eid Collection')
-                ->active() // Only get active category
+                ->active()
                 ->first();
 
             if ($eidCategory) {
                 // Get category IDs (parent + children) but only active ones
                 $categoryIds = [$eidCategory->id];
                 $childCategoryIds = Category::where('parent_id', $eidCategory->id)
-                    ->active() // Only active child categories
+                    ->active()
                     ->pluck('id')
                     ->toArray();
                 $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
-                return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                return Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                     ->with([
-                        'category' => function ($query) {
-                            $query->select('id', 'name', 'slug')
-                                ->active();
+                        'categories' => function ($query) {
+                            $query->select('categories.id', 'categories.name', 'categories.slug')
+                                ->where('categories.status', 'active');
                         },
                         'images' => function ($query) {
                             $query->select('id', 'product_id', 'image')->limit(1);
                         },
                     ])
                     ->where('status', 'active')
-                    ->whereIn('category_id', $categoryIds)
-                    ->whereHas('category', function ($query) {
-                        $query->active(); // Ensure category is active
+                    ->whereHas('categories', function ($query) use ($categoryIds) {
+                        $query->whereIn('categories.id', $categoryIds)
+                            ->where('categories.status', 'active');
                     })
                     ->latest()
                     ->limit(8)
@@ -326,9 +326,9 @@ class frontendController extends Controller
                 $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
                 return Product::where('status', 'active')
-                    ->whereIn('category_id', $categoryIds)
-                    ->whereHas('category', function ($query) {
-                        $query->active();
+                    ->whereHas('categories', function ($query) use ($categoryIds) {
+                        $query->whereIn('categories.id', $categoryIds)
+                            ->where('categories.status', 'active');
                     })
                     ->count();
             }
@@ -373,7 +373,6 @@ class frontendController extends Controller
         ))->render();
     }
 
-
     public function about()
     {
         return view('frontend.aboutus');
@@ -381,11 +380,11 @@ class frontendController extends Controller
 
     public function Shop(Request $request)
     {
-        // Lightweight query - only category filtering
-        $query = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'status', 'tag')
+        // Lightweight query - using many-to-many relationship
+        $query = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'status', 'tag')
             ->with([
-                'category' => function ($query) {
-                    $query->select('id', 'name', 'slug');
+                'categories' => function ($query) {
+                    $query->select('categories.id', 'categories.name', 'categories.slug');
                 },
                 'images' => function ($query) {
                     $query->select('id', 'product_id', 'image')->limit(1);
@@ -393,26 +392,11 @@ class frontendController extends Controller
             ])
             ->where('status', 'active');
 
-        // Get Bags category to exclude from various views
-        $bagsCategory = Category::where('name', 'Bags')->active()->first();
-        $bagsCategoryIds = [];
-        if ($bagsCategory) {
-            $bagsCategoryIds[] = $bagsCategory->id;
-            // Also get all children of Bags category
-            $bagsChildren = Category::where('parent_id', $bagsCategory->id)->pluck('id')->toArray();
-            $bagsCategoryIds = array_merge($bagsCategoryIds, $bagsChildren);
-        }
-
         // Filter by tag (trending, new_arrival, best_selling)
         if ($request->filled('tag')) {
             $tag = $request->input('tag');
-            // Validate tag to prevent SQL injection
             if (in_array($tag, ['trending', 'new_arrival', 'best_selling'])) {
                 $query->where('tag', $tag);
-                // Exclude Bags from tag filters
-                if (! empty($bagsCategoryIds)) {
-                    $query->whereNotIn('category_id', $bagsCategoryIds);
-                }
             }
         }
 
@@ -420,13 +404,9 @@ class frontendController extends Controller
         if ($request->filled('sale') && $request->input('sale') == 'true') {
             $query->whereNotNull('discount_price')
                 ->where('discount_price', '>', 0);
-            // Exclude Bags from sale section
-            if (! empty($bagsCategoryIds)) {
-                $query->whereNotIn('category_id', $bagsCategoryIds);
-            }
         }
 
-        // Filter by category only
+        // Filter by categories (many-to-many)
         if ($request->filled('categories')) {
             $categories = is_array($request->input('categories'))
                 ? $request->input('categories')
@@ -439,40 +419,16 @@ class frontendController extends Controller
                 $allCategoryIds = $allCategoryIds->merge($childCategories);
             }
 
-            // Cross-category logic: FORMAL and ZAYLISH SIGNATURE show each other's products
-            $formalCategory = Category::where('name', 'FORMAL')->first();
-            $zaylishSignatureCategory = Category::where('name', 'ZAYLISH SIGNATURE')->first();
-
-            if ($formalCategory && $zaylishSignatureCategory) {
-                // If FORMAL is selected, also include ZAYLISH SIGNATURE products
-                if ($allCategoryIds->contains($formalCategory->id)) {
-                    $allCategoryIds->push($zaylishSignatureCategory->id);
-                    // Also include children of ZAYLISH SIGNATURE
-                    $zaylishChildren = Category::where('parent_id', $zaylishSignatureCategory->id)->pluck('id');
-                    $allCategoryIds = $allCategoryIds->merge($zaylishChildren);
-                }
-
-                // If ZAYLISH SIGNATURE is selected, also include FORMAL products
-                if ($allCategoryIds->contains($zaylishSignatureCategory->id)) {
-                    $allCategoryIds->push($formalCategory->id);
-                    // Also include children of FORMAL
-                    $formalChildren = Category::where('parent_id', $formalCategory->id)->pluck('id');
-                    $allCategoryIds = $allCategoryIds->merge($formalChildren);
-                }
-            }
-
-            $query->whereIn('category_id', $allCategoryIds->unique()->toArray());
-        } else {
-            // When no category, tag, or sale filter is selected (All Products view), exclude Bags products
-            if (! $request->filled('tag') && ! $request->filled('sale') && ! empty($bagsCategoryIds)) {
-                $query->whereNotIn('category_id', $bagsCategoryIds);
-            }
+            // Use whereHas for many-to-many relationship
+            $query->whereHas('categories', function ($q) use ($allCategoryIds) {
+                $q->whereIn('categories.id', $allCategoryIds->unique()->toArray());
+            });
         }
 
         // Default sorting: newest first
         $query->latest();
 
-        // Paginate with 12 products per page for traditional pagination
+        // Paginate with 12 products per page
         $products = $query->paginate(12);
 
         // Cache parent categories for 1 hour
@@ -480,7 +436,6 @@ class frontendController extends Controller
             return Category::parents()->active()->orderBy('name')->get();
         });
 
-        // For tag page view, use the same logic but pass a flag
         $isTagPage = $request->filled('tag');
 
         return view('frontend.shop', compact('products', 'parentCategories', 'isTagPage'));
@@ -514,7 +469,6 @@ class frontendController extends Controller
 
     public function productDetail($slug)
     {
-        // Optimize query with select to reduce data transfer
         $product = Product::select(
             'id',
             'name',
@@ -522,7 +476,6 @@ class frontendController extends Controller
             'price',
             'discount_price',
             'image',
-            'category_id',
             'short_description',
             'long_description',
             'fabric',
@@ -544,8 +497,8 @@ class frontendController extends Controller
             'status'
         )
             ->with([
-                'category' => function ($query) {
-                    $query->select('id', 'name', 'slug');
+                'categories' => function ($query) {
+                    $query->select('categories.id', 'categories.name', 'categories.slug');
                 },
                 'images' => function ($query) {
                     $query->select('id', 'product_id', 'image');
@@ -558,37 +511,17 @@ class frontendController extends Controller
             ->where('status', 'active')
             ->firstOrFail();
 
-        // Get related products from same category
-        // Cross-category logic: FORMAL and ZAYLISH SIGNATURE show each other's products
-        $categoryIds = [$product->category_id];
-
-        $formalCategory = Category::where('name', 'FORMAL')->first();
-        $zaylishSignatureCategory = Category::where('name', 'ZAYLISH SIGNATURE')->first();
-
-        if ($formalCategory && $zaylishSignatureCategory) {
-            // If product is in FORMAL, also include ZAYLISH SIGNATURE products
-            if ($product->category_id == $formalCategory->id) {
-                $categoryIds[] = $zaylishSignatureCategory->id;
-                // Also include children of ZAYLISH SIGNATURE
-                $zaylishChildren = Category::where('parent_id', $zaylishSignatureCategory->id)->pluck('id')->toArray();
-                $categoryIds = array_merge($categoryIds, $zaylishChildren);
-            }
-
-            // If product is in ZAYLISH SIGNATURE, also include FORMAL products
-            if ($product->category_id == $zaylishSignatureCategory->id) {
-                $categoryIds[] = $formalCategory->id;
-                // Also include children of FORMAL
-                $formalChildren = Category::where('parent_id', $formalCategory->id)->pluck('id')->toArray();
-                $categoryIds = array_merge($categoryIds, $formalChildren);
-            }
-        }
+        // Get related products from categories
+        $productCategoryIds = $product->categories->pluck('id')->toArray();
 
         // Optimize related products query
-        $relatedProducts = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id')
+        $relatedProducts = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image')
             ->with(['images' => function ($query) {
                 $query->select('id', 'product_id', 'image')->limit(1);
             }])
-            ->whereIn('category_id', array_unique($categoryIds))
+            ->whereHas('categories', function ($q) use ($productCategoryIds) {
+                $q->whereIn('categories.id', $productCategoryIds);
+            })
             ->where('id', '!=', $product->id)
             ->where('status', 'active')
             ->limit(4)
@@ -605,12 +538,12 @@ class frontendController extends Controller
     public function checkout(Request $request)
     {
         if (Auth::check()) {
-            $cartItems = Cart::with('product.category', 'product.images')
+            $cartItems = Cart::with('product.categories', 'product.images')
                 ->where('user_id', Auth::id())
                 ->get();
         } else {
             $sessionId = Session::getId();
-            $cartItems = Cart::with('product.category', 'product.images')
+            $cartItems = Cart::with('product.categories', 'product.images')
                 ->where('session_id', $sessionId)
                 ->get();
         }
@@ -647,7 +580,7 @@ class frontendController extends Controller
         }
 
         // Validate coupon if provided and no discounted products
-        if ($couponCode && ! $hasDiscountedProducts) {
+        if ($couponCode && !$hasDiscountedProducts) {
             $coupon = Coupon::where('code', $couponCode)->first();
 
             if ($coupon && $coupon->isValid()) {
@@ -673,12 +606,12 @@ class frontendController extends Controller
         $couponCode = strtoupper(trim($validated['coupon_code']));
         $coupon = Coupon::where('code', $couponCode)->first();
 
-        if (! $coupon) {
+        if (!$coupon) {
             return redirect()->route('checkout')
                 ->with('coupon_error', 'Invalid coupon code.');
         }
 
-        if (! $coupon->isValid()) {
+        if (!$coupon->isValid()) {
             return redirect()->route('checkout')
                 ->with('coupon_error', 'This coupon is not valid or has expired.');
         }
@@ -809,7 +742,7 @@ class frontendController extends Controller
             ]);
         }
 
-        $products = Product::with(['category', 'images'])
+        $products = Product::with(['categories', 'images'])
             ->where('status', 'active')
             ->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'LIKE', $searchTerm . '%')
@@ -856,10 +789,10 @@ class frontendController extends Controller
 
             switch ($section) {
                 case 'new_arrival':
-                    $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                    $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                         ->with([
-                            'category' => function ($query) {
-                                $query->select('id', 'name', 'slug');
+                            'categories' => function ($query) {
+                                $query->select('categories.id', 'categories.name', 'categories.slug');
                             },
                             'images' => function ($query) {
                                 $query->select('id', 'product_id', 'image')->limit(1);
@@ -867,6 +800,9 @@ class frontendController extends Controller
                         ])
                         ->where('status', 'active')
                         ->where('tag', 'new_arrival')
+                        ->whereHas('categories', function ($query) {
+                            $query->where('categories.status', 'active');
+                        })
                         ->latest()
                         ->skip($offset)
                         ->take($limit)
@@ -874,10 +810,10 @@ class frontendController extends Controller
                     break;
 
                 case 'trending':
-                    $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                    $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                         ->with([
-                            'category' => function ($query) {
-                                $query->select('id', 'name', 'slug');
+                            'categories' => function ($query) {
+                                $query->select('categories.id', 'categories.name', 'categories.slug');
                             },
                             'images' => function ($query) {
                                 $query->select('id', 'product_id', 'image')->limit(1);
@@ -885,6 +821,9 @@ class frontendController extends Controller
                         ])
                         ->where('status', 'active')
                         ->where('tag', 'trending')
+                        ->whereHas('categories', function ($query) {
+                            $query->where('categories.status', 'active');
+                        })
                         ->latest()
                         ->skip($offset)
                         ->take($limit)
@@ -892,10 +831,10 @@ class frontendController extends Controller
                     break;
 
                 case 'best_selling':
-                    $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                    $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                         ->with([
-                            'category' => function ($query) {
-                                $query->select('id', 'name', 'slug');
+                            'categories' => function ($query) {
+                                $query->select('categories.id', 'categories.name', 'categories.slug');
                             },
                             'images' => function ($query) {
                                 $query->select('id', 'product_id', 'image')->limit(1);
@@ -903,6 +842,9 @@ class frontendController extends Controller
                         ])
                         ->where('status', 'active')
                         ->where('tag', 'best_selling')
+                        ->whereHas('categories', function ($query) {
+                            $query->where('categories.status', 'active');
+                        })
                         ->latest()
                         ->skip($offset)
                         ->take($limit)
@@ -910,28 +852,28 @@ class frontendController extends Controller
                     break;
 
                 case 'eid_collection':
-                    // Find EID category
                     $eidCategory = Category::where(function ($q) {
                         $q->where('name', 'LIKE', '%eid%')->orWhere('slug', 'LIKE', '%eid%');
                     })->active()->first();
 
                     if ($eidCategory) {
-                        // Get category IDs (parent + children)
                         $categoryIds = [$eidCategory->id];
                         $childCategoryIds = Category::where('parent_id', $eidCategory->id)->pluck('id')->toArray();
                         $categoryIds = array_merge($categoryIds, $childCategoryIds);
 
-                        $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'tag')
+                        $products = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'tag')
                             ->with([
-                                'category' => function ($query) {
-                                    $query->select('id', 'name', 'slug');
+                                'categories' => function ($query) {
+                                    $query->select('categories.id', 'categories.name', 'categories.slug');
                                 },
                                 'images' => function ($query) {
                                     $query->select('id', 'product_id', 'image')->limit(1);
                                 },
                             ])
                             ->where('status', 'active')
-                            ->whereIn('category_id', $categoryIds)
+                            ->whereHas('categories', function ($q) use ($categoryIds) {
+                                $q->whereIn('categories.id', $categoryIds);
+                            })
                             ->latest()
                             ->skip($offset)
                             ->take($limit)

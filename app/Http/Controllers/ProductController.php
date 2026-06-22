@@ -124,7 +124,8 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with('category', 'images');
+        // Change from 'category' to 'categories' (plural)
+        $query = Product::with('categories', 'images'); // Remove 'category', add 'categories'
 
         // Search by product name
         if ($request->filled('search')) {
@@ -137,12 +138,19 @@ class ProductController extends Controller
         return view('backend.products.index', compact('products'));
     }
 
+
     /**
      * Show the form for creating a new product.
      */
     public function create()
     {
-        $categories = Category::active()->orderBy('name')->get();
+        // Load all active categories with their children for hierarchical display
+        $categories = Category::with('children')
+            ->parents() // Only get parent categories
+            ->active()
+            ->orderBy('name')
+            ->get();
+
         return view('backend.products.create', compact('categories'));
     }
 
@@ -156,7 +164,8 @@ class ProductController extends Controller
             'slug' => 'nullable|string|max:255|unique:products,slug',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
+            'categories' => 'required|array|min:1', // Changed from category_id to categories
+            'categories.*' => 'exists:categories,id',
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0|lt:price',
             'stock' => 'required|integer|min:0',
@@ -199,13 +208,17 @@ class ProductController extends Controller
 
         // Handle size array - convert empty array to null
         if (isset($validated['size']) && is_array($validated['size'])) {
-            $validated['size'] = array_filter($validated['size']); // Remove empty values
+            $validated['size'] = array_filter($validated['size']);
             if (empty($validated['size'])) {
                 $validated['size'] = null;
             }
         }
 
-        // Handle main image upload - convert to WebP and store in public/products folder
+        // Remove categories from validated array before creating product
+        $categoryIds = $validated['categories'];
+        unset($validated['categories']);
+
+        // Handle main image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . Str::random(10) . '.webp';
@@ -219,7 +232,7 @@ class ProductController extends Controller
             $validated['image'] = 'products/' . $savedFileName;
         }
 
-        // Handle size guide image upload - convert to WebP and store in public/products folder
+        // Handle size guide image upload
         if ($request->hasFile('size_guide_image')) {
             $sizeGuideImage = $request->file('size_guide_image');
             $imageName = time() . '_sizeguide_' . Str::random(10) . '.webp';
@@ -235,12 +248,15 @@ class ProductController extends Controller
 
         $product = Product::create($validated);
 
+        // Attach categories to the product
+        $product->categories()->attach($categoryIds);
+
         // Clear cache for homepage products
         Cache::forget('products.new_arrival');
         Cache::forget('products.trending');
         Cache::forget('products.latest');
 
-        // Handle multiple images upload - convert to WebP
+        // Handle multiple images upload
         if ($request->hasFile('images')) {
             $destinationPath = public_path('products');
             if (!File::exists($destinationPath)) {
@@ -259,7 +275,7 @@ class ProductController extends Controller
             }
         }
 
-        // Send push notification to all users when new product is added
+        // Send push notification
         try {
             $notificationService = new FirebaseNotificationService();
             $productUrl = route('productDetail', $product->slug);
@@ -299,17 +315,24 @@ class ProductController extends Controller
             ->with('success', 'Product created successfully.');
     }
 
+
     /**
      * Show the form for editing the specified product.
      */
     public function edit($id)
     {
-        $product = Product::with('category', 'images')->findOrFail($id);
-        $categories = Category::active()->orderBy('name')->get();
+        // Make sure to load the categories relationship
+        $product = Product::with('categories', 'images')->findOrFail($id);
+
+        // Load categories with hierarchy
+        $categories = Category::with('children')
+            ->parents()
+            ->active()
+            ->orderBy('name')
+            ->get();
 
         return view('backend.products.edit', compact('product', 'categories'));
     }
-
     /**
      * Update the specified product in storage.
      */
@@ -322,7 +345,8 @@ class ProductController extends Controller
             'slug' => 'nullable|string|max:255|unique:products,slug,' . $id,
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
+            'categories' => 'required|array|min:1', // Changed from category_id to categories
+            'categories.*' => 'exists:categories,id',
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0|lt:price',
             'stock' => 'required|integer|min:0',
@@ -367,7 +391,6 @@ class ProductController extends Controller
 
         // Auto-generate slug if not provided
         if (empty($validated['slug'])) {
-            // Generate slug from name if name changed, otherwise keep existing
             if ($validated['name'] !== $product->name) {
                 $validated['slug'] = $this->generateSlug($validated['name']);
             } else {
@@ -378,13 +401,17 @@ class ProductController extends Controller
 
         // Handle size array - convert empty array to null
         if (isset($validated['size']) && is_array($validated['size'])) {
-            $validated['size'] = array_filter($validated['size']); // Remove empty values
+            $validated['size'] = array_filter($validated['size']);
             if (empty($validated['size'])) {
                 $validated['size'] = null;
             }
         }
 
-        // Handle main image upload - convert to WebP
+        // Remove categories from validated array before updating product
+        $categoryIds = $validated['categories'];
+        unset($validated['categories']);
+
+        // Handle main image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($product->image) {
@@ -406,7 +433,7 @@ class ProductController extends Controller
             $validated['image'] = 'products/' . $savedFileName;
         }
 
-        // Handle size guide image upload - convert to WebP
+        // Handle size guide image upload
         if ($request->hasFile('size_guide_image')) {
             // Delete old size guide image if exists
             if ($product->size_guide_image) {
@@ -430,12 +457,15 @@ class ProductController extends Controller
 
         $product->update($validated);
 
+        // Sync categories (this will remove old associations and add new ones)
+        $product->categories()->sync($categoryIds);
+
         // Clear cache for homepage products
         Cache::forget('products.new_arrival');
         Cache::forget('products.trending');
         Cache::forget('products.latest');
 
-        // Handle multiple images upload - convert to WebP
+        // Handle multiple images upload
         if ($request->hasFile('images')) {
             $destinationPath = public_path('products');
             if (!File::exists($destinationPath)) {
@@ -459,6 +489,7 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')
             ->with('success', 'Product updated successfully.');
     }
+
 
     /**
      * Remove the specified product from storage.

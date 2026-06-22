@@ -19,7 +19,7 @@ class Product extends Model
         'price',
         'discount_price',
         'discount_percent',
-        'category_id',
+        // 'category_id', // Remove this line - we're replacing single category with multiple categories
         'stock',
         'status',
         'tag',
@@ -48,11 +48,30 @@ class Product extends Model
     ];
 
     /**
-     * Get the category that owns the product.
+     * Get the categories for the product (Many-to-Many relationship).
      */
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_product')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the primary category (you can mark one as primary if needed).
+     * For backward compatibility, get the first category.
+     */
+    public function getCategoryAttribute()
+    {
+        return $this->categories()->first();
+    }
+
+    /**
+     * Get the category id for backward compatibility.
+     */
+    public function getCategoryIdAttribute()
+    {
+        $firstCategory = $this->categories()->first();
+        return $firstCategory ? $firstCategory->id : null;
     }
 
     /**
@@ -81,6 +100,16 @@ class Product extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope to filter products by category.
+     */
+    public function scopeWithCategory($query, $categoryId)
+    {
+        return $query->whereHas('categories', function ($q) use ($categoryId) {
+            $q->where('categories.id', $categoryId);
+        });
     }
 
     /**
