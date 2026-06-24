@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Schema;
 class OrderController extends Controller
 {
 
-    const DELIVERY_CHARGES = 199;
+    const DELIVERY_CHARGES = 0;
     /**
      * Store a new order.
      */

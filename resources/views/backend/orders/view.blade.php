@@ -176,8 +176,8 @@
                                                             $message .= "Discount: -PKR " . number_format($order->discount_amount, 0) . "\n";
                                                         }
 
-                                                        $message .= "Delivery Charges: PKR " . number_format($order->delivery_charges ?? 199, 0) . "\n";
-                                                        $message .= "Grand Total: PKR " . number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199)), 0) . "\n\n";
+                                                        $message .= "Delivery Charges: PKR " . number_format($order->delivery_charges ?? 0, 0) . "\n";
+                                                        $message .= "Grand Total: PKR " . number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 0)), 0) . "\n\n";
 
                                                         $message .=
                                                             "Kindly reply CONFIRM to proceed with your order.\n\n";
@@ -328,11 +328,11 @@
                                             @endif
                                             <tr>
                                                 <th colspan="5" class="text-right">Delivery Charges:</th>
-                                                <th>PKR {{ number_format($order->delivery_charges ?? 199, 2) }}</th>
+                                                <th>PKR {{ number_format($order->delivery_charges ?? 0, 2) }}</th>
                                             </tr>
                                             <tr>
                                                 <th colspan="5" class="text-right">Grand Total:</th>
-                                                <th class="text-primary">PKR {{ number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199)), 2) }}</th>
+                                                <th class="text-primary">PKR {{ number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 0)), 2) }}</th>
                                             </tr>
                                         </tfoot>
                                     </table>

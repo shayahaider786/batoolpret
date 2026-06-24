@@ -216,11 +216,11 @@
                 @endif
                 <tr class="delivery-row">
                     <th>Delivery Charges</th>
-                    <td>PKR {{ number_format($order->delivery_charges ?? 199, 0) }}</td>
+                    <td>PKR {{ number_format($order->delivery_charges ?? 0, 0) }}</td>
                 </tr>
                 <tr class="grand-total">
                     <th>Grand Total</th>
-                    <td>PKR {{ number_format($order->grand_total ?? ($order->total + 199), 0) }}</td>
+                    <td>PKR {{ number_format($order->grand_total ?? ($order->total + 0), 0) }}</td>
                 </tr>
             </table>
         </div>

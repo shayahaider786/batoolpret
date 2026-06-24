@@ -66,7 +66,7 @@
                                         <th>Email</th>
                                         <th>Phone</th>
                                         <th>Items</th>
-                                        <th>Delivery</th>
+                                        {{-- <th>Delivery</th> --}}
                                         <th>Total</th>
                                         <th>Grand Total</th>
                                         <th>Payment</th>
@@ -122,10 +122,10 @@
                                                 <span class="badge badge-info">{{ $order->items->sum('quantity') }}
                                                     items</span>
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <small class="text-muted">PKR
                                                     {{ number_format($order->delivery_charges ?? 199, 0) }}</small>
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 <strong>PKR {{ number_format($order->total, 0) }}</strong>
                                                 @if ($order->discount_amount > 0)

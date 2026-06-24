@@ -122,7 +122,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 
@@ -188,28 +190,33 @@
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">First Name</label>
-                                        <input type="text" name="c_fname" id="c_fname" class="form-input-checkout" placeholder="John" value="{{ old('c_fname') }}">
+                                        <input type="text" name="c_fname" id="c_fname" class="form-input-checkout"
+                                            placeholder="John" value="{{ old('c_fname') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">Last Name</label>
-                                        <input type="text" name="c_lname" id="c_lname" class="form-input-checkout" placeholder="Doe" value="{{ old('c_lname') }}">
+                                        <input type="text" name="c_lname" id="c_lname" class="form-input-checkout"
+                                            placeholder="Doe" value="{{ old('c_lname') }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group-checkout">
                                 <label class="form-label-checkout">Email Address</label>
-                                <input type="email" name="c_email_address" id="c_email_address" class="form-input-checkout"
-                                    placeholder="john.doe@example.com" value="{{ old('c_email_address') }}">
+                                <input type="email" name="c_email_address" id="c_email_address"
+                                    class="form-input-checkout" placeholder="john.doe@example.com"
+                                    value="{{ old('c_email_address') }}">
                             </div>
                             <div class="form-group-checkout">
-                                <label class="form-label-checkout">Phone Number <span class="required-field">*</span></label>
+                                <label class="form-label-checkout">Phone Number <span
+                                        class="required-field">*</span></label>
                                 <input type="tel" name="c_phone" id="c_phone" class="form-input-checkout"
                                     placeholder="+1 234 567 8900" required value="{{ old('c_phone') }}">
                             </div>
                             <div class="form-group-checkout">
-                                <label class="form-label-checkout">Street Address <span class="required-field">*</span></label>
+                                <label class="form-label-checkout">Street Address <span
+                                        class="required-field">*</span></label>
                                 <input type="text" name="c_address" id="c_address" class="form-input-checkout"
                                     placeholder="123 Main Street" required value="{{ old('c_address') }}">
                             </div>
@@ -224,8 +231,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">State/Province</label>
-                                        <input type="text" name="c_state_country" id="c_state_country" class="form-input-checkout"
-                                            placeholder="NY" value="{{ old('c_state_country') }}">
+                                        <input type="text" name="c_state_country" id="c_state_country"
+                                            class="form-input-checkout" placeholder="NY"
+                                            value="{{ old('c_state_country') }}">
                                     </div>
                                 </div>
                             </div>
@@ -233,21 +241,24 @@
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">Postal Code</label>
-                                        <input type="text" name="c_postal_zip" id="c_postal_zip" class="form-input-checkout"
-                                            placeholder="10001" value="{{ old('c_postal_zip') }}">
+                                        <input type="text" name="c_postal_zip" id="c_postal_zip"
+                                            class="form-input-checkout" placeholder="10001"
+                                            value="{{ old('c_postal_zip') }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group-checkout">
                                         <label class="form-label-checkout">Country</label>
-                                        <input type="text" name="c_country" id="c_country" class="form-input-checkout"
-                                            placeholder="Pakistan" value="{{ old('c_country', 'Pakistan') }}">
+                                        <input type="text" name="c_country" id="c_country"
+                                            class="form-input-checkout" placeholder="Pakistan"
+                                            value="{{ old('c_country', 'Pakistan') }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group-checkout">
                                 <label class="form-label-checkout">Order Notes (Optional)</label>
-                                <textarea name="c_order_notes" id="c_order_notes" class="form-input-checkout" rows="3" placeholder="Special instructions for delivery...">{{ old('c_order_notes') }}</textarea>
+                                <textarea name="c_order_notes" id="c_order_notes" class="form-input-checkout" rows="3"
+                                    placeholder="Special instructions for delivery...">{{ old('c_order_notes') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -257,7 +268,8 @@
                         <h3 class="section-title">Payment Method</h3>
                         <div class="payment-methods-wrapper">
                             <div class="payment-method">
-                                <input type="radio" id="payment-cash" name="payment_method" value="cash" {{ old('payment_method', 'cash') == 'cash' ? 'checked' : '' }}>
+                                <input type="radio" id="payment-cash" name="payment_method" value="cash"
+                                    {{ old('payment_method', 'cash') == 'cash' ? 'checked' : '' }}>
                                 <label for="payment-cash" class="payment-label">
                                     <i class="zmdi zmdi-money payment-icon"></i>
                                     <span>Cash on Delivery</span>
@@ -266,7 +278,8 @@
                             </div>
 
                             <div class="payment-method">
-                                <input type="radio" id="payment-bank" name="payment_method" value="bank" {{ old('payment_method') == 'bank' ? 'checked' : '' }}>
+                                <input type="radio" id="payment-bank" name="payment_method" value="bank"
+                                    {{ old('payment_method') == 'bank' ? 'checked' : '' }}>
                                 <label for="payment-bank" class="payment-label">
                                     <i class="fa fa-university payment-icon"></i>
                                     <span>Bank Transfer</span>
@@ -319,21 +332,28 @@
 
                             <div class="screenshot-input-wrapper">
                                 <div class="file-input-custom">
-                                    <input type="file" id="payment-screenshot-input" name="payment_screenshot" accept="image/*">
+                                    <input type="file" id="payment-screenshot-input" name="payment_screenshot"
+                                        accept="image/*">
                                     <label for="payment-screenshot-input" class="file-input-custom-label"
                                         style="display: block; padding: 20px; border: 2px dashed #ddd; text-align: center; cursor: pointer; background-color: #f9f9f9;">
                                         <i class="zmdi zmdi-camera"
                                             style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
-                                        <span style="display: block; margin-bottom: 5px;">Click to upload or drag and drop</span>
-                                        <span class="small-text" style="display: block; font-size: 12px; color: #999;">PNG, JPG, GIF up to 5MB</span>
+                                        <span style="display: block; margin-bottom: 5px;">Click to upload or drag and
+                                            drop</span>
+                                        <span class="small-text"
+                                            style="display: block; font-size: 12px; color: #999;">PNG, JPG, GIF up to
+                                            5MB</span>
                                     </label>
                                 </div>
 
-                                <div class="file-preview" id="file-preview" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
-                                    <img id="preview-img" class="file-preview-img" alt="Preview" style="max-width: 100%; height: auto; margin-bottom: 10px;">
+                                <div class="file-preview" id="file-preview"
+                                    style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
+                                    <img id="preview-img" class="file-preview-img" alt="Preview"
+                                        style="max-width: 100%; height: auto; margin-bottom: 10px;">
                                     <div class="file-preview-name" id="preview-name" style="margin-bottom: 10px;"></div>
                                     <button type="button" class="remove-file-btn" id="remove-file-btn"
-                                        style="padding: 8px 15px; background-color: #f44336; color: white; border: none; cursor: pointer; border-radius: 4px;">Remove File</button>
+                                        style="padding: 8px 15px; background-color: #f44336; color: white; border: none; cursor: pointer; border-radius: 4px;">Remove
+                                        File</button>
                                 </div>
                             </div>
                         </div>
@@ -359,27 +379,33 @@
                                 </div>
                             </div>
 
-                            <form method="POST" action="{{ route('checkout.applyCoupon') }}" class="coupon-form" id="coupon-form">
+                            <form method="POST" action="{{ route('checkout.applyCoupon') }}" class="coupon-form"
+                                id="coupon-form">
                                 @csrf
                                 <div class="coupon-input-wrapper">
                                     <input type="text" name="coupon_code" id="coupon_code" class="coupon-input"
-                                        placeholder="Enter coupon code" value="{{ isset($coupon) ? $coupon->code : '' }}">
+                                        placeholder="Enter coupon code"
+                                        value="{{ isset($coupon) ? $coupon->code : '' }}">
                                     <button type="submit" class="coupon-apply-btn">Apply</button>
                                 </div>
                             </form>
 
                             @if (session('coupon_error'))
-                                <div style="margin-top: 10px; padding: 10px; background-color: #ffebee; border-radius: 4px; color: #f44336; font-size: 13px;">
+                                <div
+                                    style="margin-top: 10px; padding: 10px; background-color: #ffebee; border-radius: 4px; color: #f44336; font-size: 13px;">
                                     <i class="zmdi zmdi-close-circle"></i> {{ session('coupon_error') }}
                                 </div>
                             @endif
 
                             @if (isset($coupon) && $coupon)
-                                <div class="coupon-applied" style="margin-top: 10px; padding: 10px; background-color: #e8f5e9; border-radius: 4px;">
+                                <div class="coupon-applied"
+                                    style="margin-top: 10px; padding: 10px; background-color: #e8f5e9; border-radius: 4px;">
                                     <span style="color: #4caf50; font-weight: bold;">
-                                        <i class="zmdi zmdi-check-circle"></i> Coupon "{{ $coupon->code }}" applied ({{ $coupon->discount_percent }}% off)
+                                        <i class="zmdi zmdi-check-circle"></i> Coupon "{{ $coupon->code }}" applied
+                                        ({{ $coupon->discount_percent }}% off)
                                     </span>
-                                    <button type="button" id="remove-coupon-btn" style="float: right; background: none; border: none; color: #f44336; cursor: pointer;">
+                                    <button type="button" id="remove-coupon-btn"
+                                        style="float: right; background: none; border: none; color: #f44336; cursor: pointer;">
                                         <i class="zmdi zmdi-close"></i>
                                     </button>
                                 </div>
@@ -392,17 +418,24 @@
                                 @foreach ($cartItems as $cartItem)
                                     @php
                                         $product = $cartItem->product;
-                                        $productImage = $product && $product->image ? asset($product->image) : asset('frontend/images/item-cart-04.jpg');
+                                        $productImage =
+                                            $product && $product->image
+                                                ? asset($product->image)
+                                                : asset('frontend/images/item-cart-04.jpg');
                                         $itemTotal = $cartItem->price * $cartItem->quantity;
                                     @endphp
                                     <div class="order-item">
-                                        <img src="{{ $productImage }}" alt="{{ $product ? $product->name : 'Product' }}" class="order-item-img" loading="lazy">
+                                        <img src="{{ $productImage }}" alt="{{ $product ? $product->name : 'Product' }}"
+                                            class="order-item-img" loading="lazy">
                                         <div class="order-item-details">
-                                            <div class="order-item-name">{{ $product ? $product->name : 'Product Not Available' }}</div>
+                                            <div class="order-item-name">
+                                                {{ $product ? $product->name : 'Product Not Available' }}</div>
                                             <div class="order-item-info">
-                                                Qty: {{ $cartItem->quantity }} × Rs. {{ number_format($cartItem->price, 0) }}
+                                                Qty: {{ $cartItem->quantity }} × Rs.
+                                                {{ number_format($cartItem->price, 0) }}
                                                 @if ($cartItem->size)
-                                                    <br><small style="color: #666;">Size: {{ strtoupper($cartItem->size) }}</small>
+                                                    <br><small style="color: #666;">Size:
+                                                        {{ strtoupper($cartItem->size) }}</small>
                                                 @endif
                                             </div>
                                         </div>
@@ -420,30 +453,34 @@
                         <div class="order-totals">
                             <div class="total-row">
                                 <span>Subtotal</span>
-                                <span id="subtotal-amount">Rs. {{ isset($subtotal) ? number_format($subtotal, 0) : '0' }}</span>
+                                <span id="subtotal-amount">Rs.
+                                    {{ isset($subtotal) ? number_format($subtotal, 0) : '0' }}</span>
                             </div>
 
                             @if (isset($discountAmount) && $discountAmount > 0)
                                 <div class="total-row" id="discount-row">
                                     <span>Discount ({{ isset($coupon) ? $coupon->code : '' }})</span>
-                                    <span id="discount-amount" style="color: #4caf50;">-Rs. {{ number_format($discountAmount, 0) }}</span>
+                                    <span id="discount-amount" style="color: #4caf50;">-Rs.
+                                        {{ number_format($discountAmount, 0) }}</span>
                                 </div>
                             @endif
 
-                            <div class="total-row" id="delivery-row">
+                            {{-- <div class="total-row" id="delivery-row">
                                 <span>Delivery Charges</span>
                                 <span id="delivery-amount" style="color: #666;">Rs. 199</span>
-                            </div>
+                            </div> --}}
 
                             <div class="total-row final">
                                 <span>Grand Total</span>
                                 <span id="grand-total-amount">
-                                    Rs. {{ isset($total) ? number_format($total + 199, 0) : (isset($subtotal) ? number_format($subtotal + 199, 0) : '199') }}
+                                    Rs.
+                                    {{ isset($total) ? number_format($total, 0) : (isset($subtotal) ? number_format($subtotal, 0) : '0') }}
                                 </span>
                             </div>
                         </div>
 
-                        <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form" enctype="multipart/form-data">
+                        <form action="{{ route('checkout.store') }}" method="POST" id="checkout-form"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="c_fname" id="checkout-fname">
                             <input type="hidden" name="c_lname" id="checkout-lname">
@@ -456,8 +493,10 @@
                             <input type="hidden" name="c_country" id="checkout-country">
                             <input type="hidden" name="c_order_notes" id="checkout-notes">
                             <input type="hidden" name="payment_method" id="checkout-payment" value="">
-                            <input type="hidden" name="coupon_code" id="checkout-coupon" value="{{ isset($coupon) ? $coupon->code : '' }}">
-                            <input type="file" name="payment_screenshot" id="checkout-screenshot" style="display: none;" accept="image/*">
+                            <input type="hidden" name="coupon_code" id="checkout-coupon"
+                                value="{{ isset($coupon) ? $coupon->code : '' }}">
+                            <input type="file" name="payment_screenshot" id="checkout-screenshot"
+                                style="display: none;" accept="image/*">
                             <button type="submit" class="checkout-btn" id="place-order-btn">
                                 Place Order
                             </button>
@@ -478,7 +517,7 @@
                     }
 
                     var $ = jQuery;
-                    var DELIVERY_CHARGES = 199;
+                    var DELIVERY_CHARGES = 0;
 
                     function toggleScreenshotSection() {
                         var paymentMethod = $('input[name="payment_method"]:checked').val();
@@ -523,7 +562,8 @@
                                 var reader = new FileReader();
                                 reader.onload = function(e) {
                                     $('#preview-img').attr('src', e.target.result);
-                                    $('#preview-name').text(file.name + ' (' + (file.size / 1024).toFixed(2) + ' KB)');
+                                    $('#preview-name').text(file.name + ' (' + (file.size / 1024)
+                                        .toFixed(2) + ' KB)');
                                     $('#file-preview').show();
                                 };
                                 reader.readAsDataURL(file);
@@ -600,7 +640,8 @@
                             // Disable submit button
                             var $submitBtn = $('#place-order-btn');
                             var originalText = $submitBtn.html();
-                            $submitBtn.prop('disabled', true).html('<span class="loading-spinner"></span> Processing...');
+                            $submitBtn.prop('disabled', true).html(
+                                '<span class="loading-spinner"></span> Processing...');
 
                             // Submit form via AJAX
                             var formData = new FormData(this);
@@ -612,7 +653,8 @@
                                 processData: false,
                                 contentType: false,
                                 headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') ||
+                                        '{{ csrf_token() }}'
                                 },
                                 success: function(response) {
                                     console.log('Success:', response);
@@ -620,7 +662,9 @@
                                     if (response.redirect) {
                                         window.location.href = response.redirect;
                                     } else if (response.order_number) {
-                                        window.location.href = '{{ route('thankyou') }}?order=' + response.order_number;
+                                        window.location.href =
+                                            '{{ route('thankyou') }}?order=' + response
+                                            .order_number;
                                     } else {
                                         window.location.href = '{{ route('thankyou') }}';
                                     }
@@ -628,7 +672,8 @@
                                 error: function(xhr) {
                                     $submitBtn.prop('disabled', false).html(originalText);
 
-                                    var errorMsg = 'An error occurred while processing your order. Please try again.';
+                                    var errorMsg =
+                                        'An error occurred while processing your order. Please try again.';
 
                                     if (xhr.responseJSON) {
                                         if (xhr.responseJSON.message) {
@@ -636,7 +681,8 @@
                                         }
                                     }
 
-                                    console.error('Error:', xhr.responseJSON || xhr.responseText);
+                                    console.error('Error:', xhr.responseJSON || xhr
+                                        .responseText);
                                     alert(errorMsg);
                                 }
                             });

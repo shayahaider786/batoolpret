@@ -79,11 +79,11 @@
                                                 <input type="number" step="0.01" class="form-control" name="subtotal" value="{{ old('subtotal', $order->subtotal) }}">
                                             </div>
 
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label>Delivery Charges</label>
                                                 <input type="number" step="0.01" class="form-control" name="delivery_charges" value="{{ old('delivery_charges', $order->delivery_charges ?? 199) }}">
                                                 <small class="form-text text-muted">Default delivery charge is Rs. 199</small>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="form-group">
                                                 <label>Coupon Code</label>
@@ -108,7 +108,7 @@
 
                                             <div class="form-group">
                                                 <label>Grand Total (Including Delivery)</label>
-                                                <input type="number" step="0.01" class="form-control bg-light" name="grand_total" value="{{ old('grand_total', $order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199))) }}" readonly style="background-color: #f8f9fa;">
+                                                <input type="number" step="0.01" class="form-control bg-light" name="grand_total" value="{{ old('grand_total', $order->grand_total ?? ($order->total + ($order->delivery_charges ?? 0))) }}" readonly style="background-color: #f8f9fa;">
                                                 <small class="form-text text-muted">Total + Delivery Charges (Auto-calculated)</small>
                                             </div>
                                         </div>
@@ -346,11 +346,11 @@
                                                 @endif
                                                 <tr>
                                                     <th colspan="5" class="text-right">Delivery Charges:</th>
-                                                    <th>PKR {{ number_format($order->delivery_charges ?? 199, 2) }}</th>
+                                                    <th>PKR {{ number_format($order->delivery_charges ?? 0, 2) }}</th>
                                                 </tr>
                                                 <tr>
                                                     <th colspan="5" class="text-right">Grand Total:</th>
-                                                    <th class="text-primary">PKR {{ number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 199)), 2) }}</th>
+                                                    <th class="text-primary">PKR {{ number_format($order->grand_total ?? ($order->total + ($order->delivery_charges ?? 0)), 2) }}</th>
                                                 </tr>
                                             </tfoot>
                                         </table>
