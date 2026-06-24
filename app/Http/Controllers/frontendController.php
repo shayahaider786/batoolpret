@@ -379,7 +379,7 @@ class frontendController extends Controller
         return view('frontend.aboutus');
     }
 
-    public function Shop(Request $request)
+    public function shop(Request $request)
     {
         // Lightweight query - only category filtering
         $query = Product::select('id', 'name', 'slug', 'price', 'discount_price', 'image', 'category_id', 'status', 'tag')
@@ -398,73 +398,93 @@ class frontendController extends Controller
         $bagsCategoryIds = [];
         if ($bagsCategory) {
             $bagsCategoryIds[] = $bagsCategory->id;
-            // Also get all children of Bags category
             $bagsChildren = Category::where('parent_id', $bagsCategory->id)->pluck('id')->toArray();
             $bagsCategoryIds = array_merge($bagsCategoryIds, $bagsChildren);
         }
 
-        // Filter by tag (trending, new_arrival, best_selling)
+        // Get category by name from request
+        $categoryName = $request->input('category');
+        $subcategoryName = $request->input('subcategory');
+
+        // HANDLE CATEGORY FILTERING
+        if ($categoryName) {
+            // Find the category by name
+            $category = Category::where('name', 'LIKE', $categoryName)
+                ->orWhere('slug', 'LIKE', $categoryName)
+                ->active()
+                ->first();
+
+            if ($category) {
+                $categoryIds = [$category->id];
+
+                // Get children if exists
+                $childCategories = Category::where('parent_id', $category->id)->active()->pluck('id')->toArray();
+                $categoryIds = array_merge($categoryIds, $childCategories);
+
+                // Further filter by subcategory if provided
+                if ($subcategoryName) {
+                    $subcategory = Category::where('parent_id', $category->id)
+                        ->where(function ($q) use ($subcategoryName) {
+                            $q->where('name', 'LIKE', $subcategoryName)
+                                ->orWhere('slug', 'LIKE', $subcategoryName);
+                        })
+                        ->active()
+                        ->first();
+
+                    if ($subcategory) {
+                        $categoryIds = [$subcategory->id];
+                    }
+                }
+
+                $query->whereIn('category_id', $categoryIds);
+            } else {
+                // If category not found, return empty paginator (not collection)
+                $products = new \Illuminate\Pagination\LengthAwarePaginator(
+                    collect(), // items
+                    0, // total
+                    12, // per page
+                    1, // current page
+                    ['path' => $request->url(), 'query' => $request->query()]
+                );
+
+                $parentCategories = Cache::remember('categories.parents.active', 3600, function () {
+                    return Category::parents()->active()->orderBy('name')->get();
+                });
+
+                // Define activeFilter here
+                $activeFilter = $categoryName;
+
+                return view('frontend.shop', compact('products', 'parentCategories', 'activeFilter'));
+            }
+        }
+
+        // HANDLE TAG FILTERING (New Arrival, Trending, Best Selling)
         if ($request->filled('tag')) {
             $tag = $request->input('tag');
-            // Validate tag to prevent SQL injection
-            if (in_array($tag, ['trending', 'new_arrival', 'best_selling'])) {
-                $query->where('tag', $tag);
+            if (in_array($tag, ['new-arrival', 'new_arrival', 'trending', 'best_selling'])) {
+                // Normalize tag name
+                $normalizedTag = str_replace('-', '_', $tag);
+                $query->where('tag', $normalizedTag);
                 // Exclude Bags from tag filters
-                if (! empty($bagsCategoryIds)) {
+                if (!empty($bagsCategoryIds)) {
                     $query->whereNotIn('category_id', $bagsCategoryIds);
                 }
             }
         }
 
-        // Filter by sale (products with discount_price)
+        // HANDLE SALE FILTERING
         if ($request->filled('sale') && $request->input('sale') == 'true') {
             $query->whereNotNull('discount_price')
                 ->where('discount_price', '>', 0);
             // Exclude Bags from sale section
-            if (! empty($bagsCategoryIds)) {
+            if (!empty($bagsCategoryIds)) {
                 $query->whereNotIn('category_id', $bagsCategoryIds);
             }
         }
 
-        // Filter by category only
-        if ($request->filled('categories')) {
-            $categories = is_array($request->input('categories'))
-                ? $request->input('categories')
-                : [$request->input('categories')];
-
-            // Get all child category IDs for selected parent categories
-            $allCategoryIds = collect($categories);
-            foreach ($categories as $categoryId) {
-                $childCategories = Category::where('parent_id', $categoryId)->pluck('id');
-                $allCategoryIds = $allCategoryIds->merge($childCategories);
-            }
-
-            // Cross-category logic: FORMAL and ZAYLISH SIGNATURE show each other's products
-            $formalCategory = Category::where('name', 'FORMAL')->first();
-            $zaylishSignatureCategory = Category::where('name', 'ZAYLISH SIGNATURE')->first();
-
-            if ($formalCategory && $zaylishSignatureCategory) {
-                // If FORMAL is selected, also include ZAYLISH SIGNATURE products
-                if ($allCategoryIds->contains($formalCategory->id)) {
-                    $allCategoryIds->push($zaylishSignatureCategory->id);
-                    // Also include children of ZAYLISH SIGNATURE
-                    $zaylishChildren = Category::where('parent_id', $zaylishSignatureCategory->id)->pluck('id');
-                    $allCategoryIds = $allCategoryIds->merge($zaylishChildren);
-                }
-
-                // If ZAYLISH SIGNATURE is selected, also include FORMAL products
-                if ($allCategoryIds->contains($zaylishSignatureCategory->id)) {
-                    $allCategoryIds->push($formalCategory->id);
-                    // Also include children of FORMAL
-                    $formalChildren = Category::where('parent_id', $formalCategory->id)->pluck('id');
-                    $allCategoryIds = $allCategoryIds->merge($formalChildren);
-                }
-            }
-
-            $query->whereIn('category_id', $allCategoryIds->unique()->toArray());
-        } else {
-            // When no category, tag, or sale filter is selected (All Products view), exclude Bags products
-            if (! $request->filled('tag') && ! $request->filled('sale') && ! empty($bagsCategoryIds)) {
+        // If no filters applied, show all products except Bags
+        if (!$request->filled('tag') && !$request->filled('sale') && !$categoryName) {
+            if (!empty($bagsCategoryIds)) {
                 $query->whereNotIn('category_id', $bagsCategoryIds);
             }
         }
@@ -472,18 +492,18 @@ class frontendController extends Controller
         // Default sorting: newest first
         $query->latest();
 
-        // Paginate with 12 products per page for traditional pagination
+        // Paginate with 12 products per page
         $products = $query->paginate(12);
 
-        // Cache parent categories for 1 hour
+        // Get parent categories for sidebar
         $parentCategories = Cache::remember('categories.parents.active', 3600, function () {
             return Category::parents()->active()->orderBy('name')->get();
         });
 
-        // For tag page view, use the same logic but pass a flag
-        $isTagPage = $request->filled('tag');
+        // Determine active filter for view
+        $activeFilter = $categoryName ?: ($request->input('tag') ?: ($request->input('sale') ? 'sale' : 'all'));
 
-        return view('frontend.shop', compact('products', 'parentCategories', 'isTagPage'));
+        return view('frontend.shop', compact('products', 'parentCategories', 'activeFilter'));
     }
 
     public function casual()

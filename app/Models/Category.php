@@ -81,6 +81,17 @@ class Category extends Model
     }
 
     /**
+     * Get category by name or slug.
+     */
+    public static function findByName($name)
+    {
+        return self::where('name', 'LIKE', $name)
+            ->orWhere('slug', 'LIKE', $name)
+            ->active()
+            ->first();
+    }
+
+    /**
      * Scope to get only subcategories.
      */
     public function scopeSubcategories($query)
