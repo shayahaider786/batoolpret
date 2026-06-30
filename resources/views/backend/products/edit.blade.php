@@ -381,19 +381,42 @@
                                 @enderror
                             </div>
 
+                            <!-- UPDATED: Design Details with TinyMCE -->
                             <div class="form-group">
                                 <label for="design_details">Design Details</label>
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <i class="mdi mdi-information-outline"></i>
+                                        Use formatting to create professional design descriptions. You can add:
+                                        <span class="badge badge-light">Headers</span>
+                                        <span class="badge badge-light">Bold Text</span>
+                                        <span class="badge badge-light">Bullet Lists</span>
+                                        <span class="badge badge-light">Numbered Lists</span>
+                                        <span class="badge badge-light">Colors</span>
+                                        <span class="badge badge-light">Styles</span>
+                                    </small>
+                                </div>
                                 <textarea class="form-control @error('design_details') is-invalid @enderror"
                                           id="design_details"
                                           name="design_details"
-                                          rows="3"
-                                          placeholder="Enter design details, patterns, or special features">{{ old('design_details', $product->design_details) }}</textarea>
-                                <small class="form-text text-muted">Describe the design, patterns, or special features</small>
+                                          rows="10">{{ old('design_details', $product->design_details) }}</textarea>
                                 @error('design_details')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+
+                            <!-- Live Preview for Design Details -->
+                            <div class="form-group">
+                                <label>Design Details Preview</label>
+                                <div id="design-details-preview" class="border p-3 rounded" style="min-height: 100px; max-height: 300px; overflow-y: auto;">
+                                    @if(old('design_details', $product->design_details))
+                                        {!! old('design_details', $product->design_details) !!}
+                                    @else
+                                        <span class="text-muted">Preview will appear here as you type...</span>
+                                    @endif
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -432,7 +455,6 @@
                                     $youtubeLink = old('youtube_link', $product->youtube_link);
                                     $youtubeVideoId = null;
                                     if ($youtubeLink) {
-                                        // Extract YouTube video ID from various URL formats
                                         if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/', $youtubeLink, $matches)) {
                                             $youtubeVideoId = $matches[1];
                                         }
@@ -674,7 +696,36 @@
         </div>
     </div>
 
+    <!-- TinyMCE Script -->
+    <script src="https://cdn.tiny.cloud/1/nigxlpj69ohduad85jc2jdj971a8r950azw3gqik8l961lnf/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
+        // Initialize TinyMCE for design_details
+        tinymce.init({
+            selector: '#design_details',
+            height: 400,
+            menubar: 'file edit view insert format tools table help',
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic underline strikethrough | ' +
+                'forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | ' +
+                'removeformat | help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px; padding: 10px; }',
+            setup: function(editor) {
+                editor.on('keyup change', function() {
+                    var preview = document.getElementById('design-details-preview');
+                    if (preview) {
+                        var content = editor.getContent();
+                        preview.innerHTML = content || '<span class="text-muted">Preview will appear here...</span>';
+                    }
+                });
+            }
+        });
+
         // Main image preview
         const imageInput = document.getElementById('image');
         if (imageInput) {

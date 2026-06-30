@@ -268,12 +268,15 @@
                         </div>
                     </div>
 
+                    <!-- UPDATED: Description Section with Formatted Design Details -->
                     <div class="p-t-43 p-b-40">
                         <div class="additional-info-section">
                             <div class="additional-info-content">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h3 class="mtext-108 cl2 p-b-30">Description</h3>
+
+                                        <!-- Product Details List -->
                                         <ul class="stext-102 cl6 p-lr-20 p-lr-15-sm" style="list-style: disc;">
                                             @if ($product->fabric)
                                                 <li class="p-b-7"><b>Fabric: </b> {{ $product->fabric }}</li>
@@ -288,13 +291,21 @@
                                             @if ($product->outfit_type)
                                                 <li class="p-b-7"><b>Outfit Type: </b> {{ $product->outfit_type }}</li>
                                             @endif
-                                            @if ($product->design_details)
-                                                <li class="p-b-7"><b>Design Details: </b> {{ $product->design_details }}
-                                                </li>
-                                            @endif
                                             @if ($product->includes)
                                                 <li class="p-b-7"><b>Includes: </b> {{ $product->includes }}</li>
                                             @endif
+                                        </ul>
+
+                                        <!-- Design Details Section - RENDERED WITH HTML FORMATTING -->
+                                        @if ($product->design_details)
+                                            <div class="design-details-section p-t-20">
+                                                <h4 class="mtext-108 cl2 p-b-15">Design Details</h4>
+                                                <div class="design-details-content stext-102 cl6 p-lr-20 p-lr-15-sm">
+                                                    {!! $product->design_details !!}
+                                                </div>
+                                            </div>
+                                        @endif
+                                        <ul class="stext-102 cl6 p-lr-20 p-lr-15-sm" style="list-style: disc;">
                                             @if ($product->care_instructions)
                                                 <li class="p-b-7"><b>Care Instructions: </b>
                                                     {{ $product->care_instructions }}</li>
@@ -683,6 +694,177 @@
             opacity: 1;
         }
 
+        /* Design Details Styling */
+        .design-details-content {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .design-details-content h1,
+        .design-details-content h2,
+        .design-details-content h3,
+        .design-details-content h4,
+        .design-details-content h5,
+        .design-details-content h6 {
+            color: #2c3e50;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .design-details-content h1 {
+            font-size: 28px;
+        }
+
+        .design-details-content h2 {
+            font-size: 24px;
+        }
+
+        .design-details-content h3 {
+            font-size: 20px;
+        }
+
+        .design-details-content h4 {
+            font-size: 18px;
+        }
+
+        .design-details-content h5 {
+            font-size: 16px;
+        }
+
+        .design-details-content h6 {
+            font-size: 14px;
+        }
+
+        .design-details-content p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .design-details-content ul,
+        .design-details-content ol {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        .design-details-content ul li,
+        .design-details-content ol li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .design-details-content ul {
+            list-style-type: disc;
+        }
+
+        .design-details-content ul ul {
+            list-style-type: circle;
+        }
+
+        .design-details-content ul ul ul {
+            list-style-type: square;
+        }
+
+        .design-details-content ol {
+            list-style-type: decimal;
+        }
+
+        .design-details-content ol ol {
+            list-style-type: lower-alpha;
+        }
+
+        .design-details-content strong,
+        .design-details-content b {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .design-details-content em,
+        .design-details-content i {
+            font-style: italic;
+        }
+
+        .design-details-content u {
+            text-decoration: underline;
+        }
+
+        .design-details-content a {
+            color: #717fe0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .design-details-content a:hover {
+            color: #5a6fd8;
+            text-decoration: underline;
+        }
+
+        .design-details-content blockquote {
+            border-left: 4px solid #717fe0;
+            padding: 10px 20px;
+            margin: 15px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .design-details-content blockquote p {
+            margin-bottom: 0;
+        }
+
+        .design-details-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .design-details-content table td,
+        .design-details-content table th {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+        }
+
+        .design-details-content table th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .design-details-content .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .design-details-content .text-center {
+            text-align: center;
+        }
+
+        .design-details-content .text-right {
+            text-align: right;
+        }
+
+        .design-details-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .design-details-content pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .design-details-content hr {
+            margin: 20px 0;
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
         /* Mobile Zoom Panel - Updated for better visibility */
         @media (max-width: 992px) {
             .zoom-result-panel {
@@ -693,9 +875,7 @@
                 top: auto;
                 transform: none;
                 width: 350px !important;
-                /* Increased from 200px */
                 height: 350px !important;
-                /* Increased from 200px */
                 border: 3px solid #ff6b6b;
                 border-radius: 12px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -729,7 +909,6 @@
                 }
             }
 
-            /* Optional: Add instruction text for better UX */
             .mobile-zoom-instruction {
                 position: absolute;
                 bottom: 10px;
@@ -746,13 +925,37 @@
                 font-family: Arial, sans-serif;
                 font-weight: 500;
             }
+
+            .design-details-content {
+                font-size: 14px;
+            }
+
+            .design-details-content h1 {
+                font-size: 24px;
+            }
+
+            .design-details-content h2 {
+                font-size: 20px;
+            }
+
+            .design-details-content h3 {
+                font-size: 18px;
+            }
+
+            .design-details-content h4 {
+                font-size: 16px;
+            }
+
+            .design-details-content ul,
+            .design-details-content ol {
+                padding-left: 20px;
+            }
         }
 
         /* Small mobile devices (phones) */
         @media (max-width: 576px) {
             .zoom-result-panel {
                 width: 280px !important;
-                /* Slightly smaller but still visible */
                 height: 280px !important;
                 bottom: 15px;
                 right: 15px;
