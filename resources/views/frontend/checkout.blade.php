@@ -305,17 +305,17 @@
 
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">Account Title:</span>
-                                        <span class="bank-detail-value">AHSAN SAEED</span>
+                                        <span class="bank-detail-value">MUBASHIR TAHIR</span>
                                     </div>
 
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">Account Number:</span>
-                                        <span class="bank-detail-value">02930111855908</span>
+                                        <span class="bank-detail-value">02440107251347</span>
                                     </div>
 
                                     <div class="bank-detail-row">
                                         <span class="bank-detail-label">IBAN:</span>
-                                        <span class="bank-detail-value">PK57MEZN0002930111855908</span>
+                                        <span class="bank-detail-value">PK81MEZN0002440107251347</span>
                                     </div>
 
                                     <div class="bank-note">
